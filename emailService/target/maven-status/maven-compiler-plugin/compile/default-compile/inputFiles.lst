@@ -1,0 +1,6 @@
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\business\abstracts\EmailService.java
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\business\concretes\EmailServiceImpl.java
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\config\FreeMarkerEmailTemplateConfig.java
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\dto\EmailMessageKafkaDto.java
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\EmailServiceApplication.java
+D:\MCA\Sem4\project\CineVisionMicroserviceProject\emailService\src\main\java\com\kaankaplan\emailService\kafka\KafkaConsumer.java

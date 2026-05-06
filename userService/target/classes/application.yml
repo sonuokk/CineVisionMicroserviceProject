@@ -1,0 +1,62 @@
+server:
+  port: 0
+spring:
+  application:
+    name: userService
+  ## MongoDB Properties
+  data:
+    mongodb:
+      uri: ${MONGO_URI:mongodb://${MONGO_USER:rootuser}:${MONGO_PASSWORD:rootpass}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/${MONGO_DATABASE:user}?authSource=admin}
+      auto-index-creation: true
+  mail:
+    default-encoding: UTF-8
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    protocol: ${MAIL_PROTOCOL:smtp}
+    test-connection: ${MAIL_TEST_CONNECTION:false}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  ## Micrometer tracing / Zipkin Properties
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+## Eureka Properties
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://eureka:password@localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+
+# JWT properties
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY:secret_secret_secret_secret_secret_secret_secret_secret_secret_secret}
+
+# Admin bootstrap key. Change before creating an admin account.
+app:
+  mail:
+    sender: ${APP_MAIL_SENDER:no-reply@cinesaga.local}
+  otp:
+    expiry-minutes: ${OTP_EXPIRY_MINUTES:10}
+    expose-in-response: ${OTP_EXPOSE_IN_RESPONSE:false}
+  admin:
+    setup-key: ${ADMIN_SETUP_KEY:CHANGE_ME_ADMIN_SETUP_KEY}
+    bootstrap:
+      email: ${ADMIN_BOOTSTRAP_EMAIL:admin@cinesaga.local}
+      password: ${ADMIN_BOOTSTRAP_PASSWORD:Admin@12345}
+      full-name: ${ADMIN_BOOTSTRAP_FULL_NAME:CineSaga Admin}
