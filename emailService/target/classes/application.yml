@@ -13,6 +13,8 @@ eureka:
 
 ## Apache Kafka Consumer Properties
 spring:
+  config:
+    import: optional:file:../.env.example[.properties],optional:file:../.env[.properties],optional:file:.env[.properties]
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
@@ -26,7 +28,7 @@ spring:
             trusted:
               packages: "*"
             type:
-              mapping: event:com.kaankaplan.emailService.dto.EmailMessageKafkaDto
+              mapping: event:com.doffeii.emailService.dto.EmailMessageKafkaDto
     topic:
       name: email_topics
   # Micrometer tracing / Zipkin Properties

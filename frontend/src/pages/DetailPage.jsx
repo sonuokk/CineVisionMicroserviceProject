@@ -14,6 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addMovieToState, cleanState } from '../store/actions/movieActions';
 import { CommentService } from '../services/commentService';
 import { toast, ToastContainer } from 'react-toastify';
+import { allDemoMovies, getDemoMovieById } from '../data/demoMovies';
+
+const SIGN_IN_TOAST_ID = "sign-in-before-booking";
 
 
 export default function DetailPage() {
@@ -35,7 +38,7 @@ export default function DetailPage() {
     const [actors, setActors] = useState([])
     const [otherMovies, setOtherMovies] = useState([])
     const [cinemaSaloons, setCinemaSaloons] = useState([])
-    const [selectedCity, setSelectedCity] = useState({})
+    const [selectedCity, setSelectedCity] = useState(null)
     const [selectedSaloon, setSelectedSaloon] = useState(null)
     const [saloonTimes, setSaloonTimes] = useState([])
     const [selectedDay, setSelectedDay] = useState(dateConvert(date))
@@ -51,15 +54,20 @@ export default function DetailPage() {
     
     function getNewVisionMovie(movieId) {
         setActiveTab("tickets");
+        setSelectedCity(null);
         setSelectedSaloon(null);
-        movieService.getMovieById(movieId).then(result => setMovie(result.data));
-        actorService.getActorsByMovieId(movieId).then(result => setActors(result.data))
-        cityService.getCitiesByMovieId(movieId).then(result => setCinemaSaloons(result.data))
+        setSaloonTimes([]);
+        const fallbackMovie = getDemoMovieById(movieId) || {};
+        movieService.getMovieById(movieId)
+            .then(result => setMovie(result.data?.movieId ? result.data : fallbackMovie))
+            .catch(() => setMovie(fallbackMovie));
+        actorService.getActorsByMovieId(movieId).then(result => setActors(result.data)).catch(() => setActors([]))
+        cityService.getCitiesByMovieId(movieId).then(result => setCinemaSaloons(result.data)).catch(() => setCinemaSaloons([]))
         movieService.getAllDisplayingMovies().then(result => {
             const films = result.data.filter(m => m.movieId != movieId);
             setOtherMovies(films);
-        })
-        commentService.getCountOfComments(movieId).then(result => setCountOfComments(result.data));
+        }).catch(() => setOtherMovies(allDemoMovies.filter(m => String(m.movieId) !== String(movieId))))
+        commentService.getCountOfComments(movieId).then(result => setCountOfComments(result.data)).catch(() => setCountOfComments(0));
         getComments(movieId, 1, 5);
     }
 
@@ -69,6 +77,17 @@ export default function DetailPage() {
         })
     }
 
+    function selectCity(city) {
+        setSelectedCity(city);
+        setSelectedSaloon(null);
+        setSaloonTimes([]);
+    }
+
+    function selectSaloon(saloon) {
+        setSelectedSaloon(saloon);
+        getSaloonTimes(saloon.saloonId, movieId);
+    }
+
     function getComments(movieId, pageNo, pageSize=5) {
         commentService.getCommentsByMovieId(movieId, pageNo, pageSize).then(result => {
             if (comments.length > 0 && pageNo > 1) {
@@ -76,10 +95,15 @@ export default function DetailPage() {
             }else {
                 setComments(result.data)
             }
-        })
+        }).catch(() => setComments([]))
     }
 
     function addState(movieTime) {
+        if (!userFromRedux) {
+            openLoginModal();
+            return;
+        }
+
         dispatch(cleanState());
 
         let movieDto = {
@@ -93,6 +117,18 @@ export default function DetailPage() {
         }
         dispatch(addMovieToState(movieDto));
         navigate("buyTicket")
+    }
+
+    function openLoginModal() {
+        sessionStorage.setItem("cineSagaPendingPath", "/movie/" + movieId);
+        if (!toast.isActive(SIGN_IN_TOAST_ID)) {
+            toast.warning("Please sign in before booking tickets.", {
+                toastId: SIGN_IN_TOAST_ID,
+                theme: "light",
+                position: "top-center"
+            });
+        }
+        document.querySelector('[data-bs-target="#loginModal"]')?.click();
     }
 
     function sendCommentText() {
@@ -148,28 +184,35 @@ export default function DetailPage() {
   return (
     <div>
         <section id="entry-section" className='detail-bg pt-5'>
-            <div className=' container mt-5'>
-                <div className='row gx-4 gy-4 pt-2 justify-content-center align-items-center'>
-                    <div className='col-12 col-lg-5 text-center mb-4' >
+            <div className='container mt-5'>
+                <div className='detail-hero-card row gx-4 gy-4 pt-2 justify-content-center align-items-center'>
+                    <div className='col-12 col-lg-5 text-center detail-poster-column' >
                         {movie?.movieImageUrl ? (
                             <img className='detail-poster' src={movie.movieImageUrl} alt={movie?.movieName || "Movie poster"} />
                         ) : (
                             <div className="detail-poster-placeholder">Poster coming soon</div>
                         )}
                     </div>
-                    <div className='col-12 col-lg-7 text-start text-light'>
+                    <div className='col-12 col-lg-7 text-start text-light detail-copy-column'>
+                        <p className="detail-kicker">{movie?.isDisplay === false ? "Coming Soon" : "Now Showing"}</p>
                         <h3>{movie?.movieName}</h3>
-                        <hr/>
-                        <h5>Director: {movie?.directorName || "Not assigned yet"}</h5>
-                        <h5>Cast: {actors?.length > 0 ? actors.map(actor => actor.actorName).join(", ") : "Not assigned yet"}
-                        </h5>
-                        <div className="movie-detail-tabs mt-5" role="tablist" aria-label="Movie detail tabs">
+                        <p className="detail-description">{movie?.description || "Movie details will be updated soon."}</p>
+                        <div className="detail-meta-row">
+                            <span>{movie.releaseDate ? dateConvert(movie.releaseDate) : "Date TBA"}</span>
+                            <span>{movie.duration ? `${movie.duration} min` : "Runtime TBA"}</span>
+                            <span>{movie.categoryName || "Genre TBA"}</span>
+                        </div>
+                        <div className="detail-credit-card">
+                            <p><strong>Director</strong><span>{movie?.directorName || "Not assigned yet"}</span></p>
+                            <p><strong>Cast</strong><span>{actors?.length > 0 ? actors.map(actor => actor.actorName).join(", ") : "Not assigned yet"}</span></p>
+                        </div>
+                        <div className="movie-detail-tabs mt-4" role="tablist" aria-label="Movie detail tabs">
                             <button className={`detail-page-btn btn btn-lg ${activeTab === "tickets" ? "active" : ""}`} type="button"
-                                onClick={() => setActiveTab("tickets")}><strong>Book Tickets</strong></button>
+                                onClick={() => userFromRedux ? setActiveTab("tickets") : openLoginModal()}>Book Tickets</button>
                             <button className={`detail-page-btn btn btn-lg ${activeTab === "reviews" ? "active" : ""}`} type="button"
-                                onClick={() => setActiveTab("reviews")}><strong>Reviews</strong></button>
+                                onClick={() => setActiveTab("reviews")}>Reviews</button>
                             <button className={`detail-page-btn btn btn-lg ${activeTab === "trailer" ? "active" : ""}`} type="button"
-                                onClick={() => setActiveTab("trailer")}><strong>Trailer</strong></button>
+                                onClick={() => setActiveTab("trailer")}>Trailer</button>
                         </div>
                     </div>
                 </div>
@@ -195,13 +238,13 @@ export default function DetailPage() {
             }}>
         </style>
 
-        <section className='p-5'>
+        <section className='p-5 movie-info-section'>
             <div className='container'>
                 <div className='row justify-content-between ms-0 ms-md-5 ps-0 ps-md-5'>
                     <div className='col-sm-4 text-start'>
-                        <p> <strong> Release Date: </strong> {dateConvert( movie.releaseDate) }</p>
-                        <p> <strong>Runtime: </strong>{movie.duration} Minutes</p>
-                        <p><strong>Genre: </strong>{movie.categoryName}</p>
+                        <p> <strong> Release Date: </strong> {movie.releaseDate ? dateConvert(movie.releaseDate) : "Date TBA"}</p>
+                        <p> <strong>Runtime: </strong>{movie.duration ? `${movie.duration} Minutes` : "Runtime TBA"}</p>
+                        <p><strong>Genre: </strong>{movie.categoryName || "Genre TBA"}</p>
                     </div>
                     <div className='col-sm-8 text-start'>
                         <p><strong>Synopsis: </strong>{movie.description}</p>
@@ -220,8 +263,19 @@ export default function DetailPage() {
                     </div>
                     <div className='col-sm-8 ps-3 mt-2'>
                         <button type="button" class="select-saloon-button btn btn-primary col-12"
-                         data-bs-toggle="modal" data-bs-target="#saloonModal">
-                            <strong>Choose Cinema</strong> <i class="fa-solid fa-caret-down"></i>
+                         data-bs-toggle={userFromRedux ? "modal" : undefined}
+                         data-bs-target={userFromRedux ? "#saloonModal" : undefined}
+                         onClick={() => {
+                            if (!userFromRedux) {
+                                openLoginModal();
+                            }
+                         }}>
+                            <span>
+                                <strong>{selectedSaloon ? selectedSaloon.saloonName : selectedCity ? `Choose theater in ${selectedCity.cityName}` : "Choose City & Theater"}</strong>
+                                {selectedCity && !selectedSaloon ? <small>{selectedCity?.saloon?.length || 0} theaters available</small> : null}
+                                {selectedSaloon ? <small>{selectedCity?.cityName}</small> : null}
+                            </span>
+                            <i class="fa-solid fa-chevron-down"></i>
                         </button>
                     </div>
                 </div>
@@ -425,23 +479,37 @@ export default function DetailPage() {
             </div>
         </div>
 
-        {/* Saloon Modal */}
-        <div class="modal fade" id="saloonModal" tabindex="-1" aria-labelledby="saloonModalLabel" aria-hidden="true" style={{height:"50%", overflow:'auto'}}>
-            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" >
+        {/* City Modal */}
+        <div class="modal fade city-theater-modal" id="saloonModal" tabindex="-1" aria-labelledby="saloonModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" >
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="saloonModalLabel">Choose City</h5>
+                        <div>
+                            <p className="modal-kicker mb-1">Location</p>
+                            <h5 class="modal-title" id="saloonModalLabel">Choose your city</h5>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {cinemaSaloons.map(saloon => (
-                            <a className='text-start text-dark' href='#!'
-                            data-bs-target="#saloonModal2" data-bs-toggle="modal" data-bs-dismiss="modal" 
-                            style={{textDecoration:"none"}} onClick={() => setSelectedCity(saloon)}>
-                                <h6 className='ps-1'>{saloon.cityName}</h6>
-                                <hr/>
-                            </a>
-                        ))}
+                        {cinemaSaloons?.length > 0 ? (
+                            <div className="city-choice-grid">
+                                {cinemaSaloons.map(city => (
+                                    <button className={`city-choice-card ${selectedCity?.cityId === city.cityId ? "active" : ""}`} type="button"
+                                        key={city.cityId}
+                                        data-bs-target="#saloonModal2" data-bs-toggle="modal" data-bs-dismiss="modal"
+                                        onClick={() => selectCity(city)}>
+                                        <span className="city-choice-icon"><i class="fa-solid fa-location-dot"></i></span>
+                                        <span>
+                                            <strong>{city.cityName}</strong>
+                                            <small>{city?.saloon?.length || 0} theaters</small>
+                                        </span>
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="empty-state-card">No cities are available for this movie yet.</div>
+                        )}
                     
                     </div>
             
@@ -449,32 +517,40 @@ export default function DetailPage() {
             </div>
         </div>
 
-        {/* Second Saloon Modal */}
-        <div class="modal fade" id="saloonModal2" aria-hidden="true" aria-labelledby="saloonModal2ToggleLabel2" tabindex="-1" style={{height:"50%", overflow:'auto'}}>
-            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+        {/* Theater Modal */}
+        <div class="modal fade city-theater-modal" id="saloonModal2" aria-hidden="true" aria-labelledby="saloonModal2ToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                    <a href='!#' className='text-dark' data-bs-target="#saloonModal" data-bs-toggle="modal" data-bs-dismiss="modal" style={{textDecoration:"none"}}>
-                        <h5 class="modal-title" id="saloonModal2ToggleLabel2"> 
+                        <button type="button" className="modal-back-btn" data-bs-target="#saloonModal" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Back to city list">
                             <i class="fa-sharp fa-solid fa-chevron-left"></i>
-                            {selectedCity.cityName}
-                        </h5>
-                    </a>
+                        </button>
+                        <div className="flex-grow-1">
+                            <p className="modal-kicker mb-1">Theaters</p>
+                            <h5 class="modal-title" id="saloonModal2ToggleLabel2">{selectedCity?.cityName || "Choose city"}</h5>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {selectedCity?.saloon?.map(s => (
-                            <a className='text-start text-dark' href='#!' onClick={() =>  {
-                                setSelectedSaloon(s)
-                                getSaloonTimes(s.saloonId, movieId)
-                            }}
-                            data-bs-target="#saloonModal2" data-bs-toggle="modal" data-bs-dismiss="modal" 
-                            style={{textDecoration:"none"}}>
-                                <h6 className='ps-1'>{s.saloonName}</h6>
-                                <hr/>
-                            </a> 
-                        ))}
-                        {/* Send to ticket page */}
+                        {selectedCity?.saloon?.length > 0 ? (
+                            <div className="theater-choice-list">
+                                {selectedCity.saloon.map(s => (
+                                    <button className={`theater-choice-card ${selectedSaloon?.saloonId === s.saloonId ? "active" : ""}`} type="button"
+                                        key={s.saloonId}
+                                        onClick={() => selectSaloon(s)}
+                                        data-bs-dismiss="modal">
+                                        <span className="theater-choice-icon"><i class="fa-solid fa-clapperboard"></i></span>
+                                        <span>
+                                            <strong>{s.saloonName}</strong>
+                                            <small>Shows available today</small>
+                                        </span>
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="empty-state-card">No theaters are available in this city yet.</div>
+                        )}
                     </div>
                     
                 </div>

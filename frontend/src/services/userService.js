@@ -10,8 +10,12 @@ export class UserService {
         return apiClient.post("/auth/signup/verify-otp", payload);
     }
 
-    addAdmin(admin) {
-        return apiClient.post("/admin/setup", admin);
+    requestPasswordResetOtp(payload) {
+        return apiClient.post("/auth/password/forgot", payload);
+    }
+
+    resetPassword(payload) {
+        return apiClient.post("/auth/password/reset", payload);
     }
 
     getAllUsers() {
@@ -19,7 +23,15 @@ export class UserService {
     }
 
     promoteUserToAdmin(email) {
-        return apiClient.post("/user/users/admin/promote", { email });
+        return apiClient.post("/admin/users/promote", { email });
+    }
+
+    getProfile() {
+        return apiClient.get("/account/me");
+    }
+
+    updateProfile(profile) {
+        return apiClient.put("/account/me", profile);
     }
 
     login(loginDto) {

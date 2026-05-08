@@ -10,9 +10,6 @@ export default function LoggedOut() {
             
             <li class="nav-item"><a class="nav-link" href="#!"
                 data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</a></li>
-
-            <li class="nav-item"><a class="nav-link" href="#!"
-                data-bs-toggle="modal" data-bs-target="#adminSetupModal">Admin Setup</a></li>
         </ul>
     </div>
   )

@@ -5,31 +5,65 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import { PaymentService } from '../services/paymentService'
+import { UserService } from '../services/userService'
 import KaanKaplanTextInput from '../utils/customFormItems/KaanKaplanTextInput'
+
+const seatRows = [
+    ["F1", "F2", "F3", "F4", "F5", "F6", "F7"],
+    ["E1", "E2", "E3", "E4", "E5", "E6"],
+    ["D1", "D2", "D3", "D4", "D5", "D6"],
+    ["C1", "C2", "C3", "C4", "C5", "C6"],
+    ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"],
+    ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"]
+]
 
 export default function BuyTicketPage() {
 
     const navigate = useNavigate()
-
-    const paymentService = useMemo(() => new PaymentService(), []);
+    const paymentService = useMemo(() => new PaymentService(), [])
+    const userService = useMemo(() => new UserService(), [])
 
     const [ticketItem, setTicketItem] = useState("ticketSection")
     const [adultTicketNumber, setAdultTicketNumber] = useState(0)
     const [studentTicketNumber, setStudentTicketNumber] = useState(0)
-    const [chairNumber, setChairNumber] = useState(studentTicketNumber + adultTicketNumber)
-    const [chairNumberList, setChairNumberList] = useState([])
+    const [selectedSeats, setSelectedSeats] = useState([])
     const [bookedSeats, setBookedSeats] = useState([])
-
+    const [profileContact, setProfileContact] = useState({ phone: "" })
+    const [savedCards, setSavedCards] = useState([])
+    const [selectedSavedCardId, setSelectedSavedCardId] = useState("")
+    const [paymentCard, setPaymentCard] = useState({
+        cardHolderName: "",
+        cardNumber: "",
+        cardExpiry: "",
+        cardSecurityCode: ""
+    })
     const movieState = useSelector(state => state.movie.payload)
+    const userFromRedux = useSelector(state => state.user.payload)
+
+    const totalTickets = adultTicketNumber + studentTicketNumber
+    const remainingSeats = totalTickets - selectedSeats.length
+    const totalAmount = (studentTicketNumber * 15.00 + adultTicketNumber * 25.00).toFixed(2)
 
     useEffect(() => {
+        if (!userFromRedux) {
+            sessionStorage.setItem("cineSagaPendingPath", movieState?.id ? "/movie/" + movieState.id : "/")
+            toast.warning("Please sign in before booking tickets.", {
+                theme: "dark",
+                position: "top-center"
+            })
+            setTimeout(() => {
+                document.querySelector('[data-bs-target="#loginModal"]')?.click()
+            }, 100)
+            return
+        }
+
         if (!movieState?.movieName) {
             toast.warning("Choose a movie and showtime before booking tickets.", {
                 theme: "dark",
                 position: "top-center"
-            });
-            navigate("/");
-            return;
+            })
+            navigate("/")
+            return
         }
 
         paymentService.getBookedSeats({
@@ -38,449 +72,423 @@ export default function BuyTicketPage() {
             movieDay: movieState?.movieDay,
             movieStartTime: movieState?.movieTime
         }).then(result => {
-            setBookedSeats(result.data || []);
-        }).catch(() => setBookedSeats([]));
-    }, [movieState, navigate, paymentService])
+            setBookedSeats(result.data || [])
+        }).catch(() => setBookedSeats([]))
+
+        userService.getProfile().then(result => {
+            setProfileContact({ phone: result.data?.phone || "" })
+            setSavedCards(result.data?.savedPaymentCards || [])
+        }).catch(() => setSavedCards([]))
+    }, [movieState, navigate, paymentService, userFromRedux, userService])
 
     useEffect(() => {
-        bookedSeats.forEach(seatId => {
-            let chair = document.getElementById(seatId);
-            if (chair) {
-                chair.style.background = "#6c757d";
-                chair.style.color = "#fff";
-                chair.className = "booked";
-                chair.title = "Already booked";
-            }
-        });
-    }, [bookedSeats, ticketItem])
+        setSelectedSeats(currentSeats => currentSeats.slice(0, totalTickets))
+    }, [totalTickets])
 
-    function checkChairIsEmpty(elementId) {
-        if (bookedSeats.includes(elementId)) {
-            return false;
+    function changeTicketCount(type, direction) {
+        if (type === "adult") {
+            setAdultTicketNumber(count => Math.max(0, count + direction))
+        } else {
+            setStudentTicketNumber(count => Math.max(0, count + direction))
         }
-        let classname = document.getElementById(elementId).className;
-        if(classname === "taken" || classname === "booked"){
-            return false;
-        }
-        return true;
     }
 
-    function selectChair(elementId) {
-        let item = document.getElementById(elementId);
-        if (bookedSeats.includes(elementId) || item.className === "booked") {
+    function selectSeat(seatId) {
+        if (bookedSeats.includes(seatId)) {
             toast.warning("That seat is already booked. Please choose another one.", {
                 theme: "dark",
                 position: "top-center"
-            });
-            return;
+            })
+            return
         }
-        if(checkChairIsEmpty(elementId) && chairNumber > 0) {
-            item.style.background = "#ff6a00";
-            item.className = "taken";
-            setChairNumberList([...chairNumberList, elementId]);
-            setChairNumber(chairNumber-1)
-        } else {
-            if(item.className === "taken"){
-                item.removeAttribute("style");
-                item.className= "empty";
-                let list = chairNumberList.filter(item => item !== elementId);
-                setChairNumberList(list);
-                setChairNumber(chairNumber+1)
+
+        setSelectedSeats(currentSeats => {
+            if (currentSeats.includes(seatId)) {
+                return currentSeats.filter(seat => seat !== seatId)
             }
-        }
+            if (currentSeats.length >= totalTickets) {
+                toast.warning("You already selected seats for every ticket.", {
+                    theme: "dark",
+                    position: "top-center"
+                })
+                return currentSeats
+            }
+            return [...currentSeats, seatId]
+        })
     }
 
-    // function markChairsWithChairId(chairIdList) {
-    //     for(let i=0; i < chairIdList.length; i++) {
-    //         let chair = document.getElementById("E4");
-    //         console.log(chair)
-    //         chair.style.background = "#ff6a00";
-    //         chair.className = "taken";
-    //     }
-    // }
+    function seatClassName(seatId) {
+        if (bookedSeats.includes(seatId)) {
+            return "seat-button is-booked"
+        }
+        if (selectedSeats.includes(seatId)) {
+            return "seat-button is-selected"
+        }
+        return "seat-button"
+    }
 
-  return (
-    <div className='ticket-page'>
+    function updatePaymentCard(field, value) {
+        setPaymentCard(currentCard => ({
+            ...currentCard,
+            [field]: value
+        }))
+    }
 
-        <div className='row justify-content-center align-items-start'>
+    function applySavedCard(cardId) {
+        setSelectedSavedCardId(cardId)
+        const savedCard = savedCards.find(card => card.cardId === cardId)
+        if (!savedCard) {
+            setPaymentCard({
+                cardHolderName: "",
+                cardNumber: "",
+                cardExpiry: "",
+                cardSecurityCode: ""
+            })
+            return
+        }
 
-            <div className='ticket-page-bg-img  col-sm-12 col-md-4 text-light'>
-                <div className='mt-5 pt-5'>
-                    <h3 className='mt-2'> {movieState?.movieName} </h3>
-                    <img className='img-thumbnail w-50 mx-auto mt-5' src={movieState?.imageUrl} alt={movieState?.movieName || "Movie poster"} />
-                    <h5 className='pt-5'><i className="fa-solid fa-location-dot"></i>{movieState?.saloonName}</h5>
-                    <h5 className='py-2'><i className="fa-solid fa-calendar-days"></i>{movieState?.movieDay}</h5>
-                    <h5><i className="fa-regular fa-clock"></i>{movieState?.movieTime}</h5>
+        setPaymentCard({
+            cardHolderName: savedCard.cardHolderName || userFromRedux?.fullName || "",
+            cardNumber: savedCard.cardNumber || "",
+            cardExpiry: savedCard.cardExpiry || "",
+            cardSecurityCode: ""
+        })
+    }
+
+    function requireTicketsBeforeSeats() {
+        if (!userFromRedux) {
+            document.querySelector('[data-bs-target="#loginModal"]')?.click()
+            return
+        }
+        if (totalTickets === 0) {
+            toast.warning("Please choose at least one ticket to continue.", {
+                theme: "dark",
+                position: "top-center"
+            })
+            return
+        }
+        setTicketItem("placeSection")
+    }
+
+    function requireSeatsBeforePayment() {
+        if (!userFromRedux) {
+            document.querySelector('[data-bs-target="#loginModal"]')?.click()
+            return
+        }
+        if (remainingSeats !== 0) {
+            toast.warning("Please choose seats for every ticket.", {
+                theme: "dark",
+                position: "top-center"
+            })
+            return
+        }
+        setTicketItem("paySection")
+    }
+
+    return (
+        !userFromRedux ? (
+            <div className='ticket-page booking-shell auth-required-shell'>
+                <div className='auth-required-panel'>
+                    <p className='booking-kicker'>Sign in required</p>
+                    <h2>Login first to book tickets</h2>
+                    <p>Movie browsing is open, but ticket selection and local reservation are available only after sign in.</p>
+                    <button type='button' className='btn btn-dark' data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
+                    <ToastContainer />
                 </div>
-               
             </div>
-            {/* for css ::after property */}
-            <style dangerouslySetInnerHTML={{
-                    __html: [
-                        '.ticket-page-bg-img:after {',
-                        '  content: " ";',
-                        '  position: absolute;',                
-                        'z-index: -1;',
-                        'inset: 0;',
-                        `background-image: url(${movieState?.imageUrl});`, 
-                        'background-repeat: no-repeat;',
-                        'background-size: cover;',
-                        'background-position: top center;',
-                        'opacity: 0.8;',
-                        'min-height: 100vh;',
-                        '-webkit-filter: blur(8px) saturate(1);',
-                        '}'
-                        ].join('\n')
-                }}>
-                </style>
-            <div className='col-sm-12 col-md-8 pt-5'>
-                <div className='container pt-5'>
-                    
-                    <div className="accordion accordion-flush" id="accordionPanelsStayOpenExample">
-                        <div className="accordion-item">
-                            <h2 className="accordion-header" id="panelsStayOpen-headingTwo">
-                                <div className='row pt-3 pb-1 px-4 align-items-center'>
-                                        <div className='col-sm-6 text-start'>
-                                            <h3>Choose Tickets</h3>
-                                        </div>
-                                            {/* Ticket Type Section */}
-                                         
-                                            <div className='col-sm-6 mb-2 text-end'>
-                                                {ticketItem === "ticketSection" ?
-                                                    <button className='btn btn-dark'
-                                                        data-bs-toggle="collapse" 
-                                                        data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo"
-                                                        onClick={() => {
-                                                            if(studentTicketNumber === 0 && adultTicketNumber === 0) {
-                                                                toast.warning("Please choose at least one ticket to continue.", {
-                                                                    theme: "dark",
-                                                                    position: "top-center"
-                                                                })
-                                                            } else {
-                                                                setTicketItem("placeSection")
-                                                                setChairNumber(studentTicketNumber + adultTicketNumber)
-                                                            }
-                                                        }}>Continue</button>
-                                                :  
-                                                    <button className='btn btn-outline-dark'
-                                                        data-bs-toggle="collapse" 
-                                                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne"
-                                                        onClick={() => setTicketItem("ticketSection")}>Change</button>}
-                                            </div>
-                                        
-                                </div>
-                            </h2>
-
-                            {ticketItem === 'ticketSection' ? (
-                                <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                                    <div className="accordion-body">
-                                        <section>
-                                                <div className='row '>
-                                                    <div className='col-sm-6 text-start'>
-                                                        <p>After choosing your movie and showtime, select your ticket type.
-                                                            Student ticket holders should bring a valid student ID.</p>                        
-                                                    </div>
-                                                </div>
-
-                                            <div className='row mt-3 px-2 border border-2 align-items-center'>
-                                                <div className='col-sm-6 text-uppercase border-end'>
-                                                    Adult
-                                                </div>
-                                                <div className='col-sm-3 border-end'>
-                                                    Price $25
-                                                </div>
-                                                <div className='col-sm-3'>
-                                                    <div className='row justify-content-center align-items-center'>
-                                                        <div className='col-sm-4'>
-                                                            <button className='btn btn-dark'
-                                                                onClick={() => {
-                                                                    if(adultTicketNumber > 0){
-                                                                        setAdultTicketNumber(adultTicketNumber-1)}
-                                                                    }
-                                                                    }>
-                                                                        <i className="fa-solid fa-minus"></i></button>
-                                                        </div>
-                                                        <div className='col-sm-4'>
-                                                            {adultTicketNumber}
-                                                        </div>
-                                                        <div className='col-sm-4 py-2'>
-                                                            <button className='btn btn-dark'
-                                                                onClick={() => setAdultTicketNumber(adultTicketNumber+1)}> <i className="fa-solid fa-plus"></i> </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='row mt-1 px-2 border border-2 align-items-center'>
-                                                <div className='col-sm-6 text-uppercase border-end'>
-                                                    Student
-                                                </div>
-                                                <div className='col-sm-3 border-end'>
-                                                    Price $15
-                                                </div>
-                                                <div className='col-sm-3'>
-                                                    <div className='row justify-content-center align-items-center'>
-                                                        <div className='col-sm-4'>
-                                                            <button className='btn btn-dark'
-                                                             onClick={() => {
-                                                                if(studentTicketNumber > 0){
-                                                                    setStudentTicketNumber(studentTicketNumber-1)}
-                                                                }
-                                                                }>
-                                                                    <i className="fa-solid fa-minus"></i></button>
-                                                               
-                                                        </div>
-                                                        <div className='col-sm-4'>
-                                                            {studentTicketNumber}
-                                                        </div>
-                                                        <div className='col-sm-4 py-2'>
-                                                            <button className='btn btn-dark'
-                                                                onClick={() => setStudentTicketNumber(studentTicketNumber+1)}> <i className="fa-solid fa-plus"></i> </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <p className='lead text-end mt-3 me-5'>Total: <strong>${(studentTicketNumber * 15.00 + adultTicketNumber * 25.00).toFixed(2)} </strong></p>
-                                        </section>
-
-                                    </div>
-                                </div>
-                            ): null}
+        ) : (
+        <div className='ticket-page booking-shell'>
+            <div className='booking-hero'>
+                <div className='booking-poster-panel'>
+                    <div className='booking-poster-backdrop' style={{ backgroundImage: `url(${movieState?.imageUrl})` }} />
+                    <div className='booking-poster-content'>
+                        <img className='booking-poster' src={movieState?.imageUrl} alt={movieState?.movieName || "Movie poster"} />
+                        <div className='text-start'>
+                            <p className='booking-kicker'>Booking</p>
+                            <h2>{movieState?.movieName}</h2>
+                            <p><i className="fa-solid fa-location-dot me-2"></i>{movieState?.saloonName}</p>
+                            <p><i className="fa-solid fa-calendar-days me-2"></i>{movieState?.movieDay}</p>
+                            <p><i className="fa-regular fa-clock me-2"></i>{movieState?.movieTime}</p>
                         </div>
-                        
-                        {/* Place Section */}
-                        <div className="accordion-item">
-                            <h2 className="accordion-header" id="panelsStayOpen-headingTwo">
-                                <div className='row pt-3 pb-1 px-4 align-items-center'>
-                                        <div className='col-sm-6 text-start'>
-                                            <h3>Choose Seats </h3>
-                                        </div>
-                                        <div className='col-sm-6 mb-2 text-end'>
-                                            {ticketItem === "placeSection" ?
-                                                <button className='btn btn-dark' data-bs-toggle="collapse" 
-                                                    data-bs-target="#panelsStayOpen-collapseThree"
-                                                    aria-expanded="false" aria-controls="panelsStayOpen-collapseThree"
-                                                    onClick={() => {
-                                                        if (chairNumber !== 0) {
-                                                            toast.warning("Please choose seats for every ticket.", {
-                                                                theme: "dark",
-                                                                position: "top-center"
-                                                            })
-                                                        } else {
-                                                            setTicketItem("paySection")
-                                                        }
-                                                    }}>Continue</button>
-                                            :
-                                                <button className='btn btn-outline-dark' data-bs-toggle="collapse" 
-                                                    data-bs-target="#panelsStayOpen-collapseTwo"
-                                                    aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo"
-                                                    onClick={() => {
-                                                        setTicketItem("placeSection")
-                                                        // markChairsWithChairId(chairNumberList)
-                                                    }}>
-                                                        Change
-                                                </button>
-                                            }
-                                        </div>
-                                </div>
-                            </h2>
+                    </div>
+                </div>
 
-                                <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-                                    <div className="accordion-body">
-                                    {ticketItem === "placeSection" ? 
-                                        <table className="table">
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">F</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="F1" onClick={() => selectChair("F1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F2" onClick={() => selectChair("F2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F3" onClick={() => selectChair("F3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F4" onClick={() => selectChair("F4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F5" onClick={() => selectChair("F5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F6" onClick={() => selectChair("F6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="F7" onClick={() => selectChair("F7")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                                <tr>
-                                                <th >E</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="E1" onClick={() => selectChair("E1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="E2" onClick={() => selectChair("E2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="E3" onClick={() => selectChair("E3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="E4" onClick={() => selectChair("E4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="E5" onClick={() => selectChair("E5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="E6" onClick={() => selectChair("E6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>D</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="D1" onClick={() => selectChair("D1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="D2" onClick={() => selectChair("D2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="D3" onClick={() => selectChair("D3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="D4" onClick={() => selectChair("D4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="D5" onClick={() => selectChair("D5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="D6" onClick={() => selectChair("D6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                                <tr>
-                                                    <th>C</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="C1" onClick={() => selectChair("C1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="C2" onClick={() => selectChair("C2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="C3" onClick={() => selectChair("C3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="C4" onClick={() => selectChair("C4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="C5" onClick={() => selectChair("C5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="C6" onClick={() => selectChair("C6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">B</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="B1" onClick={() => selectChair("B1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B2" onClick={() => selectChair("B2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B3" onClick={() => selectChair("B3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B4" onClick={() => selectChair("B4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B5" onClick={() => selectChair("B5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B6" onClick={() => selectChair("B6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B7" onClick={() => selectChair("B7")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="B8" onClick={() => selectChair("B8")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">A</th>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td id="A1" onClick={() => selectChair("A1")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A2" onClick={() => selectChair("A2")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A3" onClick={() => selectChair("A3")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A4" onClick={() => selectChair("A4")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A5" onClick={() => selectChair("A5")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A6" onClick={() => selectChair("A6")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A7" onClick={() => selectChair("A7")}> <i className="fa-solid fa-chair"></i> </td>
-                                                    <td id="A8" onClick={() => selectChair("A8")}> <i className="fa-solid fa-chair"></i> </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                            : null}
-                                            {ticketItem === "placeSection" ? (
-                                                <div>
-                                                    <p className='pt-2'>Screen</p>
-                                                    <hr style={{height:"4px", color:"black"}}/>
-                                                </div>
-                                            )
-                                            : null}
+                <div className='booking-flow'>
+                    <div className='booking-stepper' aria-label='Booking progress'>
+                        {["Tickets", "Seats", "Payment"].map((step, index) => {
+                            const activeIndex = ticketItem === "ticketSection" ? 0 : ticketItem === "placeSection" ? 1 : 2
+                            return (
+                                <div key={step} className={`booking-step ${index <= activeIndex ? "active" : ""}`}>
+                                    <span>{index + 1}</span>
+                                    {step}
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    <section className={`booking-panel ${ticketItem === "ticketSection" ? "is-open" : ""}`}>
+                        <div className='booking-panel-header'>
+                            <div>
+                                <p className='booking-kicker'>Step 1</p>
+                                <h3>Choose Tickets</h3>
+                            </div>
+                            {ticketItem === "ticketSection" ? (
+                                <button type='button' className='btn btn-dark' onClick={requireTicketsBeforeSeats}>Continue</button>
+                            ) : (
+                                <button type='button' className='btn btn-outline-dark' onClick={() => setTicketItem("ticketSection")}>Change</button>
+                            )}
+                        </div>
+
+                        {ticketItem === 'ticketSection' ? (
+                            <div className='booking-panel-body'>
+                                <p className='booking-help'>Select ticket types before choosing seats. Student ticket holders should bring a valid student ID.</p>
+                                <div className='ticket-type-row'>
+                                    <div>
+                                        <strong>Adult</strong>
+                                        <span>Price $25</span>
+                                    </div>
+                                    <div className='ticket-counter'>
+                                        <button type='button' className='icon-button' onClick={() => changeTicketCount("adult", -1)} aria-label='Remove adult ticket'>
+                                            <i className="fa-solid fa-minus"></i>
+                                        </button>
+                                        <strong>{adultTicketNumber}</strong>
+                                        <button type='button' className='icon-button' onClick={() => changeTicketCount("adult", 1)} aria-label='Add adult ticket'>
+                                            <i className="fa-solid fa-plus"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                
+                                <div className='ticket-type-row'>
+                                    <div>
+                                        <strong>Student</strong>
+                                        <span>Price $15</span>
+                                    </div>
+                                    <div className='ticket-counter'>
+                                        <button type='button' className='icon-button' onClick={() => changeTicketCount("student", -1)} aria-label='Remove student ticket'>
+                                            <i className="fa-solid fa-minus"></i>
+                                        </button>
+                                        <strong>{studentTicketNumber}</strong>
+                                        <button type='button' className='icon-button' onClick={() => changeTicketCount("student", 1)} aria-label='Add student ticket'>
+                                            <i className="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                                <p className='booking-total'>Total: <strong>${totalAmount}</strong></p>
+                            </div>
+                        ) : null}
+                    </section>
 
-                        {/* Pay Section */}
-                        <div className="accordion-item">
-                            <h2 className="accordion-header" id="panelsStayOpen-headingThree">
-                                <div className='row pt-3 pb-1 px-4 align-items-center'>
-                                        <div className='col-sm-6 text-start'>
-                                            <h3>Payment</h3>
-                                        </div>
-                                        <div className='col-sm-6 mb-2 text-end'>
-                                            {ticketItem === "paySection" ?
-                                                <h3>Total: ${(studentTicketNumber * 15.00 + adultTicketNumber * 25.00).toFixed(2)}</h3>
-                                            : null}
-                                        </div>
-                                      
+                    <section className={`booking-panel ${ticketItem === "placeSection" ? "is-open" : ""}`}>
+                        <div className='booking-panel-header'>
+                            <div>
+                                <p className='booking-kicker'>Step 2</p>
+                                <h3>Choose Seats</h3>
+                            </div>
+                            {ticketItem === "placeSection" ? (
+                                <button type='button' className='btn btn-dark' onClick={requireSeatsBeforePayment}>Continue</button>
+                            ) : (
+                                <button type='button' className='btn btn-outline-dark' onClick={() => setTicketItem("placeSection")} disabled={totalTickets === 0}>Change</button>
+                            )}
+                        </div>
+
+                        {ticketItem === "placeSection" ? (
+                            <div className='booking-panel-body'>
+                                <div className='seat-summary'>
+                                    <span>{selectedSeats.length} selected</span>
+                                    <span>{Math.max(remainingSeats, 0)} remaining</span>
                                 </div>
-                            </h2>
-                            
-                            <div id="panelsStayOpen-collapseThree" className="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-                            {ticketItem === "paySection" ? 
-                            <div className="accordion-body">
+                                <div className='screen-indicator'>Screen</div>
+                                <div className='seat-map' role='grid' aria-label='Cinema seat map'>
+                                    {seatRows.map(row => (
+                                        <div key={row[0][0]} className='seat-row' role='row'>
+                                            <span className='seat-row-label'>{row[0][0]}</span>
+                                            {row.map(seatId => (
+                                                <button
+                                                    key={seatId}
+                                                    type='button'
+                                                    className={seatClassName(seatId)}
+                                                    disabled={bookedSeats.includes(seatId)}
+                                                    onClick={() => selectSeat(seatId)}
+                                                    aria-label={`Seat ${seatId}`}
+                                                >
+                                                    <i className="fa-solid fa-chair"></i>
+                                                    <span>{seatId}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className='seat-legend'>
+                                    <span><i className='legend-dot available'></i>Available</span>
+                                    <span><i className='legend-dot selected'></i>Selected</span>
+                                    <span><i className='legend-dot booked'></i>Booked</span>
+                                </div>
+                            </div>
+                        ) : null}
+                    </section>
+
+                    <section className={`booking-panel ${ticketItem === "paySection" ? "is-open" : ""}`}>
+                        <div className='booking-panel-header'>
+                            <div>
+                                <p className='booking-kicker'>Step 3</p>
+                                <h3>Payment Details</h3>
+                            </div>
+                            {ticketItem === "paySection" ? <h3 className='payment-total'>${totalAmount}</h3> : null}
+                        </div>
+
+                        {ticketItem === "paySection" ? (
+                            <div className="booking-panel-body">
+                                <div className='reservation-confirmation'>
+                                    <div className='reservation-copy text-start'>
+                                        <p className='booking-kicker'>Local checkout</p>
+                                        <h4>Use card details for this booking</h4>
+                                        <p>CineSaga will confirm the booking after this demo card step. The project stores only masked/hash payment records for booked tickets.</p>
+                                    </div>
+                                    <div className='reservation-summary' aria-label='Booking summary'>
+                                        <div>
+                                            <span>Tickets</span>
+                                            <strong>{totalTickets}</strong>
+                                        </div>
+                                        <div>
+                                            <span>Seats</span>
+                                            <strong>{selectedSeats.join(", ")}</strong>
+                                        </div>
+                                        <div>
+                                            <span>Total</span>
+                                            <strong>${totalAmount}</strong>
+                                        </div>
+                                    </div>
+                                </div>
                                 <Formik
-                                    initialValues={{}}
+                                    initialValues={{
+                                        fullName: userFromRedux?.fullName || "",
+                                        email: userFromRedux?.email || "",
+                                        phone: profileContact.phone || ""
+                                    }}
+                                    enableReinitialize
                                     onSubmit={(values) => {
-                                        let  result = chairNumberList.join(" ");
+                                        if (selectedSeats.length !== totalTickets) {
+                                            toast.warning("Please choose seats for every ticket.", {
+                                                theme: "dark",
+                                                position: "top-center"
+                                            })
+                                            return
+                                        }
 
-                                        values.chairNumbers = result;
-                                        values.movieName = movieState?.movieName;
-                                        values.saloonName= movieState?.saloonName;
-                                        values.movieDay= movieState?.movieDay;
-                                        values.movieStartTime= movieState?.movieTime;
-                                        values.adultTicketCount = adultTicketNumber;
-                                        values.studentTicketCount = studentTicketNumber;
+                                            const ticketDetail = {
+                                                ...values,
+                                                cardHolderName: paymentCard.cardHolderName || values.fullName,
+                                                cardNumber: paymentCard.cardNumber,
+                                                cardExpiry: paymentCard.cardExpiry,
+                                                cardSecurityCode: paymentCard.cardSecurityCode,
+                                                paymentMode: "CARD_DETAILS_LOCAL",
+                                                chairNumbers: selectedSeats.join(" "),
+                                                movieId: movieState?.movieId || movieState?.id,
+                                            movieName: movieState?.movieName,
+                                            saloonName: movieState?.saloonName,
+                                            movieDay: movieState?.movieDay,
+                                            movieStartTime: movieState?.movieTime,
+                                            adultTicketCount: adultTicketNumber,
+                                            studentTicketCount: studentTicketNumber
+                                        }
 
-                                        paymentService.sendTicketDetail(values).then(() => {
+                                        paymentService.sendTicketDetail(ticketDetail).then((result) => {
+                                            sessionStorage.setItem("lastBooking", JSON.stringify(result.data))
                                             navigate("/paymentSuccess")
                                         }).catch((e) => toast.error(e.response?.data?.message || "Could not complete booking. Please try again.", {
                                             theme: "dark",
                                             position: "top-center"
                                         }))
                                     }}>
-                                    <Form className='row justify-content-center align-items-start'>
-                                        <div className='col-sm-12 col-md-6'>
-                                            <div className="imput-group form-floating has-validation mb-3">
-                                                <KaanKaplanTextInput name="fullName" type="text" className="form-control" id="fullName" placeholder="Full Name" required/>
+                                    <Form className='payment-grid'>
+                                        <div className='reservation-contact-fields'>
+                                            <div className="form-floating mb-3">
+                                                <KaanKaplanTextInput name="fullName" type="text" className="form-control" id="fullName" placeholder="Full Name" required />
                                                 <label htmlFor="fullName">Full Name</label>
                                             </div>
                                             <div className="form-floating mb-3">
-                                                <KaanKaplanTextInput name="email" type="email" className="form-control" id="email" placeholder="Email" required/>
+                                                <KaanKaplanTextInput name="email" type="email" className="form-control" id="email" placeholder="Email" required />
                                                 <label htmlFor="email">Email</label>
                                             </div>
                                             <div className="form-floating mb-3">
-                                                <KaanKaplanTextInput name="phone" type="tel" className="form-control" id="phone" placeholder="Optional"/>
-                                                <label htmlFor="phone">Indian Mobile Number Optional</label>
+                                                <KaanKaplanTextInput name="phone" type="tel" className="form-control" id="phone" placeholder="Phone" />
+                                                <label htmlFor="phone">Phone (optional)</label>
                                             </div>
-                                            
-                                           
                                         </div>
 
-                                        <div className='col-sm-12 col-md-6 mb-3'>
-                                            <div className="form-floating mb-3">
+                                        <div className='card-payment-panel'>
+                                            <div className='reservation-assurance-icon'>
+                                                <i className="fa-regular fa-credit-card"></i>
+                                            </div>
+                                            <div className='text-start'>
+                                                <h4>Card Details</h4>
+                                                <p>Use a saved demo card or enter card details for this local project checkout.</p>
+                                            </div>
+                                            {savedCards.length > 0 ? (
+                                                <div className='form-floating'>
+                                                    <select className='form-select' id='savedCardSelect' value={selectedSavedCardId}
+                                                        onChange={event => applySavedCard(event.target.value)}>
+                                                        <option value="">Enter a new card</option>
+                                                        {savedCards.map(card => (
+                                                            <option key={card.cardId} value={card.cardId}>
+                                                                {(card.nickname || card.cardBrand || "Card") + " - " + (card.maskedCardNumber || "")}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <label htmlFor='savedCardSelect'>Saved Card</label>
+                                                </div>
+                                            ) : null}
+                                            <div className="form-floating">
+                                                <input className="form-control" id="cardHolderName" placeholder='Card Holder Name'
+                                                    value={paymentCard.cardHolderName}
+                                                    onChange={(event) => updatePaymentCard("cardHolderName", event.target.value)} />
+                                                <label htmlFor="cardHolderName">Card Holder Name</label>
+                                            </div>
+                                            <div className="form-floating">
                                                 <Cleave className="form-control" id="floatingCardNumber" placeholder='Credit Card Number' required
-                                                options={{creditCard:true}} />
-                                                <label htmlFor="floatingCardNumber">Credit Card Number</label>
+                                                    value={paymentCard.cardNumber}
+                                                    onChange={(event) => updatePaymentCard("cardNumber", event.target.value)}
+                                                    options={{ creditCard: true }} />
+                                                <label htmlFor="floatingCardNumber">Card Number</label>
                                             </div>
                                             <div className='row'>
                                                 <div className='col-sm-6'>
-                                                    <div className="form-floating mb-3">
+                                                    <div className="form-floating">
                                                         <Cleave type="text" className="form-control" id="floatingCardLastDate" placeholder='Expiry Date' required
-                                                        options={{date:true, datePattern: ['m','y']}} />
-                                                        <label htmlFor="floatingCardLastDate">Expiry Date</label>
+                                                            value={paymentCard.cardExpiry}
+                                                            onChange={(event) => updatePaymentCard("cardExpiry", event.target.value)}
+                                                            options={{ date: true, datePattern: ['m', 'y'] }} />
+                                                        <label htmlFor="floatingCardLastDate">Expiry</label>
                                                     </div>
                                                 </div>
                                                 <div className='col-sm-6'>
-                                                    <div className="form-floating mb-3">
-                                                        <input type="text" className="form-control"  maxLength="3" size="3"  id="floatingSecurityNumber" placeholder="Security Code" required/>
-                                                        <label htmlFor="floatingSecurityNumber">CCV</label>
+                                                    <div className="form-floating">
+                                                        <input type="password" className="form-control" maxLength="4" id="floatingSecurityNumber" placeholder="Security Code" required
+                                                            value={paymentCard.cardSecurityCode}
+                                                            onChange={(event) => updatePaymentCard("cardSecurityCode", event.target.value.replace(/\D/g, ""))} />
+                                                        <label htmlFor="floatingSecurityNumber">CVV</label>
                                                     </div>
                                                 </div>
-                                                <p className='text-start'> <input className="form-check-input me-3" type="checkbox" value="" aria-label="Checkbox for following text input" required/>I have read and accept the pre-information terms and
-                                                the distance sales agreement.
-                                            </p>
                                             </div>
+                                            <label className='payment-terms'>
+                                                <input className="form-check-input me-3" type="checkbox" required />
+                                                I understand this is a test checkout and no real payment gateway will be charged.
+                                            </label>
                                         </div>
 
-                                        <hr />
-                                        <div className='text-end mt-1'>
-                                            <button type='submit' className='btn btn-dark col-3'>Pay</button>
+                                        <div className='payment-actions'>
+                                            <button type='button' className='btn btn-outline-dark' onClick={() => setTicketItem("placeSection")}>Back</button>
+                                            <button type='submit' className='btn btn-dark'>Pay & Confirm Ticket</button>
                                         </div>
                                     </Form>
                                 </Formik>
                             </div>
-                            : null}
-                            </div>
-                        </div>
-                    </div>
-
-
-
+                        ) : null}
+                    </section>
                 </div>
             </div>
 
-
+            <ToastContainer />
         </div>
-     
-        <ToastContainer />
-    </div>
-  )
+        )
+    )
 }
-

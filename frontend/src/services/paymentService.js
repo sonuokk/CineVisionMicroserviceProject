@@ -3,7 +3,7 @@ import { apiClient } from "./apiClient";
 export class PaymentService {
 
     sendTicketDetail(ticketDetail) {
-        return apiClient.post("/movie/payments/sendTicketDetail", ticketDetail);
+        return apiClient.post("/tickets/book", ticketDetail);
     }
 
     getBookedSeats(params) {

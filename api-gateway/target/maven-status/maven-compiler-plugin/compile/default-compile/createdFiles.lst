@@ -1,2 +1,2 @@
-com\kaankaplan\apigateway\ApiGatewayApplication.class
-com\kaankaplan\apigateway\config\SecurityConfig.class
+com\doffeii\apigateway\ApiGatewayApplication.class
+com\doffeii\apigateway\config\SecurityConfig.class

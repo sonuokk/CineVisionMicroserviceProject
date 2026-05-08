@@ -1,0 +1,119 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CineSaga: Start Eureka Server",
+      "type": "shell",
+      "command": "mvn -pl eureka-server spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "group": "backend",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Start User Service",
+      "type": "shell",
+      "command": "mvn -pl userService spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "group": "backend",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Start Movie Service",
+      "type": "shell",
+      "command": "mvn -pl movieService spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "group": "backend",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Start API Gateway",
+      "type": "shell",
+      "command": "mvn -pl api-gateway spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "group": "backend",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Start Frontend",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend",
+        "env": {
+          "BROWSER": "none"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "group": "frontend",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Seed Mongo Demo Data",
+      "type": "shell",
+      "command": "mongosh mongodb://localhost:27017/cinesaga --quiet tools/seed-mongo-demo.js",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+    {
+      "label": "CineSaga: Start Backend Services",
+      "dependsOn": [
+        "CineSaga: Start Eureka Server",
+        "CineSaga: Start User Service",
+        "CineSaga: Start Movie Service",
+        "CineSaga: Start API Gateway"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "CineSaga: Start Full App",
+      "dependsOn": [
+        "CineSaga: Start Eureka Server",
+        "CineSaga: Start User Service",
+        "CineSaga: Start Movie Service",
+        "CineSaga: Start API Gateway",
+        "CineSaga: Start Frontend"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,164 +1,136 @@
-import React, { useEffect, useState } from 'react'
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination } from "swiper";
-import { MovieService } from '../services/movieService';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Swiper, SwiperSlide } from "swiper/react"
+import "swiper/css"
+import "swiper/css/pagination"
+import { Pagination } from "swiper"
+import { MovieService } from '../services/movieService'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { demoMovies } from '../data/demoMovies'
 
 export default function MainPage() {
- 
-    const movieService = new MovieService();
 
-    const navigate = useNavigate();
-    const [movies, setMovies] = useState([]);
+    const movieService = useMemo(() => new MovieService(), [])
+    const navigate = useNavigate()
+    const userFromRedux = useSelector(state => state.user.payload)
+    const [movies, setMovies] = useState([])
+    const [activeFilter, setActiveFilter] = useState("now")
 
-    async function getMovies(isComingSoon) {
-        if (isComingSoon) {
-            await movieService.getAllComingSoonMovies().then(result => setMovies(result.data))
-        }else {
-            await movieService.getAllDisplayingMovies().then(result => setMovies(result.data))
+    const getMovies = useCallback(async (filter = "now") => {
+        setActiveFilter(filter)
+        try {
+            const result = filter === "soon"
+                ? await movieService.getAllComingSoonMovies()
+                : await movieService.getAllDisplayingMovies()
+            const apiMovies = Array.isArray(result.data) ? result.data : []
+            setMovies(apiMovies.length > 0 ? apiMovies : demoMovies[filter])
+        } catch (error) {
+            setMovies(demoMovies[filter])
         }
+    }, [movieService])
+
+    function showMovies(filter) {
+        getMovies(filter)
+        setTimeout(() => {
+            document.getElementById("movies")?.scrollIntoView({ behavior: "smooth", block: "start" })
+        }, 50)
+    }
+
+    function openLoginModal() {
+        document.querySelector('[data-bs-target="#loginModal"]')?.click()
+    }
+
+    function startBooking(event, movieId) {
+        event.stopPropagation()
+        if (!userFromRedux) {
+            sessionStorage.setItem("cineSagaPendingPath", "/movie/" + movieId)
+            openLoginModal()
+            return
+        }
+        navigate("/movie/" + movieId)
     }
 
     useEffect(() => {
-      getMovies(false);
-    }, [])
-    
+        const filterFromHash = () => {
+            const filter = window.location.hash === "#coming-soon" ? "soon" : "now"
+            getMovies(filter)
+        }
+        const filterFromFooter = (event) => {
+            getMovies(event.detail?.filter || "now")
+        }
 
-  return (
-    <div>
+        filterFromHash()
+        window.addEventListener("hashchange", filterFromHash)
+        window.addEventListener("cineSagaMovieFilter", filterFromFooter)
 
-    <body id="page-top">
-    <section>
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-            <header class="masthead text-center text-white">
-                <div class="masthead-content">
-                    <div class="container px-5">
-                        <h1 class="masthead-heading mb-0">CineSaga</h1>
-                        <h2 class="masthead-subheading mb-0">
-                            Your Movie Night Starts Here
-                        </h2>
-                        <h2 class="mt-3">
-                            Book the latest blockbusters at CineSaga cinemas
-                        </h2>
-                        <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#scroll">Movies</a>
+        return () => {
+            window.removeEventListener("hashchange", filterFromHash)
+            window.removeEventListener("cineSagaMovieFilter", filterFromFooter)
+        }
+    }, [getMovies])
+
+    return (
+        <main className='home-page'>
+            <section className='home-hero'>
+                <div className='home-hero-content container'>
+                    <p className='booking-kicker'>CineSaga Cinemas</p>
+                    <h1>CineSaga</h1>
+                    <p className='home-hero-copy'>A clean, fast movie booking experience for showtimes, seats, payments, and tickets.</p>
+                    <div className='home-hero-actions'>
+                        <button type='button' className='btn btn-primary btn-lg' onClick={() => showMovies("now")}>Now Showing</button>
+                        <button type='button' className='btn btn-outline-light btn-lg' onClick={() => showMovies("soon")}>Coming Soon</button>
+                    </div>
+                    <div className='home-hero-stats'>
+                        <span><strong>{movies.length || 12}</strong> Movies</span>
+                        <span><strong>6</strong> Cities</span>
+                        <span><strong>Fast</strong> Checkout</span>
                     </div>
                 </div>
-                <div class="bg-circle-1 bg-circle"></div>
-                <div class="bg-circle-2 bg-circle"></div>
-                <div class="bg-circle-3 bg-circle"></div>
-                <div class="bg-circle-4 bg-circle"></div>
-            </header>
-          
-            </div>
-        {/* Second slide */}
+            </section>
 
-                <div class="topgun-bg carousel-item">
-
-                </div>
-
-        {/* Third slide */}
-            <div class="assasin-bg carousel-item">
-            
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-        </div>
-    </section>
-
-
-    {/* Section - 2 Navs & Tabs */}
-
-    <section className='py-5'>
-        <div className='d-flex justify-content-center'>
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" 
-                        data-bs-target="#pills-home" type="button"
-                        role="tab" aria-controls="pills-home" aria-selected="true"
-                        onClick={() => {
-                            getMovies(false)
-                        }}>Now Showing</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
-                    data-bs-target="#pills-profile"
-                    type="button" role="tab" aria-controls="pills-profile" aria-selected="false"
-                    onClick={() => {
-                        getMovies(true)
-                    }}>Coming Soon</button>
-                </li>
-            </ul>
-        </div>
-    </section>
-
-    {/* Section - 3 Movie Carrousel */}
-
-    <section className='mb-5'>
-        <Swiper
-            slidesPerView={1}
-            spaceBetween={0}
-            breakpoints={{
-                576: { slidesPerView: 2 },
-                768: { slidesPerView: 3 },
-                1200: { slidesPerView: 5 }
-            }}
-            pagination={{
-                clickable: true,
-            }}
-            modules={[Pagination]}
-            className="mySwiper movie-slider"
-        >
-            {movies.map(movie => (
-                <SwiperSlide key={movie.movieId}>
-                    <div className='slider-item' onClick={()=> navigate("/movie/" + movie.movieId)}>
-                        <div className='slider-item-caption d-flex align-items-end justify-content-center h-100 w-100'>
-                            <div class="d-flex align-items-center flex-column mb-3" style={{height: "20rem"}}>
-                                <div class="mb-auto pt-5 text-white"><h3> {movie.movieName} </h3></div>
-                                <div class="p-2 d-grid gap-2">
-                                    <a class="slider-button btn btn-light btn-md rounded d-none d-sm-block"
-                                        onClick={()=> navigate("/movie/" + movie.movieId)}>
-                                        <strong>Review </strong>
-                                    </a>
-                                    <a class="slider-button btn btn-light btn-md rounded d-none d-sm-block"
-                                        onClick={()=> navigate("/movie/" + movie.movieId)}>
-                                        <strong> Book Tickets </strong>
-                                    </a>
-                                </div>
-                            
-                            </div>
+            <section id='movies' className='movie-showcase'>
+                <div className='container'>
+                    <div className='showcase-header'>
+                        <div className='text-start'>
+                            <p className='booking-kicker'>Explore</p>
+                            <h2>{activeFilter === "soon" ? "Coming Soon" : "Now Showing"}</h2>
                         </div>
-                        <img src={movie.movieImageUrl}
-                            class="img-fluid mx-2" alt="..."/>
+                        <div className='filter-pills' role='tablist' aria-label='Movie filters'>
+                            <button type='button' className={activeFilter === "now" ? "active" : ""} onClick={() => getMovies("now")}>Now Showing</button>
+                            <button type='button' className={activeFilter === "soon" ? "active" : ""} onClick={() => getMovies("soon")}>Coming Soon</button>
+                        </div>
                     </div>
-                </SwiperSlide>
-            ))}
-            
+                </div>
 
-        </Swiper>
-
-   
-    </section>
-
-  
-        
-    </body>
-    </div>
-  )
+                <Swiper
+                    slidesPerView={1}
+                    spaceBetween={18}
+                    breakpoints={{
+                        576: { slidesPerView: 2 },
+                        768: { slidesPerView: 3 },
+                        1200: { slidesPerView: 5 }
+                    }}
+                    pagination={{
+                        clickable: true,
+                    }}
+                    modules={[Pagination]}
+                    className="mySwiper movie-slider modern-movie-slider"
+                >
+                    {movies.map(movie => (
+                        <SwiperSlide key={movie.movieId || movie.movieName}>
+                            <article className='movie-card' onClick={() => navigate("/movie/" + movie.movieId)}>
+                                <img src={movie.movieImageUrl || "/clapboard.png"} alt={movie.movieName} />
+                                <div className='movie-card-overlay'>
+                                    <h3>{movie.movieName}</h3>
+                                    <button type='button' className='btn btn-light btn-sm' onClick={(event) => startBooking(event, movie.movieId)}>
+                                        Book Tickets
+                                    </button>
+                                </div>
+                            </article>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </section>
+        </main>
+    )
 }
-

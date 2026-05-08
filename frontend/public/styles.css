@@ -11941,3 +11941,3321 @@ body {
     padding-right: 1rem !important;
   }
 }
+
+/* Modern CineSaga home, booking, and footer */
+.home-page {
+  background: #f5f2ea;
+}
+
+.home-hero {
+  position: relative;
+  min-height: 620px;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  color: #fff;
+  background: #080808;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(5, 5, 5, 0.92) 0%, rgba(5, 5, 5, 0.72) 44%, rgba(177, 18, 38, 0.28) 100%);
+}
+
+.home-hero-media {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  opacity: 0.72;
+}
+
+.home-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 9rem;
+  padding-bottom: 5rem;
+  text-align: left;
+}
+
+.home-hero-content h1 {
+  margin: 0;
+  color: #f7d36b;
+  font-size: 4.75rem;
+  text-transform: uppercase;
+}
+
+.home-hero-copy {
+  max-width: 620px;
+  margin: 1.25rem 0 0;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.home-hero-actions,
+.home-hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.home-hero-stats span {
+  min-width: 130px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(247, 211, 107, 0.34);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.home-hero-stats strong {
+  display: block;
+  color: #f7d36b;
+}
+
+.movie-showcase {
+  padding: 4rem 0 5rem;
+}
+
+.showcase-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-pills {
+  display: inline-flex;
+  gap: 0.4rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.08);
+}
+
+.filter-pills button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  color: #181818;
+  background: transparent;
+  font-weight: 700;
+}
+
+.filter-pills button.active {
+  color: #fff;
+  background: #b11226;
+}
+
+.modern-movie-slider {
+  padding: 0 1.25rem 3rem;
+}
+
+.movie-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 390px;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background: #141414;
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
+}
+
+.movie-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 390px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  transition: transform 0.22s ease;
+}
+
+.movie-card:hover img {
+  transform: scale(1.04);
+}
+
+.movie-card-overlay {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  color: #fff;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.92));
+}
+
+.movie-card-overlay h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.booking-shell {
+  min-height: 100vh;
+  height: auto;
+  padding-top: 5.5rem;
+  color: #181818;
+  background: #f5f2ea;
+}
+
+.booking-hero {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.36fr) minmax(0, 0.64fr);
+  min-height: calc(100vh - 5.5rem);
+}
+
+.booking-poster-panel {
+  position: sticky;
+  top: 5.5rem;
+  min-height: calc(100vh - 5.5rem);
+  overflow: hidden;
+  color: #fff;
+  background: #080808;
+}
+
+.booking-poster-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px);
+  transform: scale(1.08);
+  opacity: 0.48;
+}
+
+.booking-poster-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.9));
+}
+
+.booking-poster-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.5rem;
+  align-content: center;
+  min-height: inherit;
+  padding: 2rem;
+}
+
+.booking-poster {
+  width: min(260px, 72%);
+  border-radius: 0.5rem;
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.42);
+}
+
+.booking-kicker {
+  margin: 0 0 0.35rem;
+  color: #b11226;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14rem;
+  text-transform: uppercase;
+}
+
+.booking-poster-content .booking-kicker,
+.home-hero-content .booking-kicker {
+  color: #f7d36b;
+}
+
+.booking-flow {
+  padding: 2rem clamp(1rem, 4vw, 4rem) 4rem;
+}
+
+.booking-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.booking-step {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: #777;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.booking-step span {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #777;
+  background: #ece8dd;
+  font-weight: 800;
+}
+
+.booking-step.active {
+  color: #181818;
+  border-color: rgba(177, 18, 38, 0.32);
+}
+
+.booking-step.active span {
+  color: #fff;
+  background: #b11226;
+}
+
+.booking-panel {
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.08);
+}
+
+.booking-panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.25rem;
+}
+
+.booking-panel-header h3,
+.payment-total {
+  margin: 0;
+}
+
+.booking-panel-body {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.booking-help {
+  max-width: 640px;
+  color: #5d5d5d;
+  text-align: left;
+}
+
+.ticket-type-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #f7f3ea;
+  text-align: left;
+}
+
+.ticket-type-row span {
+  display: block;
+  color: #666;
+}
+
+.ticket-counter {
+  display: inline-grid;
+  grid-template-columns: 2.5rem 2.5rem 2.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #181818;
+}
+
+.booking-total {
+  margin: 1rem 0 0;
+  text-align: right;
+  font-size: 1.25rem;
+}
+
+.seat-summary,
+.seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.seat-summary span,
+.seat-legend span {
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: #f7f3ea;
+  font-weight: 700;
+}
+
+.screen-indicator {
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+  padding: 0.35rem;
+  color: #5d5d5d;
+  border-top: 5px solid #181818;
+  border-radius: 50% 50% 0 0;
+}
+
+.seat-map {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+}
+
+.seat-row {
+  display: grid;
+  grid-template-columns: 2rem repeat(8, 3.4rem);
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.seat-row-label {
+  color: #777;
+  font-weight: 800;
+}
+
+.seat-button {
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 1px solid #d6d1c7;
+  border-radius: 0.45rem;
+  color: #181818;
+  background: #fff;
+  transition: transform 0.14s ease, background-color 0.14s ease, color 0.14s ease;
+}
+
+.seat-button span {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.seat-button:hover {
+  transform: translateY(-2px);
+  border-color: #d8a31a;
+}
+
+.seat-button.is-selected {
+  color: #101010;
+  background: #d8a31a;
+  border-color: #d8a31a;
+}
+
+.seat-button.is-booked,
+.seat-button.is-booked:hover {
+  color: #fff;
+  background: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #d6d1c7;
+}
+
+.legend-dot.selected {
+  background: #d8a31a;
+  border-color: #d8a31a;
+}
+
+.legend-dot.booked {
+  background: #6c757d;
+  border-color: #6c757d;
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.dummy-payment-note {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(216, 163, 26, 0.42);
+  border-radius: 0.5rem;
+  background: #fff8df;
+  color: #3f3420;
+}
+
+.reservation-confirmation {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ece8dd;
+}
+
+.reservation-copy h4,
+.reservation-assurance h4,
+.card-payment-panel h4 {
+  margin: 0 0 0.45rem;
+}
+
+.reservation-copy p:last-child,
+.reservation-assurance p,
+.card-payment-panel p {
+  margin-bottom: 0;
+  color: #5d5d5d;
+}
+
+.reservation-summary {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.reservation-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ece8dd;
+  text-align: left;
+}
+
+.reservation-summary div:last-child {
+  border-bottom: 0;
+}
+
+.reservation-summary span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.reservation-summary strong {
+  text-align: right;
+}
+
+.reservation-contact-fields,
+.reservation-assurance,
+.card-payment-panel {
+  min-width: 0;
+}
+
+.reservation-assurance,
+.card-payment-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.reservation-assurance-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #101010;
+  background: #d8a31a;
+}
+
+.profile-page {
+  min-height: 100vh;
+}
+
+.profile-container {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.profile-header {
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+}
+
+.profile-header h2 {
+  margin: 0;
+  color: #f7d36b;
+}
+
+.profile-header p:last-child {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 1rem;
+}
+
+.profile-panel,
+.saved-card-editor {
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.08);
+}
+
+.profile-panel-header,
+.saved-card-editor-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.profile-panel-header h3 {
+  margin: 0;
+}
+
+.saved-card-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-muted {
+  margin: 0;
+  color: #666;
+}
+
+.profile-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.payment-terms {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+  color: #4f4f4f;
+}
+
+.payment-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid #ece8dd;
+  padding-top: 1rem;
+}
+
+.site-footer {
+  padding: 3rem 0 1.5rem;
+  color: #fff;
+  background: #080808;
+  border-top: 1px solid rgba(216, 163, 26, 0.32);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(2, minmax(160px, 0.8fr));
+  gap: 2rem;
+}
+
+.footer-brand h3 {
+  color: #f7d36b;
+  text-transform: uppercase;
+}
+
+.footer-brand p {
+  max-width: 430px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.footer-links {
+  display: grid;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.footer-links h4 {
+  color: #f7d36b;
+  font-size: 1rem;
+}
+
+.footer-links button {
+  width: fit-content;
+  border: 0;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.78);
+  background: transparent;
+  text-align: left;
+}
+
+.footer-links button:hover {
+  color: #f7d36b;
+}
+
+.footer-copy {
+  margin: 2rem 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  text-align: center;
+}
+
+@media (max-width: 991.98px) {
+  .home-hero-content h1 {
+    font-size: 3.5rem;
+  }
+
+  .booking-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-poster-panel {
+    position: relative;
+    top: auto;
+    min-height: auto;
+  }
+
+  .booking-poster-content {
+    min-height: auto;
+    grid-template-columns: 150px 1fr;
+    align-items: center;
+  }
+
+  .booking-poster {
+    width: 150px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-hero {
+    min-height: 560px;
+  }
+
+  .home-hero-media {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero-media img + img {
+    display: none;
+  }
+
+  .home-hero-content h1 {
+    font-size: 2.9rem;
+  }
+
+  .showcase-header,
+  .booking-panel-header,
+  .ticket-type-row,
+  .payment-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filter-pills,
+  .payment-actions .btn {
+    width: 100%;
+  }
+
+  .filter-pills button {
+    flex: 1;
+  }
+
+  .booking-poster-content {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-stepper,
+  .payment-grid,
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-confirmation {
+    grid-template-columns: 1fr;
+  }
+
+  .seat-row {
+    grid-template-columns: 1.5rem repeat(8, 2.8rem);
+  }
+
+  .seat-button {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+}
+
+/* Full glassmorphism refresh */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-strong: rgba(255, 255, 255, 0.2);
+  --glass-dark: rgba(7, 9, 14, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  --glass-gold: #f7d36b;
+  --glass-red: #d7193f;
+  --glass-ink: #f8fafc;
+}
+
+html,
+body,
+.App {
+  min-height: 100%;
+  background:
+    linear-gradient(135deg, #03050a 0%, #111827 42%, #4b0f1d 100%);
+}
+
+body {
+  color: var(--glass-ink);
+}
+
+.navbar-custom {
+  background: rgba(5, 7, 12, 0.58);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+.navbar-custom .navbar-brand {
+  color: var(--glass-gold);
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link:hover {
+  color: #fff;
+}
+
+.home-page,
+.movie-showcase,
+.booking-shell {
+  background: transparent;
+}
+
+.home-hero {
+  background: #03050a;
+}
+
+.home-hero::after {
+  background:
+    linear-gradient(90deg, rgba(3, 5, 10, 0.84) 0%, rgba(3, 5, 10, 0.56) 52%, rgba(215, 25, 63, 0.22) 100%),
+    linear-gradient(180deg, rgba(3, 5, 10, 0.15) 0%, rgba(3, 5, 10, 0.9) 100%);
+}
+
+.home-hero-media {
+  opacity: 0.62;
+}
+
+.home-hero-content h1,
+.footer-brand h3,
+.booking-poster-content h2 {
+  color: var(--glass-gold);
+  text-shadow: 0 12px 42px rgba(0, 0, 0, 0.5);
+}
+
+.home-hero-copy {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.home-hero-actions .btn,
+.payment-actions .btn,
+.booking-panel-header .btn,
+.select-saloon-button,
+.saloonTime-btn,
+.comment-btn {
+  border-radius: 999px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+}
+
+.home-hero-actions .btn-primary,
+.btn-primary,
+.booking-panel-header .btn-dark,
+.payment-actions .btn-dark,
+.auth-required-panel .btn-dark {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(215, 25, 63, 0.76);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.home-hero-actions .btn-outline-light,
+.btn-outline-dark,
+.payment-actions .btn-outline-dark,
+.booking-panel-header .btn-outline-dark {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.home-hero-stats span,
+.filter-pills,
+.booking-step,
+.booking-panel,
+.ticket-type-row,
+.seat-summary span,
+.seat-legend span,
+.dummy-payment-note,
+.reservation-assurance-icon,
+.profile-panel,
+.saved-card-editor,
+.site-footer,
+.offcanvas-feature-card,
+.offcanvas-list-panel,
+.modal-content,
+#ticketBuy .container,
+#ticketDetailSection .container.bg-primary,
+.auth-required-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+.home-hero-stats span,
+.booking-step,
+.booking-panel,
+.ticket-type-row,
+.seat-summary span,
+.seat-legend span,
+.dummy-payment-note,
+.reservation-copy,
+.reservation-summary,
+.reservation-assurance,
+.card-payment-panel,
+.profile-panel,
+.saved-card-editor,
+.modal-content,
+.auth-required-panel {
+  color: #fff;
+}
+
+.filter-pills {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.filter-pills button {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.filter-pills button.active {
+  color: #081018;
+  background: rgba(247, 211, 107, 0.92);
+}
+
+.showcase-header h2,
+.showcase-header .booking-kicker,
+.movie-showcase h2 {
+  color: #fff;
+}
+
+.modern-movie-slider {
+  padding-top: 0.5rem;
+}
+
+.movie-card {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.movie-card-overlay {
+  background: rgba(5, 7, 12, 0.48);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+.movie-card-overlay .btn,
+.slider-button {
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  color: #081018;
+  background: rgba(247, 211, 107, 0.88);
+}
+
+.booking-shell {
+  background:
+    linear-gradient(120deg, rgba(3, 5, 10, 0.94), rgba(17, 24, 39, 0.88)),
+    url("/ui_images/payment_page.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.booking-poster-panel {
+  background: rgba(5, 7, 12, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+
+.booking-poster-panel::after {
+  background: linear-gradient(180deg, rgba(5, 7, 12, 0.18), rgba(5, 7, 12, 0.78));
+}
+
+.booking-poster {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.booking-kicker {
+  color: var(--glass-gold);
+}
+
+.booking-help,
+.ticket-type-row span,
+.seat-row-label,
+.payment-terms {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.booking-step span {
+  color: #081018;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.booking-step.active span,
+.icon-button {
+  color: #081018;
+  background: rgba(247, 211, 107, 0.92);
+}
+
+.booking-total,
+.payment-total {
+  color: var(--glass-gold);
+}
+
+.screen-indicator {
+  color: rgba(255, 255, 255, 0.72);
+  border-top-color: rgba(247, 211, 107, 0.86);
+}
+
+.seat-button {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.seat-button:hover {
+  border-color: rgba(247, 211, 107, 0.8);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.seat-button.is-selected {
+  color: #081018;
+  background: rgba(247, 211, 107, 0.9);
+  border-color: rgba(247, 211, 107, 0.95);
+}
+
+.seat-button.is-booked,
+.seat-button.is-booked:hover {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(108, 117, 125, 0.58);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.form-control,
+.form-select,
+textarea {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(247, 211, 107, 0.78);
+  box-shadow: 0 0 0 0.2rem rgba(247, 211, 107, 0.16);
+}
+
+.form-floating > label {
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.dummy-payment-note {
+  background: rgba(247, 211, 107, 0.16);
+  border-color: rgba(247, 211, 107, 0.38);
+}
+
+.reservation-confirmation {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.reservation-copy p:last-child,
+.reservation-assurance p,
+.card-payment-panel p,
+.reservation-summary span {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.reservation-summary div {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.reservation-summary strong {
+  color: #fff;
+}
+
+.reservation-assurance,
+.card-payment-panel {
+  padding-left: 0.5rem;
+}
+
+.reservation-assurance-icon {
+  color: #081018;
+  background: rgba(247, 211, 107, 0.92);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+}
+
+.auth-required-shell {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 7rem 1rem 3rem;
+}
+
+.auth-required-panel {
+  width: min(560px, 100%);
+  padding: 2rem;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.detail-bg::before {
+  background:
+    linear-gradient(90deg, rgba(3, 5, 10, 0.82), rgba(3, 5, 10, 0.46)),
+    linear-gradient(180deg, rgba(3, 5, 10, 0.08), rgba(3, 5, 10, 0.86));
+}
+
+.detail-poster,
+.trailer-frame,
+.offcanvas-poster {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+}
+
+.movie-detail-tabs .detail-page-btn,
+.select-saloon-button,
+.saloonTime-btn {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn:hover,
+.select-saloon-button:hover,
+.saloonTime-btn:hover {
+  color: #081018;
+  background: rgba(247, 211, 107, 0.9);
+  border-color: rgba(247, 211, 107, 0.95);
+}
+
+#ticketBuy .container,
+#ticketDetailSection .container.bg-primary {
+  border-radius: 0.75rem !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.site-footer {
+  background: rgba(5, 7, 12, 0.72);
+}
+
+.footer-links button,
+.footer-brand p,
+.footer-copy {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.modal-content {
+  background: rgba(9, 13, 22, 0.84);
+}
+
+.modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.14);
+}
+
+.nav-action-button {
+  border: 0;
+  background: transparent;
+}
+
+.nav-action-button:focus {
+  box-shadow: none;
+}
+
+/* Premium monochrome skin and motion tuning */
+:root {
+  --ui-black: #050505;
+  --ui-black-soft: #0d0d0f;
+  --ui-panel: rgba(18, 18, 20, 0.78);
+  --ui-panel-soft: rgba(255, 255, 255, 0.075);
+  --ui-border: rgba(255, 255, 255, 0.14);
+  --ui-border-strong: rgba(255, 255, 255, 0.28);
+  --ui-text: #f5f5f7;
+  --ui-muted: rgba(245, 245, 247, 0.66);
+  --ui-accent: #f5f5f7;
+  --ui-shadow: 0 24px 80px rgba(0, 0, 0, 0.44);
+  --motion-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ui: 220ms;
+  --motion-fast: 150ms;
+  --motion-panel: 320ms;
+  --glass-bg: var(--ui-panel);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
+  --glass-dark: rgba(5, 5, 5, 0.72);
+  --glass-border: var(--ui-border);
+  --glass-shadow: var(--ui-shadow);
+  --glass-gold: var(--ui-accent);
+  --glass-red: var(--ui-black-soft);
+  --glass-ink: var(--ui-text);
+  --bs-primary: var(--ui-black-soft);
+  --bs-secondary: #2a2a2d;
+}
+
+html,
+body,
+.App {
+  color: var(--ui-text);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.09), transparent 34rem),
+    linear-gradient(180deg, #000 0%, #09090a 42%, #000 100%) !important;
+}
+
+body {
+  background-color: #000 !important;
+}
+
+.home-page,
+.movie-showcase,
+.booking-shell,
+.profile-page {
+  background: transparent !important;
+}
+
+.navbar-custom,
+.site-footer,
+.modal-content {
+  background: rgba(5, 5, 5, 0.82) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.38);
+}
+
+.navbar-custom .navbar-brand,
+.home-hero-content h1,
+.footer-brand h3,
+.booking-poster-content h2,
+.profile-header h2,
+.booking-total,
+.payment-total {
+  color: var(--ui-text) !important;
+  text-shadow: 0 18px 60px rgba(0, 0, 0, 0.56);
+}
+
+.booking-kicker,
+.showcase-header .booking-kicker,
+.text-gold {
+  color: rgba(245, 245, 247, 0.68) !important;
+}
+
+.home-hero::after {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 55%, rgba(255, 255, 255, 0.05) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.94) 100%) !important;
+}
+
+.booking-shell {
+  background:
+    linear-gradient(120deg, rgba(0, 0, 0, 0.94), rgba(13, 13, 15, 0.88)),
+    url("/ui_images/payment_page.jpg") !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+.off-canvas-movie {
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.96), rgba(18, 18, 20, 0.94)) !important;
+}
+
+.off-canvas-movie {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: min(82vh, 720px) !important;
+  padding: 0 !important;
+  color: var(--ui-text) !important;
+  background:
+    radial-gradient(circle at 30% 0%, rgba(255, 255, 255, 0.12), transparent 34rem),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(12, 12, 14, 0.96)) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.58) !important;
+  backdrop-filter: blur(28px) saturate(145%);
+  -webkit-backdrop-filter: blur(28px) saturate(145%);
+}
+
+.movie-sheet-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 3vw, 3rem) !important;
+  color: var(--ui-text) !important;
+  background: rgba(5, 5, 5, 0.82);
+  border-bottom: 1px solid var(--ui-border);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+
+.movie-sheet-header .offcanvas-title {
+  color: var(--ui-text);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.movie-sheet-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 3rem;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 999px;
+  color: var(--ui-text);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  transition: transform var(--motion-fast) var(--motion-premium), background-color var(--motion-fast) var(--motion-premium), border-color var(--motion-fast) var(--motion-premium);
+}
+
+.movie-sheet-close:hover,
+.movie-sheet-close:focus {
+  color: #000;
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  transform: translateY(-1px);
+}
+
+.off-canvas-movie .offcanvas-body {
+  max-height: calc(min(82vh, 720px) - 76px);
+  padding: 1.25rem clamp(1rem, 3vw, 3rem) 2rem !important;
+  overflow-y: auto;
+}
+
+.off-canvas-movie .container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.off-canvas-movie .offcanvas-feature-card,
+.off-canvas-movie .offcanvas-list-panel {
+  min-height: 100%;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.065) !important;
+  border: 1px solid var(--ui-border) !important;
+  box-shadow: var(--ui-shadow) !important;
+}
+
+.off-canvas-movie .offcanvas-list-panel h3,
+.off-canvas-movie .offcanvas-feature-card h3 {
+  color: var(--ui-text);
+}
+
+.off-canvas-movie .offcanvas-poster {
+  border-radius: 0.75rem;
+}
+
+.off-canvas-movie .nav-movie-p {
+  color: rgba(245, 245, 247, 0.84) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid transparent !important;
+  border-radius: 0.75rem;
+}
+
+.off-canvas-movie .nav-movie-p:hover,
+.off-canvas-movie .nav-movie-p:focus {
+  color: #000 !important;
+  background: var(--ui-accent) !important;
+  border-color: var(--ui-accent) !important;
+  transform: translateX(4px);
+}
+
+.movie-sheet-link {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  border: 0;
+  padding: 0.35rem 0;
+  color: var(--ui-text);
+  background: transparent;
+  text-decoration: none;
+  transition: transform var(--motion-fast) var(--motion-premium), opacity var(--motion-fast) var(--motion-premium);
+}
+
+.movie-sheet-link:hover,
+.movie-sheet-link:focus {
+  opacity: 0.72;
+  transform: translateY(-1px);
+}
+
+.home-hero-stats span,
+.filter-pills,
+.booking-step,
+.booking-panel,
+.ticket-type-row,
+.seat-summary span,
+.seat-legend span,
+.dummy-payment-note,
+.reservation-assurance-icon,
+.profile-panel,
+.saved-card-editor,
+.offcanvas-feature-card,
+.offcanvas-list-panel,
+#ticketBuy .container,
+#ticketDetailSection .container.bg-primary,
+.auth-required-panel,
+.movie-card,
+.movie-card-overlay {
+  color: var(--ui-text) !important;
+  background: var(--ui-panel) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: var(--ui-shadow) !important;
+  backdrop-filter: blur(26px) saturate(145%);
+  -webkit-backdrop-filter: blur(26px) saturate(145%);
+}
+
+.bg-primary,
+.btn-primary,
+.btn-dark,
+.booking-panel-header .btn-dark,
+.payment-actions .btn-dark,
+.auth-required-panel .btn-dark {
+  color: var(--ui-black) !important;
+  background: var(--ui-accent) !important;
+  border-color: var(--ui-accent) !important;
+}
+
+.btn-outline-dark,
+.btn-outline-light,
+.payment-actions .btn-outline-dark,
+.booking-panel-header .btn-outline-dark,
+.select-saloon-button,
+.saloonTime-btn,
+.movie-detail-tabs .detail-page-btn {
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: var(--ui-border) !important;
+}
+
+.btn-primary:hover,
+.btn-dark:hover,
+.booking-panel-header .btn-dark:hover,
+.payment-actions .btn-dark:hover,
+.movie-card-overlay .btn:hover,
+.slider-button:hover {
+  color: var(--ui-text) !important;
+  background: #000 !important;
+  border-color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.filter-pills {
+  padding: 0.32rem;
+}
+
+.filter-pills button {
+  color: var(--ui-muted) !important;
+}
+
+.filter-pills button.active,
+.movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn:hover,
+.select-saloon-button:hover,
+.saloonTime-btn:hover,
+.seat-button.is-selected,
+.booking-step.active span,
+.icon-button,
+.reservation-assurance-icon {
+  color: var(--ui-black) !important;
+  background: var(--ui-accent) !important;
+  border-color: var(--ui-accent) !important;
+}
+
+.booking-step.active {
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border-strong) !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+}
+
+.booking-step span {
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.booking-help,
+.ticket-type-row span,
+.seat-row-label,
+.payment-terms,
+.profile-muted,
+.profile-header p:last-child,
+.reservation-copy p:last-child,
+.reservation-assurance p,
+.card-payment-panel p,
+.reservation-summary span,
+.footer-links button,
+.footer-brand p,
+.footer-copy,
+.home-hero-copy {
+  color: var(--ui-muted) !important;
+}
+
+.screen-indicator {
+  color: var(--ui-muted) !important;
+  border-top-color: rgba(245, 245, 247, 0.76) !important;
+}
+
+.seat-button,
+.form-control,
+.form-select,
+textarea {
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border-color: var(--ui-border) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  color: var(--ui-text) !important;
+  background: rgba(255, 255, 255, 0.11) !important;
+  border-color: rgba(245, 245, 247, 0.76) !important;
+  box-shadow: 0 0 0 0.18rem rgba(245, 245, 247, 0.13) !important;
+}
+
+.detail-bg::before,
+.booking-poster-panel::after {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.42)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.9)) !important;
+}
+
+.movie-detail-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+.movie-detail-tabs .detail-page-btn {
+  position: relative;
+  min-height: 3rem;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+
+.btn,
+.nav-link,
+.nav-action-button,
+.filter-pills button,
+.movie-detail-tabs .detail-page-btn,
+.movie-card,
+.movie-card img,
+.movie-card-overlay,
+.slider-button,
+.booking-panel,
+.booking-panel-body,
+.booking-step,
+.seat-button,
+.icon-button,
+.form-control,
+.form-select,
+.profile-panel,
+.saved-card-editor,
+.offcanvas-feature-card,
+.offcanvas-list-panel {
+  transition-property: transform, opacity, color, background-color, border-color, box-shadow, filter;
+  transition-duration: var(--motion-ui);
+  transition-delay: 0s;
+  transition-timing-function: var(--motion-premium);
+}
+
+.btn:hover,
+.nav-link:hover,
+.nav-action-button:hover,
+.filter-pills button:hover,
+.movie-detail-tabs .detail-page-btn:hover,
+.select-saloon-button:hover,
+.saloonTime-btn:hover,
+.icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+}
+
+.movie-card:hover img {
+  transform: scale(1.028);
+  filter: saturate(1.06) contrast(1.04);
+}
+
+.seat-button:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.modal.fade .modal-dialog,
+.offcanvas {
+  transition-duration: var(--motion-panel) !important;
+  transition-timing-function: var(--motion-premium) !important;
+}
+
+.collapse,
+.collapsing,
+.accordion-collapse {
+  transition-duration: 240ms !important;
+  transition-timing-function: var(--motion-premium) !important;
+}
+
+.search-input {
+  transition: width 220ms var(--motion-premium), right 220ms var(--motion-premium), opacity 180ms var(--motion-premium) !important;
+}
+
+#ticketBuy,
+#ticketDetailSection,
+#commentSection,
+#trailerSection,
+.booking-panel-body,
+.profile-panel,
+.saved-card-editor {
+  animation: premium-panel-in 280ms var(--motion-premium) both;
+}
+
+@keyframes premium-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.992);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.city-theater-modal .modal-dialog {
+  max-width: min(760px, calc(100vw - 28px));
+}
+
+.city-theater-modal .modal-content {
+  background:
+    linear-gradient(145deg, rgba(9, 13, 25, 0.94), rgba(16, 18, 30, 0.88)),
+    rgba(8, 10, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #f7f8fb;
+  overflow: hidden;
+}
+
+.city-theater-modal .modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 22px 24px 18px;
+}
+
+.city-theater-modal .modal-body {
+  padding: 22px 24px 24px;
+}
+
+.city-theater-modal .btn-close {
+  filter: invert(1) grayscale(1);
+  opacity: 0.72;
+}
+
+.modal-kicker {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.16rem;
+  text-transform: uppercase;
+}
+
+.city-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.city-choice-card,
+.theater-choice-card {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  color: #f6f8ff;
+  display: flex;
+  gap: 14px;
+  min-height: 78px;
+  padding: 16px;
+  text-align: left;
+  transition: transform 150ms var(--motion-premium), background-color 150ms var(--motion-premium), border-color 150ms var(--motion-premium), box-shadow 150ms var(--motion-premium);
+  width: 100%;
+}
+
+.city-choice-card:hover,
+.theater-choice-card:hover,
+.city-choice-card.active,
+.theater-choice-card.active {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.city-choice-card > span:nth-child(2),
+.theater-choice-card > span:nth-child(2) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.city-choice-card strong,
+.theater-choice-card strong {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.city-choice-card small,
+.theater-choice-card small {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.84rem;
+  line-height: 1.2;
+}
+
+.city-choice-icon,
+.theater-choice-icon,
+.modal-back-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #ffffff;
+  display: inline-flex;
+  flex: 0 0 42px;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.city-choice-card > i,
+.theater-choice-card > i {
+  color: rgba(255, 255, 255, 0.42);
+  transition: color 150ms var(--motion-premium), transform 150ms var(--motion-premium);
+}
+
+.city-choice-card:hover > i,
+.theater-choice-card:hover > i,
+.city-choice-card.active > i,
+.theater-choice-card.active > i {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.theater-choice-list {
+  display: grid;
+  gap: 12px;
+}
+
+.modal-back-btn {
+  margin-right: 14px;
+  transition: transform 150ms var(--motion-premium), background-color 150ms var(--motion-premium);
+}
+
+.modal-back-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(-2px);
+}
+
+.select-saloon-button {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+
+.select-saloon-button span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.select-saloon-button small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+@media (max-width: 640px) {
+  .city-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .city-theater-modal .modal-header,
+  .city-theater-modal .modal-body {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+.profile-page.booking-shell {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(69, 124, 190, 0.22), transparent 30rem),
+    radial-gradient(circle at 86% 18%, rgba(157, 108, 194, 0.2), transparent 31rem),
+    linear-gradient(145deg, #03050a, #0d1624 54%, #120e1a) !important;
+  background-attachment: fixed !important;
+}
+
+/* Glossy integrated skin */
+:root {
+  --ui-black: #03050a;
+  --ui-black-soft: #0a0d16;
+  --ui-panel: rgba(58, 77, 116, 0.34);
+  --ui-panel-soft: rgba(255, 255, 255, 0.105);
+  --ui-border: rgba(210, 224, 255, 0.18);
+  --ui-border-strong: rgba(236, 242, 255, 0.34);
+  --ui-text: #f8faff;
+  --ui-muted: rgba(238, 244, 255, 0.68);
+  --ui-accent: #f8faff;
+  --ui-reflect-blue: rgba(69, 124, 190, 0.34);
+  --ui-reflect-violet: rgba(157, 108, 194, 0.24);
+  --ui-reflect-pink: rgba(198, 103, 159, 0.16);
+  --ui-shadow: 0 26px 82px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --motion-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ui: 180ms;
+  --motion-fast: 125ms;
+  --motion-panel: 240ms;
+  --glass-bg: var(--ui-panel);
+  --glass-border: var(--ui-border);
+  --glass-shadow: var(--ui-shadow);
+  --glass-gold: var(--ui-text);
+  --glass-ink: var(--ui-text);
+}
+
+html,
+body,
+.App {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(62, 129, 199, 0.26), transparent 28rem),
+    radial-gradient(circle at 88% 22%, rgba(157, 108, 194, 0.22), transparent 30rem),
+    radial-gradient(circle at 55% 92%, rgba(198, 103, 159, 0.16), transparent 34rem),
+    linear-gradient(145deg, #05070d 0%, #0b1422 44%, #120e1a 100%) !important;
+}
+
+.navbar-custom {
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(90deg, rgba(5, 7, 13, 0.28), rgba(55, 85, 105, 0.2), rgba(110, 49, 72, 0.18)) !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(24px) saturate(155%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(155%) !important;
+  transform: translateY(0);
+  transition: transform 260ms var(--motion-premium), background-color 220ms var(--motion-premium), opacity 220ms var(--motion-premium) !important;
+}
+
+.navbar-custom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.1), transparent 20rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.navbar-custom::after {
+  display: none;
+}
+
+.navbar-custom.navbar-hidden {
+  transform: translateY(-110%);
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.navbar-custom .container {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar-custom .navbar-nav {
+  gap: 0.55rem;
+}
+
+.navbar-custom .navbar-nav .nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-item .nav-link,
+.nav-action-button {
+  color: rgba(248, 250, 255, 0.86) !important;
+}
+
+.navbar-custom .navbar-brand {
+  letter-spacing: 0.12rem;
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link,
+.nav-action-button {
+  border-radius: 999px;
+  min-width: 6.1rem;
+  padding: 0.58rem 1.05rem !important;
+  text-align: center;
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link:hover,
+.navbar-custom .navbar-nav .nav-item .nav-link:focus,
+.nav-action-button:hover,
+.nav-action-button:focus {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.095);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.home-hero {
+  background:
+    radial-gradient(circle at 25% 10%, rgba(83, 139, 201, 0.18), transparent 34rem),
+    #05070d !important;
+}
+
+.home-hero::after {
+  background:
+    linear-gradient(90deg, rgba(5, 7, 13, 0.82), rgba(8, 15, 27, 0.52) 52%, rgba(95, 61, 113, 0.28)),
+    linear-gradient(180deg, rgba(5, 7, 13, 0.1), rgba(5, 7, 13, 0.91)) !important;
+}
+
+.booking-shell,
+.profile-page {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(69, 124, 190, 0.26), transparent 30rem),
+    radial-gradient(circle at 86% 18%, rgba(157, 108, 194, 0.24), transparent 31rem),
+    linear-gradient(145deg, rgba(3, 5, 10, 0.92), rgba(13, 22, 36, 0.9)),
+    url("/ui_images/payment_page.jpg") !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+.home-hero-stats span,
+.filter-pills,
+.booking-step,
+.booking-panel,
+.ticket-type-row,
+.seat-summary span,
+.seat-legend span,
+.profile-panel,
+.saved-card-editor,
+.offcanvas-feature-card,
+.offcanvas-list-panel,
+#ticketBuy .container,
+#ticketDetailSection .container.bg-primary,
+.auth-required-panel,
+.movie-card,
+.movie-card-overlay,
+.modal-content,
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.055)),
+    radial-gradient(circle at 0% 0%, var(--ui-reflect-blue), transparent 17rem),
+    radial-gradient(circle at 100% 100%, var(--ui-reflect-violet), transparent 18rem) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: var(--ui-shadow) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+}
+
+.home-hero-stats span::before,
+.filter-pills::before,
+.booking-panel::before,
+.ticket-type-row::before,
+.profile-panel::before,
+.saved-card-editor::before,
+.offcanvas-feature-card::before,
+.offcanvas-list-panel::before,
+.movie-card::before,
+.modal-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 42%);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.btn,
+.movie-detail-tabs,
+.movie-detail-tabs .detail-page-btn,
+.filter-pills button,
+.nav-movie-p,
+.movie-sheet-close,
+.movie-sheet-link,
+.seat-button,
+.icon-button,
+.form-control,
+.form-select,
+textarea {
+  backdrop-filter: blur(18px) saturate(165%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(165%) !important;
+}
+
+.filter-pills,
+.movie-detail-tabs {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.055)),
+    radial-gradient(circle at 0% 0%, rgba(92, 145, 203, 0.18), transparent 15rem) !important;
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.13) !important;
+}
+
+.filter-pills {
+  gap: 0.28rem;
+  padding: 0.28rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(230, 238, 255, 0.14) !important;
+}
+
+.filter-pills button {
+  min-width: 10rem;
+  height: 3rem;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: rgba(248, 250, 255, 0.7) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-weight: 800;
+}
+
+.filter-pills button.active,
+.movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn:hover,
+.select-saloon-button:hover,
+.saloonTime-btn:hover,
+.seat-button.is-selected,
+.booking-step.active span,
+.icon-button,
+.reservation-assurance-icon,
+.btn-dark,
+.btn-primary {
+  color: #05070d !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(210, 226, 255, 0.84)) !important;
+  border-color: rgba(255, 255, 255, 0.76) !important;
+  box-shadow: 0 14px 34px rgba(79, 128, 190, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+}
+
+.filter-pills button.active {
+  color: #070a12 !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(222, 233, 255, 0.88)) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+.filter-pills button:not(.active):hover,
+.filter-pills button:not(.active):focus {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-outline-dark,
+.btn-outline-light,
+.select-saloon-button,
+.saloonTime-btn,
+.movie-detail-tabs .detail-page-btn,
+.seat-button,
+.form-control,
+.form-select,
+textarea,
+.off-canvas-movie .nav-movie-p,
+.movie-sheet-close {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.045)) !important;
+  border-color: rgba(230, 238, 255, 0.17) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.off-canvas-movie {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(69, 124, 190, 0.34), transparent 35rem),
+    radial-gradient(circle at 88% 30%, rgba(157, 108, 194, 0.25), transparent 36rem),
+    linear-gradient(145deg, rgba(4, 6, 12, 0.94), rgba(11, 17, 29, 0.94)) !important;
+}
+
+.movie-sheet-header {
+  background:
+    linear-gradient(90deg, rgba(5, 7, 13, 0.74), rgba(35, 48, 72, 0.42), rgba(65, 47, 79, 0.38)) !important;
+  border-bottom-color: rgba(230, 238, 255, 0.12) !important;
+}
+
+.off-canvas-movie .offcanvas-feature-card,
+.off-canvas-movie .offcanvas-list-panel {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.06)),
+    radial-gradient(circle at 0% 0%, rgba(69, 124, 190, 0.22), transparent 18rem),
+    radial-gradient(circle at 100% 100%, rgba(157, 108, 194, 0.2), transparent 18rem) !important;
+}
+
+.btn,
+.nav-link,
+.nav-action-button,
+.filter-pills button,
+.movie-detail-tabs .detail-page-btn,
+.movie-card,
+.movie-card img,
+.movie-card-overlay,
+.slider-button,
+.booking-panel,
+.booking-panel-body,
+.booking-step,
+.seat-button,
+.icon-button,
+.form-control,
+.form-select,
+.profile-panel,
+.saved-card-editor,
+.offcanvas-feature-card,
+.offcanvas-list-panel,
+.movie-sheet-close,
+.movie-sheet-link,
+.nav-movie-p {
+  transition-duration: var(--motion-ui) !important;
+  transition-timing-function: var(--motion-premium) !important;
+}
+
+#ticketBuy,
+#ticketDetailSection,
+#commentSection,
+#trailerSection,
+.booking-panel-body,
+.profile-panel,
+.saved-card-editor,
+.offcanvas.show .offcanvas-feature-card,
+.offcanvas.show .offcanvas-list-panel {
+  animation-duration: 220ms !important;
+  animation-timing-function: var(--motion-premium) !important;
+}
+
+.offcanvas.show .offcanvas-list-panel {
+  animation-delay: 35ms;
+}
+
+@keyframes premium-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    filter: blur(6px);
+  }
+  70% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Clean Apple-style refresh: small, light-first, and intentionally restrained. */
+:root {
+  --apple-bg: #f5f5f7;
+  --apple-surface: rgba(255, 255, 255, 0.82);
+  --apple-surface-solid: #ffffff;
+  --apple-text: #1d1d1f;
+  --apple-muted: #6e6e73;
+  --apple-blue: #0071e3;
+  --apple-border: rgba(0, 0, 0, 0.08);
+  --apple-shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.08);
+  --apple-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.07);
+  --apple-radius-xl: 34px;
+  --apple-radius-lg: 24px;
+  --apple-radius-pill: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --apple-bg: #101012;
+    --apple-surface: rgba(28, 28, 30, 0.82);
+    --apple-surface-solid: #1c1c1e;
+    --apple-text: #f5f5f7;
+    --apple-muted: #a1a1a6;
+    --apple-border: rgba(255, 255, 255, 0.12);
+    --apple-shadow-soft: 0 18px 55px rgba(0, 0, 0, 0.34);
+    --apple-shadow-card: 0 10px 34px rgba(0, 0, 0, 0.3);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--apple-bg) !important;
+  color: var(--apple-text) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif !important;
+  letter-spacing: -0.015em;
+}
+
+.navbar-custom {
+  background: rgba(255, 255, 255, 0.74) !important;
+  border-bottom: 1px solid var(--apple-border) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(24px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(170%) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .navbar-custom {
+    background: rgba(18, 18, 20, 0.72) !important;
+  }
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link,
+.nav-action-button {
+  color: var(--apple-text) !important;
+}
+
+.navbar-custom .navbar-brand {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  text-transform: none !important;
+}
+
+.navbar-custom .nav-link,
+.nav-action-button {
+  border-radius: var(--apple-radius-pill) !important;
+  font-weight: 600 !important;
+  padding: 0.62rem 1rem !important;
+}
+
+.navbar-custom .nav-link:hover,
+.nav-action-button:hover {
+  background: rgba(0, 113, 227, 0.08) !important;
+  color: var(--apple-blue) !important;
+}
+
+.home-page {
+  background: var(--apple-bg) !important;
+}
+
+.home-hero {
+  position: relative !important;
+  min-height: auto !important;
+  padding: clamp(7rem, 12vw, 10rem) 0 clamp(3rem, 7vw, 6rem) !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(0, 113, 227, 0.11), transparent 28rem),
+    linear-gradient(180deg, #fbfbfd 0%, var(--apple-bg) 100%) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .home-hero {
+    background:
+      radial-gradient(circle at 82% 18%, rgba(0, 113, 227, 0.18), transparent 28rem),
+      linear-gradient(180deg, #161618 0%, var(--apple-bg) 100%) !important;
+  }
+}
+
+.home-hero::after {
+  display: none !important;
+}
+
+.home-hero-media {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 1 !important;
+  width: min(1120px, calc(100% - 2rem)) !important;
+  margin: clamp(2rem, 5vw, 4rem) auto 0 !important;
+  display: grid !important;
+  grid-template-columns: 1.08fr 0.92fr !important;
+  gap: clamp(1rem, 2vw, 1.5rem) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.home-hero-media img {
+  width: 100% !important;
+  height: clamp(280px, 34vw, 440px) !important;
+  object-fit: cover !important;
+  border-radius: var(--apple-radius-xl) !important;
+  box-shadow: var(--apple-shadow-soft) !important;
+}
+
+.home-hero-content {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 980px !important;
+  margin: 0 auto !important;
+  padding: 0 1rem !important;
+  text-align: center !important;
+  color: var(--apple-text) !important;
+}
+
+.booking-kicker,
+.home-hero-content .booking-kicker {
+  color: var(--apple-blue) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+.home-hero-content h1 {
+  margin: 0.35rem auto 0 !important;
+  color: var(--apple-text) !important;
+  font-size: clamp(4rem, 12vw, 8.5rem) !important;
+  font-weight: 750 !important;
+  line-height: 0.9 !important;
+  letter-spacing: -0.085em !important;
+  text-transform: none !important;
+  text-shadow: none !important;
+}
+
+.home-hero-copy {
+  max-width: 690px !important;
+  margin: 1.25rem auto 0 !important;
+  color: var(--apple-muted) !important;
+  font-size: clamp(1.15rem, 2vw, 1.65rem) !important;
+  line-height: 1.28 !important;
+  font-weight: 500 !important;
+}
+
+.home-hero-actions,
+.home-hero-stats {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.9rem !important;
+}
+
+.home-hero-actions {
+  margin-top: 2rem !important;
+}
+
+.home-hero-actions .btn,
+.btn-primary,
+.btn-outline-light,
+.btn-outline-dark,
+.payment-actions .btn,
+.booking-panel-header .btn {
+  border-radius: var(--apple-radius-pill) !important;
+  min-height: 3rem !important;
+  padding: 0.72rem 1.45rem !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+.home-hero-actions .btn-primary,
+.btn-primary {
+  background: var(--apple-blue) !important;
+  border-color: var(--apple-blue) !important;
+  color: #fff !important;
+}
+
+.home-hero-actions .btn-outline-light,
+.btn-outline-dark {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid var(--apple-border) !important;
+  color: var(--apple-text) !important;
+}
+
+.home-hero-stats {
+  margin-top: 1.35rem !important;
+}
+
+.home-hero-stats span {
+  min-width: 112px !important;
+  padding: 0.8rem 1rem !important;
+  border: 1px solid var(--apple-border) !important;
+  border-radius: 22px !important;
+  background: var(--apple-surface) !important;
+  color: var(--apple-muted) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+}
+
+.home-hero-stats strong {
+  color: var(--apple-text) !important;
+  font-size: 1rem !important;
+}
+
+.movie-showcase,
+.detail-bg,
+.booking-shell,
+.profile-page.booking-shell,
+.success-page {
+  background: var(--apple-bg) !important;
+  color: var(--apple-text) !important;
+}
+
+.movie-showcase {
+  padding: clamp(3rem, 7vw, 6rem) 0 !important;
+}
+
+.showcase-header {
+  display: flex !important;
+  align-items: end !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.showcase-header h2,
+.profile-header h1,
+.booking-poster-content h2,
+.success-card h2 {
+  color: var(--apple-text) !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.showcase-header h2 {
+  font-size: clamp(2rem, 5vw, 4.2rem) !important;
+}
+
+.filter-pills,
+.movie-detail-tabs {
+  display: inline-flex !important;
+  gap: 0.25rem !important;
+  padding: 0.28rem !important;
+  border: 1px solid var(--apple-border) !important;
+  border-radius: var(--apple-radius-pill) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .filter-pills,
+  .movie-detail-tabs,
+  .home-hero-actions .btn-outline-light,
+  .btn-outline-dark {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+.filter-pills button,
+.movie-detail-tabs .detail-page-btn {
+  min-width: 0 !important;
+  height: auto !important;
+  border: 0 !important;
+  border-radius: var(--apple-radius-pill) !important;
+  padding: 0.72rem 1.05rem !important;
+  background: transparent !important;
+  color: var(--apple-muted) !important;
+  font-weight: 700 !important;
+}
+
+.filter-pills button.active,
+.movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn:hover {
+  background: var(--apple-surface-solid) !important;
+  color: var(--apple-text) !important;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.movie-slider {
+  padding: 0 1rem 3.25rem !important;
+}
+
+.movie-card {
+  height: 27rem !important;
+  border: 0 !important;
+  border-radius: 28px !important;
+  background: var(--apple-surface-solid) !important;
+  box-shadow: var(--apple-shadow-card) !important;
+  overflow: hidden !important;
+  color: #fff !important;
+}
+
+.movie-card::before {
+  display: none !important;
+}
+
+.movie-card img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: none !important;
+}
+
+.movie-card-overlay {
+  background: linear-gradient(180deg, transparent 20%, rgba(0, 0, 0, 0.74) 100%) !important;
+  border: 0 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.movie-card-overlay h3 {
+  color: #fff !important;
+  font-size: 1.35rem !important;
+  letter-spacing: -0.035em !important;
+}
+
+.booking-panel,
+.profile-panel,
+.success-card,
+.reservation-summary,
+.card-payment-panel,
+.ticket-type-row,
+.modal-content,
+.offcanvas-feature-card,
+.offcanvas-list-panel,
+.site-footer {
+  background: var(--apple-surface) !important;
+  border: 1px solid var(--apple-border) !important;
+  border-radius: var(--apple-radius-lg) !important;
+  box-shadow: var(--apple-shadow-card) !important;
+  color: var(--apple-text) !important;
+  backdrop-filter: blur(22px) saturate(165%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(165%) !important;
+}
+
+.reservation-summary,
+.card-payment-panel {
+  background: rgba(255, 255, 255, 0.62) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .reservation-summary,
+  .card-payment-panel {
+    background: rgba(28, 28, 30, 0.68) !important;
+  }
+}
+
+.form-control,
+.form-select,
+textarea {
+  background: var(--apple-surface-solid) !important;
+  border: 1px solid var(--apple-border) !important;
+  color: var(--apple-text) !important;
+  border-radius: 18px !important;
+  min-height: 3.1rem !important;
+  box-shadow: none !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  border-color: rgba(0, 113, 227, 0.5) !important;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12) !important;
+}
+
+.site-footer {
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .home-hero {
+    padding-top: 7rem !important;
+  }
+
+  .home-hero-media {
+    grid-template-columns: 1fr !important;
+  }
+
+  .home-hero-media img + img {
+    display: none !important;
+  }
+
+  .showcase-header {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .filter-pills {
+    width: 100% !important;
+  }
+
+  .filter-pills button {
+    flex: 1 !important;
+  }
+
+  .movie-card {
+    height: 24rem !important;
+  }
+}
+
+/* Keep the default experience light even if the OS is in dark mode.
+   Add .dark-mode to body later if you want an explicit dark-mode toggle. */
+body:not(.dark-mode) {
+  --apple-bg: #f5f5f7;
+  --apple-surface: rgba(255, 255, 255, 0.82);
+  --apple-surface-solid: #ffffff;
+  --apple-text: #1d1d1f;
+  --apple-muted: #6e6e73;
+  --apple-border: rgba(0, 0, 0, 0.08);
+  --apple-shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.08);
+  --apple-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+body.dark-mode {
+  --apple-bg: #101012;
+  --apple-surface: rgba(28, 28, 30, 0.82);
+  --apple-surface-solid: #1c1c1e;
+  --apple-text: #f5f5f7;
+  --apple-muted: #a1a1a6;
+  --apple-border: rgba(255, 255, 255, 0.12);
+  --apple-shadow-soft: 0 18px 55px rgba(0, 0, 0, 0.34);
+  --apple-shadow-card: 0 10px 34px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Final cleanup pass: readable navigation, no hero banners, clean footer, clean detail page. */
+.navbar-custom {
+  min-height: 64px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
+}
+
+.navbar-custom .container {
+  max-width: 1120px !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.navbar-custom .navbar-brand {
+  color: #1d1d1f !important;
+  font-size: 1.25rem !important;
+  font-weight: 760 !important;
+}
+
+.navbar-custom .navbar-toggler {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.navbar-custom .navbar-toggler-icon {
+  filter: none !important;
+}
+
+.navbar-custom .navbar-nav {
+  gap: 0.25rem !important;
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .nav-action-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 2.45rem !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #1d1d1f !important;
+  font-size: 0.95rem !important;
+  font-weight: 650 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-action-button:hover {
+  background: rgba(0, 113, 227, 0.08) !important;
+  color: #0071e3 !important;
+}
+
+.home-hero {
+  min-height: 0 !important;
+  padding: 9rem 1rem 5rem !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0, 113, 227, 0.1), transparent 30rem),
+    linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%) !important;
+}
+
+.home-hero-media {
+  display: none !important;
+}
+
+.home-hero-content {
+  max-width: 860px !important;
+  text-align: center !important;
+}
+
+.home-hero-content h1 {
+  margin-top: 0.4rem !important;
+  color: #1d1d1f !important;
+  font-size: clamp(4.25rem, 11vw, 7.6rem) !important;
+  font-weight: 780 !important;
+  line-height: 0.92 !important;
+  letter-spacing: -0.085em !important;
+}
+
+.home-hero-copy {
+  max-width: 620px !important;
+  color: #6e6e73 !important;
+  font-size: clamp(1.12rem, 2vw, 1.48rem) !important;
+}
+
+.home-hero-actions .btn {
+  border-radius: 999px !important;
+  padding: 0.72rem 1.35rem !important;
+}
+
+.home-hero-stats span {
+  background: #fff !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  color: #6e6e73 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.045) !important;
+}
+
+.movie-showcase {
+  padding-top: 4rem !important;
+  background: #f5f5f7 !important;
+}
+
+.site-footer {
+  margin-top: 4rem !important;
+  padding: 3.5rem 0 2rem !important;
+  background: #ffffff !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: none !important;
+  color: #1d1d1f !important;
+}
+
+.footer-grid {
+  max-width: 1020px !important;
+  margin: 0 auto !important;
+  gap: 3rem !important;
+}
+
+.footer-brand h3,
+.footer-links h4 {
+  color: #1d1d1f !important;
+}
+
+.footer-brand p,
+.footer-copy,
+.footer-links button {
+  color: #6e6e73 !important;
+  opacity: 1 !important;
+}
+
+.footer-links h4 {
+  font-size: 0.82rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.footer-links button:hover {
+  color: #0071e3 !important;
+}
+
+.detail-bg {
+  position: relative !important;
+  padding: 8rem 1rem 4rem !important;
+  background:
+    radial-gradient(circle at 72% 0%, rgba(0, 113, 227, 0.1), transparent 27rem),
+    linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%) !important;
+  color: #1d1d1f !important;
+  overflow: hidden !important;
+}
+
+.detail-bg::after {
+  display: none !important;
+}
+
+.detail-bg .container {
+  max-width: 1060px !important;
+}
+
+.detail-bg .row {
+  align-items: center !important;
+}
+
+.detail-poster,
+.detail-poster-placeholder {
+  width: min(100%, 310px) !important;
+  height: 460px !important;
+  border-radius: 28px !important;
+  border: 0 !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14) !important;
+}
+
+.detail-poster-placeholder {
+  display: inline-grid !important;
+  place-items: center !important;
+  background: #1d1d1f !important;
+  color: #fff !important;
+}
+
+.detail-bg .text-light,
+.detail-bg .text-light h3,
+.detail-bg .text-light h5 {
+  color: #1d1d1f !important;
+}
+
+.detail-bg h3 {
+  font-size: clamp(2.8rem, 6vw, 5.2rem) !important;
+  font-weight: 780 !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.075em !important;
+}
+
+.detail-bg h5 {
+  color: #6e6e73 !important;
+  font-size: 1.05rem !important;
+  font-weight: 650 !important;
+}
+
+.detail-bg hr {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  opacity: 1 !important;
+}
+
+.movie-detail-tabs {
+  width: fit-content !important;
+  max-width: 100% !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.3rem !important;
+  padding: 0.35rem !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06) !important;
+}
+
+.movie-detail-tabs .detail-page-btn {
+  color: #6e6e73 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn:hover {
+  color: #1d1d1f !important;
+  background: #f5f5f7 !important;
+}
+
+.movie-info-section {
+  background: #f5f5f7 !important;
+  color: #1d1d1f !important;
+}
+
+.movie-info-section .container {
+  max-width: 1060px !important;
+  padding: 1.5rem !important;
+  border-radius: 28px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.055) !important;
+}
+
+#ticketBuy,
+#ticketDetailSection,
+#commentSection,
+#trailerSection {
+  background: #f5f5f7 !important;
+  color: #1d1d1f !important;
+}
+
+#ticketBuy .container.bg-primary,
+#ticketDetailSection .container.bg-primary {
+  max-width: 1060px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.055) !important;
+}
+
+#ticketBuy .text-light,
+#ticketDetailSection .text-light {
+  color: #1d1d1f !important;
+}
+
+.select-saloon-button.btn-primary {
+  background: #0071e3 !important;
+  border-color: #0071e3 !important;
+}
+
+@media (max-width: 768px) {
+  .navbar-custom .navbar-collapse {
+    margin-top: 0.75rem !important;
+    padding: 0.75rem !important;
+    border-radius: 22px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .navbar-custom .nav-link,
+  .navbar-custom .nav-action-button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .home-hero {
+    padding: 7rem 1rem 3.5rem !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.75rem !important;
+  }
+
+  .footer-brand,
+  .footer-links {
+    text-align: left !important;
+  }
+
+  .detail-bg {
+    padding-top: 7rem !important;
+  }
+
+  .detail-bg .text-start {
+    text-align: center !important;
+  }
+
+  .movie-detail-tabs {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+}
+
+/* Navbar visibility hotfix: beats the older dark theme selectors with higher specificity. */
+.navbar-custom::before,
+.navbar-custom::after {
+  display: none !important;
+  content: none !important;
+}
+
+nav.navbar.navbar-custom,
+nav.navbar.navbar-custom.fixed-top {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.035) !important;
+}
+
+nav.navbar.navbar-custom .navbar-brand,
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-link,
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-action-button,
+nav.navbar.navbar-custom button.nav-link,
+nav.navbar.navbar-custom a.nav-link {
+  color: #1d1d1f !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-link,
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-action-button,
+nav.navbar.navbar-custom button.nav-link,
+nav.navbar.navbar-custom a.nav-link {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  padding: 0.7rem 1rem !important;
+}
+
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-link:hover,
+nav.navbar.navbar-custom .navbar-nav .nav-item .nav-action-button:hover,
+nav.navbar.navbar-custom button.nav-link:hover,
+nav.navbar.navbar-custom a.nav-link:hover {
+  color: #0071e3 !important;
+  background: rgba(0, 113, 227, 0.09) !important;
+}
+
+/* Movie detail hero polish and password reset modal. */
+.detail-bg {
+  padding-bottom: 4.5rem !important;
+}
+
+.detail-hero-card {
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  padding: clamp(1rem, 3vw, 2rem) !important;
+  border-radius: 38px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
+.detail-poster-column {
+  margin-bottom: 0 !important;
+}
+
+.detail-poster {
+  width: min(100%, 330px) !important;
+  height: 500px !important;
+  object-fit: cover !important;
+  border-radius: 32px !important;
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.18) !important;
+}
+
+.detail-copy-column {
+  padding: clamp(0.5rem, 2vw, 1.4rem) !important;
+}
+
+.detail-kicker {
+  margin-bottom: 0.7rem !important;
+  color: #0071e3 !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+.detail-bg h3 {
+  max-width: 720px !important;
+  margin-bottom: 1rem !important;
+  color: #1d1d1f !important;
+  font-size: clamp(3.2rem, 7vw, 5.8rem) !important;
+  font-weight: 800 !important;
+  line-height: 0.94 !important;
+}
+
+.detail-description {
+  max-width: 640px !important;
+  margin: 0 0 1.25rem !important;
+  color: #6e6e73 !important;
+  font-size: clamp(1rem, 1.7vw, 1.24rem) !important;
+  font-weight: 550 !important;
+  line-height: 1.45 !important;
+}
+
+.detail-meta-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.6rem !important;
+  margin: 0 0 1.25rem !important;
+}
+
+.detail-meta-row span {
+  padding: 0.58rem 0.85rem !important;
+  border-radius: 999px !important;
+  background: #f5f5f7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  color: #1d1d1f !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+}
+
+.detail-credit-card {
+  max-width: 620px !important;
+  display: grid !important;
+  gap: 0.55rem !important;
+  margin-bottom: 0.5rem !important;
+  padding: 1rem !important;
+  border-radius: 24px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.045) !important;
+}
+
+.detail-credit-card p {
+  display: grid !important;
+  grid-template-columns: 90px 1fr !important;
+  gap: 0.8rem !important;
+  margin: 0 !important;
+  color: #6e6e73 !important;
+}
+
+.detail-credit-card strong {
+  color: #1d1d1f !important;
+}
+
+.movie-detail-tabs {
+  margin-top: 1.3rem !important;
+}
+
+.auth-modal-links {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem !important;
+  padding: 0 0.25rem !important;
+  color: #6e6e73 !important;
+  text-align: left !important;
+}
+
+.auth-modal-links a,
+.auth-text-button {
+  border: 0 !important;
+  background: transparent !important;
+  color: #0071e3 !important;
+  font-weight: 750 !important;
+  text-decoration: none !important;
+  padding: 0 !important;
+}
+
+.auth-modal-links a:hover,
+.auth-text-button:hover {
+  color: #005bb5 !important;
+  text-decoration: underline !important;
+}
+
+.auth-helper-text,
+.auth-dev-otp {
+  margin: 0 0 1rem !important;
+  color: #6e6e73 !important;
+  text-align: left !important;
+  line-height: 1.45 !important;
+}
+
+.auth-dev-otp {
+  padding: 0.75rem 0.9rem !important;
+  border-radius: 16px !important;
+  background: #f5f5f7 !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  color: #1d1d1f !important;
+  font-weight: 700 !important;
+}
+
+#loginModal .modal-content,
+#registerModal .modal-content {
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #1d1d1f !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18) !important;
+}
+
+#loginModal .modal-title,
+#registerModal .modal-title {
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+}
+
+@media (max-width: 768px) {
+  .detail-hero-card {
+    padding: 1rem !important;
+    border-radius: 28px !important;
+  }
+
+  .detail-poster {
+    height: 420px !important;
+  }
+
+  .detail-copy-column,
+  .detail-description,
+  .detail-credit-card {
+    text-align: left !important;
+  }
+
+  .detail-credit-card p {
+    grid-template-columns: 1fr !important;
+    gap: 0.2rem !important;
+  }
+}
+
+/* Auth modal label visibility fix. */
+#loginModal .login-modal-header,
+#registerModal .login-modal-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1d1d1f !important;
+}
+
+#loginModal .modal-title,
+#registerModal .modal-title {
+  color: #1d1d1f !important;
+}
+
+#loginModal .btn-close,
+#registerModal .btn-close {
+  filter: none !important;
+  opacity: 0.72 !important;
+}
+
+#loginModal .form-floating,
+#registerModal .form-floating {
+  position: relative !important;
+}
+
+#loginModal .form-floating > .form-control,
+#registerModal .form-floating > .form-control {
+  height: 3.75rem !important;
+  padding: 1.55rem 1rem 0.55rem !important;
+  background: #ffffff !important;
+  color: #1d1d1f !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 18px !important;
+}
+
+#loginModal .form-floating > label,
+#registerModal .form-floating > label {
+  display: block !important;
+  color: #6e6e73 !important;
+  opacity: 1 !important;
+  font-size: 0.95rem !important;
+  font-weight: 650 !important;
+  padding: 1rem !important;
+  transform-origin: 0 0 !important;
+  pointer-events: none !important;
+}
+
+#loginModal .form-floating > .form-control:focus ~ label,
+#loginModal .form-floating > .form-control:not(:placeholder-shown) ~ label,
+#registerModal .form-floating > .form-control:focus ~ label,
+#registerModal .form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: #0071e3 !important;
+  opacity: 1 !important;
+  transform: scale(0.78) translateY(-0.48rem) translateX(0.18rem) !important;
+}
+
+#loginModal .form-floating > .form-control:focus,
+#registerModal .form-floating > .form-control:focus {
+  border-color: rgba(0, 113, 227, 0.45) !important;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12) !important;
+}
+
+.auth-switch-copy,
+.auth-switch-copy a {
+  color: #6e6e73 !important;
+}
+
+.auth-switch-copy a {
+  color: #0071e3 !important;
+  font-weight: 750 !important;
+  text-decoration: none !important;
+}
+
+/* Detail tabs final flattening: lighter, smaller, not bubbly. */
+.detail-copy-column .movie-detail-tabs,
+.detail-bg .movie-detail-tabs,
+.movie-detail-tabs {
+  width: auto !important;
+  max-width: 100% !important;
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  margin-top: 1.25rem !important;
+  padding: 0.25rem !important;
+  border-radius: 14px !important;
+  background: #f2f2f4 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.detail-copy-column .movie-detail-tabs .detail-page-btn,
+.detail-bg .movie-detail-tabs .detail-page-btn,
+.movie-detail-tabs .detail-page-btn {
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0.55rem 0.9rem !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  color: #6e6e73 !important;
+  box-shadow: none !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+
+.detail-copy-column .movie-detail-tabs .detail-page-btn.active,
+.detail-bg .movie-detail-tabs .detail-page-btn.active,
+.movie-detail-tabs .detail-page-btn.active {
+  background: #ffffff !important;
+  color: #1d1d1f !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+  font-weight: 600 !important;
+}
+
+.detail-copy-column .movie-detail-tabs .detail-page-btn:hover,
+.detail-bg .movie-detail-tabs .detail-page-btn:hover,
+.movie-detail-tabs .detail-page-btn:hover {
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #1d1d1f !important;
+  transform: none !important;
+}
+
+@media (max-width: 575.98px) {
+  .detail-copy-column .movie-detail-tabs,
+  .detail-bg .movie-detail-tabs,
+  .movie-detail-tabs {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .detail-copy-column .movie-detail-tabs .detail-page-btn,
+  .detail-bg .movie-detail-tabs .detail-page-btn,
+  .movie-detail-tabs .detail-page-btn {
+    flex: 1 !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}

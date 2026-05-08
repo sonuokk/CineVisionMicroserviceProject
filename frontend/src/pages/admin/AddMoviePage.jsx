@@ -160,7 +160,7 @@ export default function AddMoviePage() {
                     </label>
                 </div>
               
-{/* Daha sonra file ile ekle */}
+{/* Add file upload later */}
                 {/* <div class="input-group mb-3">
                     <input type="file" class="form-control" id="image" />
                 </div> */}

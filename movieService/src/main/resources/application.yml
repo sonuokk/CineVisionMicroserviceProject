@@ -4,24 +4,9 @@ server:
 spring:
   application:
     name: movieService
-  # PostgreSql Properties
-  datasource:
-    username: ${POSTGRES_USER:postgres}
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:cine_saga}
-    password: ${POSTGRES_PASSWORD:12345}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: 'true'
-    hibernate:
-      ddl-auto: update
-    show-sql: 'true'
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
   # Apache Kafka Producer Properties
   kafka:
     producer:
@@ -32,7 +17,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.kaankaplan.movieService.entity.dto.EmailMessageKafkaDto
+              mapping: event:com.doffeii.movieService.entity.dto.EmailMessageKafkaDto
     topic:
       name: email_topics
   # Micrometer tracing / Zipkin Properties
@@ -64,8 +49,6 @@ management:
   endpoint:
     health:
       show-details: always
-  server:
-    port: 8000
 resilience4j:
   circuitbreaker:
     instances:
@@ -86,5 +69,10 @@ resilience4j:
 
 # Email sender used in ticket booking messages. Configure real credentials in emailService.
 app:
+  bootstrap:
+    theaters:
+      enabled: false
   mail:
     sender: ${APP_MAIL_SENDER:no-reply@cinesaga.local}
+  payment:
+    card-hash-secret: ${PAYMENT_CARD_HASH_SECRET:cinesaga-local-card-secret}

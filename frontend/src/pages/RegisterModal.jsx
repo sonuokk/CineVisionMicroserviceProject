@@ -9,16 +9,20 @@ export default function RegisterModal() {
     const userService = new UserService();
     const [pendingEmail, setPendingEmail] = useState("");
     const [waitingForOtp, setWaitingForOtp] = useState(false);
-    const [developmentOtp, setDevelopmentOtp] = useState("");
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
+    const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
     const registerCustomer = (values) => {
+        if (isSendingOtp) {
+            return;
+        }
 
         if (values.password === values.passwordAgain) {
+            setIsSendingOtp(true);
 
             let customer = {
-                customerName: values.customerName,
-                email: values.email,
-                    phone: values.phone?.trim() || "",
+                customerName: values.customerName?.trim(),
+                email: values.email?.trim().toLowerCase(),
                 password: values.password
             };
 
@@ -26,8 +30,7 @@ export default function RegisterModal() {
                 if(result.status === 200) {
                     setPendingEmail(customer.email);
                     setWaitingForOtp(true);
-                    setDevelopmentOtp(result.data?.developmentOtp || "");
-                    toast("OTP sent to your email. Enter it to create your account.", {
+                    toast("OTP generated. The email is on its way.", {
                         theme:"colored",
                         position:"top-center"
                     })
@@ -38,7 +41,7 @@ export default function RegisterModal() {
                     theme: "colored",
                     position: "top-center"
                 });
-            })
+            }).finally(() => setIsSendingOtp(false))
         } else {
             toast.error("Passwords do not match.", {
                 theme: "colored",
@@ -48,14 +51,27 @@ export default function RegisterModal() {
     }
 
     const verifyRegistrationOtp = (values) => {
+        if (isVerifyingOtp) {
+            return;
+        }
+
+        const normalizedOtp = (values.otp || "").replace(/\D/g, "").slice(0, 6);
+        if (normalizedOtp.length !== 6) {
+            toast.error("Enter the 6-digit OTP from your email.", {
+                theme: "colored",
+                position: "top-center"
+            });
+            return;
+        }
+
+        setIsVerifyingOtp(true);
         userService.verifyCustomerOtp({
-            email: pendingEmail,
-            otp: values.otp
+            email: pendingEmail.trim().toLowerCase(),
+            otp: normalizedOtp
         }).then(result => {
             if (result.status === 200) {
                 setWaitingForOtp(false);
                 setPendingEmail("");
-                setDevelopmentOtp("");
                 document.querySelector("#loginModalLink").click();
                 toast("Your account is verified. Please sign in.", {
                     theme: "colored",
@@ -68,17 +84,17 @@ export default function RegisterModal() {
                 theme: "colored",
                 position: "top-center"
             });
-        })
+        }).finally(() => setIsVerifyingOtp(false))
     }
 
   return (
     <div>
-        <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                <div class="modal-header login-modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Create Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div className="modal fade" id="registerModal" tabIndex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                <div className="modal-header login-modal-header">
+                    <h5 className="modal-title" id="registerModalLabel">Create Account</h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <Formik
                     enableReinitialize
@@ -91,55 +107,51 @@ export default function RegisterModal() {
                         }
                     }}>
                     <Form>
-                        <div class="modal-body">
+                        <div className="modal-body">
                             {waitingForOtp ? (
                             <>
                                 <p className='text-start ps-2'>Enter the 6-digit OTP sent to {pendingEmail}.</p>
-                                {developmentOtp ? <p className='text-start ps-2 text-muted'>Development OTP: {developmentOtp}</p> : null}
                                 <div className="form-floating mb-3">
-                                    <KaanKaplanTextInput type="text" name="otp" className="form-control" id="registrationOtp" placeholder='OTP' pattern="[0-9]{6}" maxLength="6" required/>
-                                    <label for="registrationOtp">OTP</label>
+                                    <KaanKaplanTextInput type="text" name="otp" className="form-control" id="registrationOtp" placeholder='OTP' inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,12}" maxLength="12" required/>
+                                    <label htmlFor="registrationOtp">OTP</label>
                                 </div>
                             </>
                             ) : (
                             <>
-                            <div class="form-floating mb-3">
+                            <div className="form-floating mb-3">
                                 <KaanKaplanTextInput type="text" name="customerName" className="form-control" id="customerName" placeholder='Full Name' required/>
-                                <label for="customerName">Full Name</label>
+                                <label htmlFor="customerName">Full Name</label>
                             </div>
                             <div className="form-floating mb-3">
-                                <KaanKaplanTextInput type="email" name="email" className="form-control" id="email" placeholder='Email' required />
-                                <label for="email">Email</label>
+                                <KaanKaplanTextInput type="email" name="email" className="form-control" id="registerEmail" placeholder='Email' required />
+                                <label htmlFor="registerEmail">Email</label>
                             </div>
                             <div className="form-floating mb-3">
-                                <KaanKaplanTextInput type="tel" name="phone" className="form-control" id="phone" placeholder='Optional' />
-                                <label for="phone">Indian Mobile Number Optional</label>
-                            </div>
-                            <div className="form-floating mb-3">
-                                <KaanKaplanTextInput type="password" name="password" className="form-control" id="password" placeholder='Password' pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,72}" title="Use 8+ characters with uppercase, lowercase, number and special character" required/>
-                                <label for="password">Password</label>
+                                <KaanKaplanTextInput type="password" name="password" className="form-control" id="registerPassword" placeholder='Password' pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,72}" title="Use 8+ characters with uppercase, lowercase, number and special character" required/>
+                                <label htmlFor="registerPassword">Password</label>
                             </div>
                             <div className="form-floating mb-3">
                                 <KaanKaplanTextInput type="password" name="passwordAgain" className="form-control" id="passwordAgain" placeholder='Confirm Password' required/>
-                                <label for="passwordAgain">Confirm Password</label>
+                                <label htmlFor="passwordAgain">Confirm Password</label>
                             </div>
                             </>
                             )}
-                            <p className='ps-2 text-start'>
+                            <p className='ps-2 text-start auth-switch-copy'>
                                 Already have an account? 
-                                <a href='!#' id="loginModalLink" style={{color:"black"}}
+                                <a href='!#' id="loginModalLink"
                                 data-bs-toggle="modal" data-bs-target="#loginModal"> Sign In </a>
                             </p>
                         </div>
-                        <div class="modal-footer">
+                        <div className="modal-footer">
                             {waitingForOtp ? (
-                                <button type="button" class="btn btn-outline-secondary" onClick={() => {
+                                <button type="button" className="btn btn-outline-secondary" onClick={() => {
                                     setWaitingForOtp(false);
                                     setPendingEmail("");
-                                    setDevelopmentOtp("");
                                 }}>Edit Details</button>
                             ) : null}
-                            <button type="submit" class="btn btn-primary login-modal-btn">{waitingForOtp ? "Verify OTP" : "Send OTP"}</button>
+                            <button type="submit" className="btn btn-primary login-modal-btn" disabled={isSendingOtp || isVerifyingOtp}>
+                                {waitingForOtp ? (isVerifyingOtp ? "Verifying..." : "Verify OTP") : (isSendingOtp ? "Sending..." : "Send OTP")}
+                            </button>
                         </div>
                     </Form>
                 </Formik>

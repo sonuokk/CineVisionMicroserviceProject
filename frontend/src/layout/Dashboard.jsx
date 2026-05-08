@@ -8,6 +8,7 @@ import BuyTicketPage from '../pages/BuyTicketPage'
 import DetailPage from '../pages/DetailPage'
 import MainPage from '../pages/MainPage'
 import PaymnetSuccessPage from '../pages/PaymentSuccessPage'
+import ProfilePage from '../pages/ProfilePage'
 import ErrorPage from '../utils/utilPages/ErrorPage'
 import ProtectedRoute from '../utils/utilPages/ProtectedRoute'
 
@@ -23,6 +24,11 @@ export default function Dashboard() {
         <Route path={"/movie/:movieId"} element={<DetailPage/>} />
         <Route path={"movie/:movieId/buyTicket"}  element={<BuyTicketPage/>} />       
         <Route path={"/paymentSuccess"}  element={<PaymnetSuccessPage/>} />
+        <Route path={"/profile"} element={
+          <ProtectedRoute user={userFromRedux}>
+            <ProfilePage/>
+          </ProtectedRoute>
+        } />
 
         <Route path="/addMovie"  element={
           <ProtectedRoute user={userRole}>

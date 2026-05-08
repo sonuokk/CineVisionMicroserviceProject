@@ -1,1 +1,3 @@
 movieService/target
+.env
+*.env
