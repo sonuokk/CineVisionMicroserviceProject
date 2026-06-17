@@ -30,4 +30,8 @@ public class UserRegisterRequestDto {
             message = "Password must include uppercase, lowercase, number and special character"
     )
     private String password;
+
+    private String role;
+
+    private String theaterName;
 }

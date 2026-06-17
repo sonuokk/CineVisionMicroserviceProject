@@ -20,5 +20,8 @@ public class TicketBookingResponseDto {
     private String chairNumbers;
     private String totalAmount;
     private String qrCodePayload;
+    private String recipientEmail;
+    private String emailStatus;
+    private String emailMessage;
     private String cancelledAt;
 }

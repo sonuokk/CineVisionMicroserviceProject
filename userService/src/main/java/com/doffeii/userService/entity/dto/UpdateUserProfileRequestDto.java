@@ -26,6 +26,8 @@ public class UpdateUserProfileRequestDto {
     @Size(max = 60, message = "Preferred city cannot exceed 60 characters")
     private String preferredCity;
 
+    private String profileImageUrl;
+
     @Valid
     private List<SavedPaymentCardDto> savedPaymentCards;
 }

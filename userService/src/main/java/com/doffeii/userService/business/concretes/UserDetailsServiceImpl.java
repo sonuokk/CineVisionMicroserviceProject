@@ -31,11 +31,30 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
             throw new UsernameNotFoundException("Email is not verified");
         }
 
+        if (user.getBlacklistedAt() != null
+                && (user.getBlacklistedUntil() == null || user.getBlacklistedUntil().isAfter(java.time.Instant.now()))) {
+            String period = user.getBlacklistedUntil() == null
+                    ? "permanently"
+                    : "until " + user.getBlacklistedUntil();
+            throw new UsernameNotFoundException("Your CineSaga account is blacklisted " + period + ".");
+        }
+
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getClaim() != null ? user.getClaim().getClaimName() : "CUSTOMER"));
+        authorities.add(new SimpleGrantedAuthority(effectiveRoleName(user)));
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(), authorities);
     }
 
+    private String effectiveRoleName(User user) {
+        String roleName = user.getRole() == null || user.getRole().getRoleName() == null
+                ? "CUSTOMER"
+                : user.getRole().getRoleName();
+        if ("THEATER_MANAGER".equals(roleName) && !"APPROVED".equals(user.getTheaterManagerRequestStatus())) {
+            return "CUSTOMER";
+        }
+        return roleName;
+    }
+
 }
+

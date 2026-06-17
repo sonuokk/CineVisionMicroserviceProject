@@ -28,15 +28,7 @@ public class OtpEmailSender {
     private String mailPassword;
 
     public void sendOtp(String recipient, String purpose, String otp, long expiryMinutes) {
-        if (!StringUtils.hasText(mailUsername)) {
-            log.warn("Mail username is not configured. {} OTP for {} was not sent.", purpose, recipient);
-            throw new IllegalStateException("Mail username is not configured. Set MAIL_USERNAME in .env or in this PowerShell window.");
-        }
-
-        if (!StringUtils.hasText(mailPassword)) {
-            log.warn("Mail password is not configured. {} OTP for {} was not sent.", purpose, recipient);
-            throw new IllegalStateException("Mail password is not configured. Set MAIL_PASSWORD in .env or in this PowerShell window.");
-        }
+        ensureMailConfigured(purpose, recipient);
 
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
@@ -49,6 +41,35 @@ public class OtpEmailSender {
         } catch (MessagingException | MailException exception) {
             log.warn("Failed to send {} OTP to {}", purpose, recipient, exception);
             throw new IllegalStateException("Could not send OTP email. Check SMTP credentials and try again.");
+        }
+    }
+
+    public void sendAdminNotice(String recipient, String subject, String messageBody) {
+        ensureMailConfigured("admin notice", recipient);
+
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(StringUtils.hasText(sender) ? sender : mailUsername);
+            helper.setTo(recipient);
+            helper.setSubject(subject);
+            helper.setText(messageBody, buildAdminNoticeHtml(subject, messageBody));
+            javaMailSender.send(message);
+        } catch (MessagingException | MailException exception) {
+            log.warn("Failed to send admin notice to {}", recipient, exception);
+            throw new IllegalStateException("Could not send notification email. Check SMTP credentials and try again.");
+        }
+    }
+
+    private void ensureMailConfigured(String purpose, String recipient) {
+        if (!StringUtils.hasText(mailUsername)) {
+            log.warn("Mail username is not configured. {} email for {} was not sent.", purpose, recipient);
+            throw new IllegalStateException("Mail username is not configured. Set MAIL_USERNAME in .env or in this PowerShell window.");
+        }
+
+        if (!StringUtils.hasText(mailPassword)) {
+            log.warn("Mail password is not configured. {} email for {} was not sent.", purpose, recipient);
+            throw new IllegalStateException("Mail password is not configured. Set MAIL_PASSWORD in .env or in this PowerShell window.");
         }
     }
 
@@ -83,6 +104,25 @@ public class OtpEmailSender {
                 </body>
                 </html>
                 """.formatted(safePurpose, expiryMinutes, escapeHtml(otp));
+    }
+
+    private String buildAdminNoticeHtml(String subject, String messageBody) {
+        return """
+                <!doctype html>
+                <html>
+                <body style="margin:0;background:#f5f7fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+                  <div style="max-width:560px;margin:0 auto;padding:32px 16px;">
+                    <div style="background:#111827;border-radius:8px 8px 0 0;padding:22px 28px;color:#ffffff;">
+                      <div style="font-size:22px;font-weight:700;letter-spacing:0;">CineSaga</div>
+                    </div>
+                    <div style="background:#ffffff;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 8px 8px;padding:28px;">
+                      <h1 style="font-size:22px;line-height:1.3;margin:0 0 12px;">%s</h1>
+                      <p style="font-size:15px;line-height:1.6;margin:0;color:#4b5563;">%s</p>
+                    </div>
+                  </div>
+                </body>
+                </html>
+                """.formatted(escapeHtml(subject), escapeHtml(messageBody));
     }
 
     private String escapeHtml(String value) {

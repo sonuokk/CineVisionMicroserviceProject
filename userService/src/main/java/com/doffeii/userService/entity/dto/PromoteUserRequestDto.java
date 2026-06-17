@@ -16,4 +16,10 @@ public class PromoteUserRequestDto {
     @NotBlank(message = "Email is required")
     @Email(message = "Enter a valid email address")
     private String email;
+
+    private String role;
+
+    private String theaterName;
+
+    private String reason;
 }

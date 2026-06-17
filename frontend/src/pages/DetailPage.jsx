@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -15,9 +15,7 @@ import { addMovieToState, cleanState } from '../store/actions/movieActions';
 import { CommentService } from '../services/commentService';
 import { toast, ToastContainer } from 'react-toastify';
 import { allDemoMovies, getDemoMovieById } from '../data/demoMovies';
-
-const SIGN_IN_TOAST_ID = "sign-in-before-booking";
-
+import { UserService } from '../services/userService';
 
 export default function DetailPage() {
     let {movieId} = useParams();
@@ -33,6 +31,7 @@ export default function DetailPage() {
     const actorService = new ActorService()
     const saloonTimeService = new SaloonTimeService();
     const commentService = new CommentService();
+    const userService = useMemo(() => new UserService(), []);
 
     const [movie, setMovie] = useState({})
     const [actors, setActors] = useState([])
@@ -47,24 +46,64 @@ export default function DetailPage() {
     const [countOfComments, setCountOfComments] = useState(0)
     const [currentPage, setCurrentPage] = useState(1);
     const [activeTab, setActiveTab] = useState("tickets");
+    const [favoriteMovies, setFavoriteMovies] = useState([]);
+    const [favoriteTheaters, setFavoriteTheaters] = useState([]);
+    const getCityTheaters = (city) => city?.theaters || city?.saloon || [];
+    const getTheaterId = (theater) => theater?.theaterId ?? theater?.saloonId;
+    const getTheaterName = (theater) => theater?.theaterName || theater?.saloonName;
+    const isFavoriteMovie = favoriteMovies.some(favorite => String(favorite.movieId) === String(movie?.movieId || movieId));
+    const isFavoriteTheater = (theaterName) => favoriteTheaters.some(favorite => String(favorite.theaterName || "").toLowerCase() === String(theaterName || "").toLowerCase());
+    const isComingSoon = movie?.isDisplay === false;
 
     useEffect(() => {
         getNewVisionMovie(movieId);
     }, [])
+
+    useEffect(() => {
+        if (isComingSoon && activeTab === "tickets") {
+            setActiveTab("reviews");
+        }
+    }, [isComingSoon, activeTab])
+
+    useEffect(() => {
+        if (!userFromRedux) {
+            setFavoriteMovies([]);
+            setFavoriteTheaters([]);
+            return;
+        }
+        userService.getProfile()
+            .then(result => {
+                setFavoriteMovies(result.data?.favoriteMovies || []);
+                setFavoriteTheaters(result.data?.favoriteTheaters || []);
+            })
+            .catch(() => {
+                setFavoriteMovies([]);
+                setFavoriteTheaters([]);
+            });
+    }, [userFromRedux, userService])
     
     function getNewVisionMovie(movieId) {
         setActiveTab("tickets");
         setSelectedCity(null);
         setSelectedSaloon(null);
         setSaloonTimes([]);
+        setCurrentPage(1);
+        setComments([]);
         const fallbackMovie = getDemoMovieById(movieId) || {};
         movieService.getMovieById(movieId)
-            .then(result => setMovie(result.data?.movieId ? result.data : fallbackMovie))
-            .catch(() => setMovie(fallbackMovie));
+            .then(result => {
+                const nextMovie = result.data?.movieId ? result.data : fallbackMovie;
+                setMovie(nextMovie);
+                setActiveTab(nextMovie?.isDisplay === false ? "reviews" : "tickets");
+            })
+            .catch(() => {
+                setMovie(fallbackMovie);
+                setActiveTab(fallbackMovie?.isDisplay === false ? "reviews" : "tickets");
+            });
         actorService.getActorsByMovieId(movieId).then(result => setActors(result.data)).catch(() => setActors([]))
         cityService.getCitiesByMovieId(movieId).then(result => setCinemaSaloons(result.data)).catch(() => setCinemaSaloons([]))
         movieService.getAllDisplayingMovies().then(result => {
-            const films = result.data.filter(m => m.movieId != movieId);
+            const films = result.data.filter(m => String(m.movieId) !== String(movieId));
             setOtherMovies(films);
         }).catch(() => setOtherMovies(allDemoMovies.filter(m => String(m.movieId) !== String(movieId))))
         commentService.getCountOfComments(movieId).then(result => setCountOfComments(result.data)).catch(() => setCountOfComments(0));
@@ -85,13 +124,13 @@ export default function DetailPage() {
 
     function selectSaloon(saloon) {
         setSelectedSaloon(saloon);
-        getSaloonTimes(saloon.saloonId, movieId);
+        getSaloonTimes(getTheaterId(saloon), movieId);
     }
 
     function getComments(movieId, pageNo, pageSize=5) {
         commentService.getCommentsByMovieId(movieId, pageNo, pageSize).then(result => {
-            if (comments.length > 0 && pageNo > 1) {
-                setComments([...comments, ...result.data])
+            if (pageNo > 1) {
+                setComments(currentComments => [...currentComments, ...result.data])
             }else {
                 setComments(result.data)
             }
@@ -110,8 +149,10 @@ export default function DetailPage() {
             id: movie.movieId,
             movieName: movie.movieName,
             imageUrl: movie.movieImageUrl,
-            saloonId: selectedSaloon.saloonId,
-            saloonName: selectedSaloon.saloonName,
+            theaterId: getTheaterId(selectedSaloon),
+            theaterName: getTheaterName(selectedSaloon),
+            saloonId: getTheaterId(selectedSaloon),
+            saloonName: getTheaterName(selectedSaloon),
             movieDay: selectedDay,
             movieTime: movieTime
         }
@@ -121,14 +162,70 @@ export default function DetailPage() {
 
     function openLoginModal() {
         sessionStorage.setItem("cineSagaPendingPath", "/movie/" + movieId);
-        if (!toast.isActive(SIGN_IN_TOAST_ID)) {
-            toast.warning("Please sign in before booking tickets.", {
-                toastId: SIGN_IN_TOAST_ID,
+        document.querySelector('[data-bs-target="#loginModal"]')?.click();
+    }
+
+    function toggleFavoriteMovie() {
+        if (!userFromRedux) {
+            openLoginModal();
+            return;
+        }
+
+        const currentMovieId = movie?.movieId || Number(movieId);
+        if (!currentMovieId || !movie?.movieName) {
+            toast.warning("Movie details are still loading.", {
                 theme: "light",
                 position: "top-center"
             });
+            return;
         }
-        document.querySelector('[data-bs-target="#loginModal"]')?.click();
+
+        const request = isFavoriteMovie
+            ? userService.removeFavoriteMovie(currentMovieId)
+            : userService.addFavoriteMovie({
+                movieId: currentMovieId,
+                movieName: movie.movieName,
+                movieImageUrl: movie.movieImageUrl
+            });
+
+        request.then(result => {
+            setFavoriteMovies(result.data?.favoriteMovies || []);
+            toast.success(isFavoriteMovie ? "Removed from wishlist." : "Added to wishlist.", {
+                theme: "light",
+                position: "top-center"
+            });
+        }).catch(error => toast.error(error.response?.data?.message || "Could not update wishlist.", {
+            theme: "light",
+            position: "top-center"
+        }));
+    }
+
+    function toggleFavoriteTheater(theater) {
+        if (!userFromRedux) {
+            openLoginModal();
+            return;
+        }
+        const theaterName = getTheaterName(theater);
+        if (!theaterName) {
+            return;
+        }
+        const request = isFavoriteTheater(theaterName)
+            ? userService.removeFavoriteTheater(theaterName)
+            : userService.addFavoriteTheater({
+                theaterName,
+                cityName: selectedCity?.cityName || ""
+            });
+
+        request.then(result => {
+            setFavoriteTheaters(result.data?.favoriteTheaters || []);
+            toast.success(isFavoriteTheater(theaterName) ? "Removed theatre from wishlist." : "Added theatre to wishlist.", {
+                theme: "light",
+                position: "top-center"
+            });
+        }).catch(error => toast.error(error.response?.data?.message || "Could not update theatre wishlist.", {
+            theme: "light",
+            position: "top-center"
+        }));
     }
 
     function sendCommentText() {
@@ -140,18 +237,25 @@ export default function DetailPage() {
                     commentText: commentText,
                     commentBy: userFromRedux.fullName,
                     token: userFromRedux.token,
-                    movieId: movieId
+                    movieId: movieId,
+                    rating: 0
                 }
                 
                 commentService.addComment(commentDto).then(result => {
-                    if(result.status == 200) {
-                        document.querySelector("#commentArea").value = "";
-                        setComments([...comments, result.data])
-                        toast.success("Your review eklendi!", {
+                    if(result.status >= 200 && result.status < 300) {
+                        setCommentText("");
+                        setComments(currentComments => [...currentComments, result.data])
+                        setCountOfComments(currentCount => currentCount + 1)
+                        toast.success("Your review was added.", {
                             theme: "light",
                             position: "top-center"
                         });
                     }
+                }).catch(error => {
+                    toast.error(error.response?.data?.message || "Could not add your review. Please try again.", {
+                        theme: "light",
+                        position: "top-center"
+                    });
                 })
 
             } else {
@@ -174,10 +278,16 @@ export default function DetailPage() {
             token: userFromRedux.token
         }
         commentService.deleteComment(deleteCommentDto).then(result => {
-            if(result.status == 200){
-                let newComments = comments.filter(c => c.commentId != commentId);
+            if(result.status >= 200 && result.status < 300){
+                let newComments = comments.filter(c => c.commentId !== commentId);
                 setComments(newComments);
+                setCountOfComments(currentCount => Math.max(0, currentCount - 1));
             }
+        }).catch(error => {
+            toast.error(error.response?.data?.message || "Could not delete this review.", {
+                theme: "light",
+                position: "top-center"
+            });
         })
     }
 
@@ -207,12 +317,19 @@ export default function DetailPage() {
                             <p><strong>Cast</strong><span>{actors?.length > 0 ? actors.map(actor => actor.actorName).join(", ") : "Not assigned yet"}</span></p>
                         </div>
                         <div className="movie-detail-tabs mt-4" role="tablist" aria-label="Movie detail tabs">
-                            <button className={`detail-page-btn btn btn-lg ${activeTab === "tickets" ? "active" : ""}`} type="button"
-                                onClick={() => userFromRedux ? setActiveTab("tickets") : openLoginModal()}>Book Tickets</button>
+                            {!isComingSoon ? (
+                                <button className={`detail-page-btn btn btn-lg ${activeTab === "tickets" ? "active" : ""}`} type="button"
+                                    onClick={() => userFromRedux ? setActiveTab("tickets") : openLoginModal()}>Book Tickets</button>
+                            ) : null}
                             <button className={`detail-page-btn btn btn-lg ${activeTab === "reviews" ? "active" : ""}`} type="button"
                                 onClick={() => setActiveTab("reviews")}>Reviews</button>
                             <button className={`detail-page-btn btn btn-lg ${activeTab === "trailer" ? "active" : ""}`} type="button"
                                 onClick={() => setActiveTab("trailer")}>Trailer</button>
+                            <button className={`detail-page-btn favorite-movie-btn btn btn-lg ${isFavoriteMovie ? "active" : ""}`} type="button"
+                                onClick={toggleFavoriteMovie}>
+                                <i className={`${isFavoriteMovie ? "fa-solid" : "fa-regular"} fa-heart me-2`}></i>
+                                {isFavoriteMovie ? "Wishlisted" : "Wishlist"}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -254,7 +371,7 @@ export default function DetailPage() {
         </section>
 
         {/* Ticket Buy Section */}
-        {activeTab === "tickets" ? (
+        {activeTab === "tickets" && !isComingSoon ? (
         <section id="ticketBuy" className='pt-1 pb-3'>
             <div className='container bg-primary rounded'>
                 <div className='row p-5'>
@@ -271,8 +388,8 @@ export default function DetailPage() {
                             }
                          }}>
                             <span>
-                                <strong>{selectedSaloon ? selectedSaloon.saloonName : selectedCity ? `Choose theater in ${selectedCity.cityName}` : "Choose City & Theater"}</strong>
-                                {selectedCity && !selectedSaloon ? <small>{selectedCity?.saloon?.length || 0} theaters available</small> : null}
+                                <strong>{selectedSaloon ? getTheaterName(selectedSaloon) : selectedCity ? `Choose theater in ${selectedCity.cityName}` : "Choose City & Theater"}</strong>
+                                {selectedCity && !selectedSaloon ? <small>{getCityTheaters(selectedCity).length} theaters available</small> : null}
                                 {selectedSaloon ? <small>{selectedCity?.cityName}</small> : null}
                             </span>
                             <i class="fa-solid fa-chevron-down"></i>
@@ -284,18 +401,18 @@ export default function DetailPage() {
         ) : null}
 
         {/* Ticket Detail Section */}
-        {activeTab === "tickets" && selectedSaloon ? (
+        {activeTab === "tickets" && !isComingSoon && selectedSaloon ? (
             <section id="ticketDetailSection" className='px-5 py-1 pb-5'>
                 <hr />
                 <div className='container py-2'>
                     <ul class="nav justify-content-center">
                         {
                             [0,1,2,3,4,5,6].map((i) => (
-                                <li class="nav-item">
-                                    <a class="nav-link active date-converter-ticket" aria-current="page"
-                                         href="#!" onClick={() => setSelectedDay( dateConvert(new Date().setDate(date.getDate() + i)) )}>
+                                <li class="nav-item" key={i}>
+                                    <button type='button' className="nav-link active date-converter-ticket" aria-current="page"
+                                         onClick={() => setSelectedDay( dateConvert(new Date().setDate(date.getDate() + i)) )}>
                                         {dateConvertForTicket(new Date().setDate(date.getDate() + i))}
-                                    </a>
+                                    </button>
                                 </li>
                             ))
                         }
@@ -305,7 +422,7 @@ export default function DetailPage() {
                 <hr />
 
                 <div className='container bg-primary rounded'>
-                    <h3 className='text-light p-3'>{selectedSaloon?.saloonName}</h3>
+                    <h3 className='text-light p-3'>{getTheaterName(selectedSaloon)}</h3>
                 </div>
                 <div className='container pb-4'>
                     {saloonTimes?.map(time => (
@@ -330,21 +447,21 @@ export default function DetailPage() {
                        <h3>Reviews</h3>
                        {/* List reviews */}
                        <div style={{height: "200px", overflow:"scroll",overflowX: "hidden"}}>
-                            {comments.length == 0 ? (
+                            {comments.length === 0 ? (
                                 <p className='lead mt-4'>Be the first to review</p>
                             ): null}
 
                             {comments.map(comment => (
-                                <div className='row align-items-center'>
+                                <div className='row align-items-center' key={comment.commentId}>
                                     <div className='col-sm-10'>
                                         <p className='lead mt-4'>{comment.commentText}</p>
                                         <p className='small mt-0'>{comment.commentBy}</p>
                                     </div>
-                                    {userFromRedux && comment.commentByUserId == userFromRedux.userId ? 
+                                    {userFromRedux && comment.commentByUserId === userFromRedux.userId ? 
                                         <div className='col-sm-2'>
-                                            <p className='small mb-0' onClick={() => {deleteComment(comment.commentId)}}> 
-                                                <i class="fa-solid fa-xmark" ></i>
-                                            </p>
+                                            <button type='button' className='review-delete-btn small mb-0' onClick={() => {deleteComment(comment.commentId)}} aria-label='Delete review'>
+                                                <i className="fa-solid fa-xmark" ></i>
+                                            </button>
                                         </div>
                                         :
                                         null
@@ -354,11 +471,11 @@ export default function DetailPage() {
                             <hr />
                             <div className='text-center'>
                                 {currentPage < Math.ceil(countOfComments / 5) && countOfComments > 5 ?
-                                    <a href='#!' className='a-pagination lead mt-4'
+                                    <button type='button' className='a-pagination lead mt-4'
                                         onClick={() => {
                                             getComments(movieId, currentPage + 1)
                                             setCurrentPage(currentPage+1)
-                                        }}>Show more</a>
+                                        }}>Show more</button>
                                 : null}
                             </div> 
                        </div>
@@ -367,8 +484,8 @@ export default function DetailPage() {
                     </div>
                     <div className='col-sm-12 col-md-6 text-start'>
                         <h3>Review</h3>
-                            <textarea id="commentArea" className='text-dark mb-3' placeholder='Your review' onChange={(e) => setCommentText(e.target.value)} ></textarea>
-                            <button class="comment-btn btn btn-dark btn-lg col-12" type="button" onClick={() => sendCommentText()}><strong>Submit</strong></button>
+                            <textarea id="commentArea" className='review-textarea mb-3' placeholder='Your review' value={commentText} onChange={(e) => setCommentText(e.target.value)} ></textarea>
+                            <button className="comment-btn btn btn-dark btn-lg col-12" type="button" onClick={() => sendCommentText()}><strong>Submit</strong></button>
                     </div>
                 </div>
             </div>
@@ -430,20 +547,20 @@ export default function DetailPage() {
                                 <div class="d-flex align-items-center flex-column mb-3" style={{height: "20rem"}}>
                                     <div class="mb-auto pt-5 text-white"><h3> {movie.movieName} </h3></div>
                                     <div class="p-2 d-grid gap-2">
-                                        <a className="slider-button btn btn-light btn-md rounded d-none d-sm-block"
+                                        <button type='button' className="slider-button btn btn-light btn-md rounded d-none d-sm-block"
                                             onClick={()=> {
                                                 navigate("/movie/" + movie.movieId)
                                                 getNewVisionMovie(movie.movieId);
                                             }}>
                                             <strong>Review </strong>
-                                        </a>
-                                        <a class="slider-button btn btn-light btn-md rounded d-none d-sm-block"
+                                        </button>
+                                        <button type='button' class="slider-button btn btn-light btn-md rounded d-none d-sm-block"
                                             onClick={()=> {
                                                 navigate("/movie/" + movie.movieId)
                                                 getNewVisionMovie(movie.movieId);
                                             }}>
                                             <strong> Book Tickets </strong>
-                                        </a>
+                                        </button>
                                     </div>
                                 
                                 </div>
@@ -501,7 +618,7 @@ export default function DetailPage() {
                                         <span className="city-choice-icon"><i class="fa-solid fa-location-dot"></i></span>
                                         <span>
                                             <strong>{city.cityName}</strong>
-                                            <small>{city?.saloon?.length || 0} theaters</small>
+                                            <small>{getCityTheaters(city).length} theaters</small>
                                         </span>
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </button>
@@ -532,20 +649,26 @@ export default function DetailPage() {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {selectedCity?.saloon?.length > 0 ? (
+                        {getCityTheaters(selectedCity).length > 0 ? (
                             <div className="theater-choice-list">
-                                {selectedCity.saloon.map(s => (
-                                    <button className={`theater-choice-card ${selectedSaloon?.saloonId === s.saloonId ? "active" : ""}`} type="button"
-                                        key={s.saloonId}
-                                        onClick={() => selectSaloon(s)}
-                                        data-bs-dismiss="modal">
-                                        <span className="theater-choice-icon"><i class="fa-solid fa-clapperboard"></i></span>
-                                        <span>
-                                            <strong>{s.saloonName}</strong>
-                                            <small>Shows available today</small>
-                                        </span>
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
+                                {getCityTheaters(selectedCity).map(s => (
+                                    <div className='theater-choice-row' key={getTheaterId(s)}>
+                                        <button className={`theater-choice-card ${getTheaterId(selectedSaloon) === getTheaterId(s) ? "active" : ""}`} type="button"
+                                            onClick={() => selectSaloon(s)}
+                                            data-bs-dismiss="modal">
+                                            <span className="theater-choice-icon"><i class="fa-solid fa-clapperboard"></i></span>
+                                            <span>
+                                                <strong>{getTheaterName(s)}</strong>
+                                                <small>Shows available today</small>
+                                            </span>
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                        <button type='button' className={`theater-favorite-button ${isFavoriteTheater(getTheaterName(s)) ? "active" : ""}`}
+                                            onClick={() => toggleFavoriteTheater(s)}
+                                            aria-label={isFavoriteTheater(getTheaterName(s)) ? "Remove theatre from wishlist" : "Add theatre to wishlist"}>
+                                            <i className={`${isFavoriteTheater(getTheaterName(s)) ? "fa-solid" : "fa-regular"} fa-heart`}></i>
+                                        </button>
+                                    </div>
                                 ))}
                             </div>
                         ) : (

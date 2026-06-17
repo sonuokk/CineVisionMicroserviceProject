@@ -17,4 +17,7 @@ public class UserAuthenticationResponseDto {
     private String fullName;
     private List<String> roles;
     private String token;
+    private String theaterManagerRequestStatus;
+    private java.time.Instant theaterManagerDeleteAfter;
+    private String theaterManagerRejectionReason;
 }

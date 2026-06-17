@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CityDao extends MongoRepository<City, Integer> {
     List<City> getCitiesByMovieMovieId(int movieId);
+    Optional<City> findFirstByMovieIsNullAndCityNameIgnoreCase(String cityName);
     Optional<City> findFirstByMovieMovieIdAndCityNameIgnoreCase(int movieId, String cityName);
+    void deleteByMovieMovieId(int movieId);
 }

@@ -38,4 +38,15 @@ public class PaymentController {
                                        @RequestParam String movieStartTime) {
         return paymentService.getBookedSeats(movieName, saloonName, movieDay, movieStartTime);
     }
+
+    @DeleteMapping("user-records")
+    public void purgeUserRecords(@RequestParam String email,
+                                 @RequestParam(required = false) String userId,
+                                 @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+                                 @RequestHeader(value = "X-Internal-Cleanup-Token", required = false) String cleanupToken) {
+        paymentService.purgeUserRecords(email, userId,
+                authorizationHeader != null && !authorizationHeader.isBlank()
+                        ? authorizationHeader
+                        : cleanupToken == null ? null : "InternalCleanup " + cleanupToken);
+    }
 }

@@ -1,22 +1,18 @@
 package com.doffeii.movieService.business.concretes;
 
 import com.doffeii.movieService.business.abstracts.PaymentService;
+import com.doffeii.movieService.dao.CommentDao;
 import com.doffeii.movieService.dao.MovieDao;
 import com.doffeii.movieService.dao.PaymentCardDetailDao;
 import com.doffeii.movieService.dao.TicketBookingDao;
-import com.doffeii.movieService.dao.TicketBookingSeatDao;
-import com.doffeii.movieService.dao.mongo.BookingDocumentDao;
 import com.doffeii.movieService.entity.PaymentCardDetail;
 import com.doffeii.movieService.entity.TicketBooking;
 import com.doffeii.movieService.entity.TicketBookingSeat;
 import com.doffeii.movieService.entity.Movie;
-import com.doffeii.movieService.entity.dto.EmailMessageKafkaDto;
 import com.doffeii.movieService.entity.dto.CancelTicketRequestDto;
 import com.doffeii.movieService.entity.dto.TicketBookingResponseDto;
 import com.doffeii.movieService.entity.dto.TicketInformationDto;
-import com.doffeii.movieService.entity.mongo.BookingDocument;
 import com.doffeii.movieService.entity.mongo.MovieDocument;
-import com.doffeii.movieService.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,22 +35,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final KafkaProducer kafkaProducer;
     private final TicketBookingDao ticketBookingDao;
-    private final TicketBookingSeatDao ticketBookingSeatDao;
     private final PaymentCardDetailDao paymentCardDetailDao;
     private final MovieDao movieDao;
-    private final BookingDocumentDao bookingDocumentDao;
+    private final CommentDao commentDao;
     private final WebClient.Builder webClientBuilder;
-
-    @Value("${app.mail.sender:no-reply@cinesaga.local}")
-    private String ticketSenderEmail;
+    private final TicketEmailSender ticketEmailSender;
 
     @Value("${app.payment.card-hash-secret:cinesaga-local-card-secret}")
     private String cardHashSecret;
 
     @Value("${app.ticket.cancellation-window-minutes:30}")
     private long cancellationWindowMinutes;
+
+    @Value("${app.internal.cleanup-token:cinesaga-internal-cleanup-token}")
+    private String cleanupToken;
 
     @Override
     public TicketBookingResponseDto sendTicketDetail(TicketInformationDto ticketInformationDto, String authorizationHeader) {
@@ -69,8 +64,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
         String normalizedCardNumber = normalizeCardNumber(ticketInformationDto.getCardNumber());
 
-        BigDecimal totalAmount = BigDecimal.valueOf(ticketInformationDto.getAdultTicketCount()).multiply(BigDecimal.valueOf(25))
-                .add(BigDecimal.valueOf(ticketInformationDto.getStudentTicketCount()).multiply(BigDecimal.valueOf(15)));
+        BigDecimal totalAmount = BigDecimal.valueOf(ticketInformationDto.getAdultTicketCount()).multiply(BigDecimal.valueOf(250))
+                .add(BigDecimal.valueOf(ticketInformationDto.getStudentTicketCount()).multiply(BigDecimal.valueOf(150)));
 
         TicketBooking booking = new TicketBooking();
         booking.setMovieName(ticketInformationDto.getMovieName().trim());
@@ -86,12 +81,14 @@ public class PaymentServiceImpl implements PaymentService {
         booking.setStatus("CONFIRMED");
         booking.ensureBookingMetadata();
 
+        List<String> alreadyBookedSeats = findBookedSeats(
+                booking.getMovieName(),
+                booking.getSaloonName(),
+                booking.getMovieDay(),
+                booking.getMovieStartTime()
+        );
         for (String seatNumber : seats) {
-            if (ticketBookingSeatDao.findBookedSeats(
-                    booking.getMovieName(),
-                    booking.getSaloonName(),
-                    booking.getMovieDay(),
-                    booking.getMovieStartTime()).contains(seatNumber)) {
+            if (alreadyBookedSeats.contains(seatNumber)) {
                 throw new IllegalArgumentException("One or more selected seats are already booked. Please choose different seats.");
             }
             TicketBookingSeat seat = new TicketBookingSeat();
@@ -103,7 +100,6 @@ public class PaymentServiceImpl implements PaymentService {
             booking.addSeat(seat);
         }
 
-        ticketBookingSeatDao.saveAll(booking.getSeats());
         booking = ticketBookingDao.save(booking);
 
         PaymentCardDetail paymentCardDetail = new PaymentCardDetail();
@@ -122,48 +118,22 @@ public class PaymentServiceImpl implements PaymentService {
         String chairNumbers = String.join(" ", seats);
         MovieDocument movieDocument = resolveMovieDocument(ticketInformationDto);
         String qrCodePayload = buildQrCodePayload(booking, chairNumbers);
-        BookingDocument bookingDocument = bookingDocumentDao.save(BookingDocument.builder()
-                .bookingCode(booking.getBookingCode())
-                .userEmail(booking.getEmail())
-                .fullName(booking.getFullName())
-                .phone(booking.getPhone())
-                .movie(movieDocument)
-                .saloonName(booking.getSaloonName())
-                .theatreName(booking.getSaloonName())
-                .movieDay(booking.getMovieDay())
-                .movieStartTime(booking.getMovieStartTime())
-                .showtimeStartTime(booking.getMovieStartTime())
-                .seats(List.copyOf(seats))
-                .adultTicketCount(booking.getAdultTicketCount())
-                .studentTicketCount(booking.getStudentTicketCount())
-                .totalAmount(booking.getTotalAmount())
-                .status(booking.getStatus())
-                .bookedAt(booking.getCreatedAt())
-                .qrCodePayload(qrCodePayload)
-                .build());
-        appendBookedMovieToUser(bookingDocument, authorizationHeader);
+        appendBookedMovieToUser(booking, movieDocument, chairNumbers, qrCodePayload, authorizationHeader);
 
-        EmailMessageKafkaDto emailMessage = EmailMessageKafkaDto.builder()
-                .sender(ticketSenderEmail)
-                .recipient(booking.getEmail())
-                .subtitle("CineSaga Ticket Details")
-                .fullName(booking.getFullName())
-                .movieName(booking.getMovieName())
-                .movieDay(booking.getMovieDay())
-                .movieStartTime(booking.getMovieStartTime())
-                .saloonName(booking.getSaloonName())
-                .chairNumbers(chairNumbers)
-                .build();
-
+        String emailStatus = "SENT";
+        String emailMessage = "Ticket email sent to " + booking.getEmail() + ".";
         try {
-            kafkaProducer.sendMessage(emailMessage);
+            ticketEmailSender.sendBookingTicket(booking, chairNumbers, totalAmount, qrCodePayload);
         } catch (RuntimeException exception) {
-            // Booking should still succeed in local/demo mode even if Kafka or email is offline.
+            emailStatus = "FAILED";
+            emailMessage = "Ticket booked, but confirmation email could not be sent: " + conciseError(exception);
         }
 
         return TicketBookingResponseDto.builder()
                 .status("SUCCESS")
-                .message("Ticket booked successfully. Details will be emailed when mail credentials are configured.")
+                .message(emailStatus.equals("SENT")
+                        ? "Ticket booked successfully. Confirmation email sent to " + booking.getEmail() + "."
+                        : "Ticket booked successfully, but confirmation email could not be sent.")
                 .bookingCode(booking.getBookingCode())
                 .movieName(booking.getMovieName())
                 .saloonName(booking.getSaloonName())
@@ -172,6 +142,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .chairNumbers(chairNumbers)
                 .totalAmount(totalAmount.toPlainString())
                 .qrCodePayload(qrCodePayload)
+                .recipientEmail(booking.getEmail())
+                .emailStatus(emailStatus)
+                .emailMessage(emailMessage)
                 .build();
     }
 
@@ -197,16 +170,8 @@ public class PaymentServiceImpl implements PaymentService {
         Instant cancelledAt = Instant.now();
         booking.setStatus("CANCELLED");
         booking.setCancelledAt(cancelledAt);
-        ticketBookingSeatDao.deleteAll(booking.getSeats());
-        booking.getSeats().clear();
         ticketBookingDao.save(booking);
 
-        BookingDocument bookingDocument = bookingDocumentDao.findByBookingCode(booking.getBookingCode());
-        if (bookingDocument != null) {
-            bookingDocument.setStatus("CANCELLED");
-            bookingDocument.setCancelledAt(cancelledAt);
-            bookingDocumentDao.save(bookingDocument);
-        }
         PaymentCardDetail paymentCardDetail = paymentCardDetailDao.findByBookingBookingCode(booking.getBookingCode());
         if (paymentCardDetail != null) {
             paymentCardDetail.setStatus("REFUNDED");
@@ -230,12 +195,50 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<String> getBookedSeats(String movieName, String saloonName, String movieDay, String movieStartTime) {
-        return ticketBookingSeatDao.findBookedSeats(
+        return findBookedSeats(
                 movieName.trim(),
                 saloonName.trim(),
                 movieDay.trim(),
                 movieStartTime.trim()
         );
+    }
+
+    @Override
+    public void purgeUserRecords(String email, String userId, String authorizationHeader) {
+        String normalizedEmail = email == null ? "" : email.trim().toLowerCase();
+        if (normalizedEmail.isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        ensureCanPurgeUserRecords(normalizedEmail, authorizationHeader);
+
+        List<TicketBooking> bookings = ticketBookingDao.findByEmailIgnoreCase(normalizedEmail);
+        List<String> bookingCodes = bookings.stream()
+                .map(TicketBooking::getBookingCode)
+                .filter(code -> code != null && !code.isBlank())
+                .toList();
+
+        if (!bookingCodes.isEmpty()) {
+            paymentCardDetailDao.deleteByBookingBookingCodeIn(bookingCodes);
+            ticketBookingDao.deleteAll(bookings);
+        }
+
+        if (userId != null && !userId.isBlank()) {
+            commentDao.deleteByCommentByUserId(userId.trim());
+        }
+    }
+
+    private List<String> findBookedSeats(String movieName, String saloonName, String movieDay, String movieStartTime) {
+        return ticketBookingDao.findByMovieNameAndSaloonNameAndMovieDayAndMovieStartTimeAndStatusIgnoreCase(
+                        movieName,
+                        saloonName,
+                        movieDay,
+                        movieStartTime,
+                        "CONFIRMED"
+                ).stream()
+                .filter(booking -> booking.getSeats() != null)
+                .flatMap(booking -> booking.getSeats().stream())
+                .map(TicketBookingSeat::getSeatNumber)
+                .toList();
     }
 
     private Set<String> parseSeatNumbers(String chairNumbers) {
@@ -281,28 +284,29 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
     }
 
-    private void appendBookedMovieToUser(BookingDocument bookingDocument, String authorizationHeader) {
+    private void appendBookedMovieToUser(TicketBooking booking, MovieDocument movieDocument, String chairNumbers,
+                                         String qrCodePayload, String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
             return;
         }
 
         try {
             Map<String, Object> payload = new LinkedHashMap<>();
-            payload.put("bookingCode", bookingDocument.getBookingCode());
-            payload.put("movie", bookingDocument.getMovie());
-            payload.put("saloonName", bookingDocument.getSaloonName());
-            payload.put("theatreName", bookingDocument.getTheatreName());
-            payload.put("movieDay", bookingDocument.getMovieDay());
-            payload.put("movieStartTime", bookingDocument.getMovieStartTime());
-            payload.put("showtimeStartTime", bookingDocument.getShowtimeStartTime());
-            payload.put("seats", bookingDocument.getSeats());
-            payload.put("adultTicketCount", bookingDocument.getAdultTicketCount());
-            payload.put("studentTicketCount", bookingDocument.getStudentTicketCount());
-            payload.put("totalAmount", bookingDocument.getTotalAmount());
-            payload.put("bookedAt", bookingDocument.getBookedAt());
-            payload.put("status", bookingDocument.getStatus());
-            payload.put("cancelledAt", bookingDocument.getCancelledAt());
-            payload.put("qrCodePayload", bookingDocument.getQrCodePayload());
+            payload.put("bookingCode", booking.getBookingCode());
+            payload.put("movie", movieDocument);
+            payload.put("saloonName", booking.getSaloonName());
+            payload.put("theatreName", booking.getSaloonName());
+            payload.put("movieDay", booking.getMovieDay());
+            payload.put("movieStartTime", booking.getMovieStartTime());
+            payload.put("showtimeStartTime", booking.getMovieStartTime());
+            payload.put("seats", Arrays.asList(chairNumbers.split("\\s+")));
+            payload.put("adultTicketCount", booking.getAdultTicketCount());
+            payload.put("studentTicketCount", booking.getStudentTicketCount());
+            payload.put("totalAmount", booking.getTotalAmount());
+            payload.put("bookedAt", booking.getCreatedAt());
+            payload.put("status", booking.getStatus());
+            payload.put("cancelledAt", booking.getCancelledAt());
+            payload.put("qrCodePayload", qrCodePayload);
 
             webClientBuilder.build().post()
                     .uri("http://USERSERVICE/api/user/users/me/booked-movies")
@@ -343,6 +347,43 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    private void ensureCanPurgeUserRecords(String email, String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+            throw new IllegalArgumentException("Sign in is required to purge user records");
+        }
+
+        if (authorizationHeader.startsWith("InternalCleanup ")) {
+            String token = authorizationHeader.substring("InternalCleanup ".length()).trim();
+            if (cleanupToken.equals(token)) {
+                return;
+            }
+            throw new IllegalArgumentException("Internal cleanup token is invalid");
+        }
+
+        Map<?, ?> currentUser = webClientBuilder.build().get()
+                .uri("http://USERSERVICE/api/user/users/me")
+                .header("Authorization", authorizationHeader)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+
+        Object currentEmail = currentUser == null ? null : currentUser.get("email");
+        if (currentEmail != null && email.equalsIgnoreCase(currentEmail.toString())) {
+            return;
+        }
+
+        Boolean isAdmin = webClientBuilder.build().get()
+                .uri("http://USERSERVICE/api/user/users/isUserAdmin")
+                .header("Authorization", authorizationHeader)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+
+        if (!Boolean.TRUE.equals(isAdmin)) {
+            throw new IllegalArgumentException("Only admins can purge user records");
+        }
+    }
+
     private String buildQrCodePayload(TicketBooking booking, String chairNumbers) {
         return "CINESAGA|booking=" + safe(booking.getBookingCode())
                 + "|movie=" + safe(booking.getMovieName())
@@ -352,6 +393,18 @@ public class PaymentServiceImpl implements PaymentService {
 
     private String safe(String value) {
         return value == null ? "" : value.replace("|", " ").trim();
+    }
+
+    private String conciseError(Throwable exception) {
+        Throwable root = exception;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+        String message = root.getMessage();
+        if (message == null || message.isBlank()) {
+            message = root.getClass().getSimpleName();
+        }
+        return message.length() > 180 ? message.substring(0, 177) + "..." : message;
     }
 
     private String normalizeCardNumber(String cardNumber) {

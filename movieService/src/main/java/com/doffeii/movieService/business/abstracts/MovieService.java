@@ -12,9 +12,15 @@ public interface MovieService {
 
     List<MovieResponseDto> getAllComingSoonMovies();
 
+    List<MovieResponseDto> getAllMovies();
+
+    List<MovieResponseDto> getMoviesByCity(String cityName);
+
     MovieResponseDto getMovieByMovieId(int movieId);
 
     Movie getMovieById(int movieId);
 
     Movie addMovie(MovieRequestDto movieRequestDto);
+
+    void deleteMovie(int movieId, String authorizationHeader);
 }

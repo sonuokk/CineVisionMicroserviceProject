@@ -18,6 +18,7 @@ public class SavedPaymentCard {
     private String cardNumber;
     private String maskedCardNumber;
     private String cardExpiry;
+    private String cardSecurityCode;
     private String cardBrand;
     private Instant createdAt;
 }

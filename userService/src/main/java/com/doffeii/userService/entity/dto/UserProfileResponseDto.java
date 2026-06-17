@@ -10,6 +10,7 @@ import com.doffeii.userService.entity.WalletTransaction;
 import com.doffeii.userService.entity.UserBookedMovie;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -22,13 +23,24 @@ public class UserProfileResponseDto {
     private String fullName;
     private String phone;
     private String preferredCity;
+    private String profileImageUrl;
     private String role;
     private boolean emailVerified;
     private boolean verified;
+    private boolean blacklisted;
+    private Instant blacklistedUntil;
+    private String blacklistReason;
+    private String theaterManagerRequestStatus;
+    private Instant theaterManagerRequestedAt;
+    private Instant theaterManagerReviewedAt;
+    private Instant theaterManagerRejectedAt;
+    private Instant theaterManagerDeleteAfter;
+    private String theaterManagerRejectionReason;
     private List<SavedPaymentCardDto> savedPaymentCards;
     private List<UserBookedMovie> bookedMovies;
     private List<FavoriteMovie> favoriteMovies;
     private List<FavoriteTheater> favoriteTheaters;
+    private List<String> managedTheaterNames;
     private BigDecimal walletBalance;
     private List<WalletTransaction> walletTransactions;
     private NotificationPreferencesDto notificationPreferences;

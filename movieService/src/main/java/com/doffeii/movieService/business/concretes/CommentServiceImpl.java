@@ -10,10 +10,12 @@ import com.doffeii.movieService.entity.dto.DeleteCommentRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> getCommentsByMovieId(int movieId, int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return commentDao.getCommentsByMovieMovieId(movieId, pageable);
     }
 
@@ -35,46 +37,45 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto) {
+    public void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto, String authorizationHeader) {
+        Map<?, ?> currentUser = fetchCurrentUser(authorizationHeader, deleteCommentRequestDto.getToken());
+        Comment comment = commentDao.findById(deleteCommentRequestDto.getCommentId())
+                .orElseThrow(() -> new IllegalArgumentException("Review was already removed"));
 
-        Boolean result = webClientBuilder.build().get()
-                .uri("http://USERSERVICE/api/user/users/isUserCustomer")
-                .header("Authorization","Bearer " + deleteCommentRequestDto.getToken())
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
+        String currentUserId = stringValue(currentUser.get("userId"));
+        String role = stringValue(currentUser.get("role"));
+        boolean ownsReview = !currentUserId.isBlank() && currentUserId.equals(comment.getCommentByUserId());
+        boolean admin = "ADMIN".equalsIgnoreCase(role) || "ROLE_ADMIN".equalsIgnoreCase(role);
 
-        if (result) {
-            commentDao.deleteById(deleteCommentRequestDto.getCommentId());
+        if (!ownsReview && !admin) {
+            throw new IllegalArgumentException("You can delete only your own review");
         }
 
+        commentDao.deleteById(deleteCommentRequestDto.getCommentId());
     }
 
     @Override
-    public Comment addComment(CommentRequestDto commentRequestDto) {
-
-        Boolean result = webClientBuilder.build().get()
-                .uri("http://USERSERVICE/api/user/users/isUserCustomer")
-                .header("Authorization","Bearer " + commentRequestDto.getToken())
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
-
-        if (result) {
-            Movie movie = movieService.getMovieById(commentRequestDto.getMovieId());
-
-            Comment comment = Comment.builder()
-                    .commentId(nextCommentId())
-                    .commentByUserId(commentRequestDto.getCommentByUserId())
-                    .commentBy(commentRequestDto.getCommentBy())
-                    .commentText(commentRequestDto.getCommentText())
-                    .rating(validateRating(commentRequestDto.getRating()))
-                    .movie(movie)
-                    .build();
-
-            return commentDao.save(comment);
+    public Comment addComment(CommentRequestDto commentRequestDto, String authorizationHeader) {
+        Map<?, ?> currentUser = fetchCurrentUser(authorizationHeader, commentRequestDto.getToken());
+        String reviewText = commentRequestDto.getCommentText() == null ? "" : commentRequestDto.getCommentText().trim();
+        if (reviewText.isBlank()) {
+            throw new IllegalArgumentException("Review cannot be empty");
         }
-        throw new RuntimeException("Yetki hatası");
+
+        Movie movie = movieService.getMovieById(commentRequestDto.getMovieId());
+        String fullName = stringValue(currentUser.get("fullName"));
+        String email = stringValue(currentUser.get("email"));
+
+        Comment comment = Comment.builder()
+                .commentId(nextCommentId())
+                .commentByUserId(stringValue(currentUser.get("userId")))
+                .commentBy(fullName.isBlank() ? email : fullName)
+                .commentText(reviewText)
+                .rating(validateRating(commentRequestDto.getRating()))
+                .movie(movie)
+                .build();
+
+        return commentDao.save(comment);
     }
 
     @Override
@@ -91,6 +92,7 @@ public class CommentServiceImpl implements CommentService {
         }
         return rating;
     }
+
     private int nextCommentId() {
         return commentDao.findAll().stream()
                 .map(Comment::getCommentId)
@@ -98,4 +100,38 @@ public class CommentServiceImpl implements CommentService {
                 .mapToInt(Integer::intValue)
                 .max()
                 .orElse(0) + 1;
-    }}
+    }
+
+    private Map<?, ?> fetchCurrentUser(String authorizationHeader, String bodyToken) {
+        String resolvedAuthorization = resolveAuthorizationHeader(authorizationHeader, bodyToken);
+        if (resolvedAuthorization.isBlank()) {
+            throw new IllegalArgumentException("Sign in is required to review");
+        }
+
+        Map<?, ?> currentUser = webClientBuilder.build().get()
+                .uri("http://USERSERVICE/api/user/users/me")
+                .header(HttpHeaders.AUTHORIZATION, resolvedAuthorization)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+
+        if (currentUser == null || currentUser.isEmpty()) {
+            throw new IllegalArgumentException("Sign in is required to review");
+        }
+        return currentUser;
+    }
+
+    private String resolveAuthorizationHeader(String authorizationHeader, String bodyToken) {
+        if (authorizationHeader != null && !authorizationHeader.isBlank()) {
+            return authorizationHeader;
+        }
+        if (bodyToken != null && !bodyToken.isBlank()) {
+            return bodyToken.startsWith("Bearer ") ? bodyToken : "Bearer " + bodyToken;
+        }
+        return "";
+    }
+
+    private String stringValue(Object value) {
+        return value == null ? "" : String.valueOf(value);
+    }
+}

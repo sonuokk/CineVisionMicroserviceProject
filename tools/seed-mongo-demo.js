@@ -31,8 +31,8 @@ const users = [
     whatsappEnabled: true
   },
   emailVerified: true,
-  claim: {
-    claimName: "CUSTOMER"
+  role: {
+    roleName: "CUSTOMER"
   },
   registrationOtpAttempts: 0
 }));
@@ -127,22 +127,22 @@ for (const movie of movies) {
 }
 
 const theatres = [
-  { _id: 1, saloonId: 1, saloonName: "CineSaga Bandra Luxe", city: { cityId: 1, cityName: "Mumbai" } },
-  { _id: 2, saloonId: 2, saloonName: "CineSaga Saket Select", city: { cityId: 2, cityName: "Delhi" } },
-  { _id: 3, saloonId: 3, saloonName: "CineSaga Orion Mall", city: { cityId: 3, cityName: "Bengaluru" } }
+  { _id: 1, theaterId: 1, theaterName: "CineSaga Bandra Luxe", city: { cityId: 1, cityName: "Mumbai" } },
+  { _id: 2, theaterId: 2, theaterName: "CineSaga Saket Select", city: { cityId: 2, cityName: "Delhi" } },
+  { _id: 3, theaterId: 3, theaterName: "CineSaga Orion Mall", city: { cityId: 3, cityName: "Bengaluru" } }
 ];
 
 for (const theatre of theatres) {
-  target.theatres.updateOne({ saloonId: theatre.saloonId }, { $set: theatre }, { upsert: true });
+  target.theatres.updateOne({ theaterId: theatre.theaterId }, { $set: theatre }, { upsert: true });
 }
 
 const showtimes = [
-  { _id: 1, id: 1, movieBeginTime: "10:30", movie: movies[0], saloon: theatres[0] },
-  { _id: 2, id: 2, movieBeginTime: "20:15", movie: movies[0], saloon: theatres[0] },
-  { _id: 3, id: 3, movieBeginTime: "13:45", movie: movies[1], saloon: theatres[1] },
-  { _id: 4, id: 4, movieBeginTime: "22:40", movie: movies[1], saloon: theatres[1] },
-  { _id: 5, id: 5, movieBeginTime: "17:00", movie: movies[2], saloon: theatres[2] },
-  { _id: 6, id: 6, movieBeginTime: "20:15", movie: movies[2], saloon: theatres[2] }
+  { _id: 1, id: 1, movieBeginTime: "10:30", movie: movies[0], theater: theatres[0] },
+  { _id: 2, id: 2, movieBeginTime: "20:15", movie: movies[0], theater: theatres[0] },
+  { _id: 3, id: 3, movieBeginTime: "13:45", movie: movies[1], theater: theatres[1] },
+  { _id: 4, id: 4, movieBeginTime: "22:40", movie: movies[1], theater: theatres[1] },
+  { _id: 5, id: 5, movieBeginTime: "17:00", movie: movies[2], theater: theatres[2] },
+  { _id: 6, id: 6, movieBeginTime: "20:15", movie: movies[2], theater: theatres[2] }
 ];
 
 for (const showtime of showtimes) {
@@ -154,8 +154,8 @@ const bookings = [
     _id: "CV-DEMO100",
     bookingCode: "CV-DEMO100",
     movieName: "Interstellar",
-    saloonName: "CineSaga Bandra Luxe",
-    theatreName: "CineSaga Bandra Luxe",
+    theaterName: "CineSaga Bandra Luxe",
+    theaterDisplayName: "CineSaga Bandra Luxe",
     movieDay: "2026-05-10",
     movieStartTime: "20:15",
     showtimeStartTime: "20:15",
@@ -177,8 +177,8 @@ const bookings = [
     _id: "CV-DEMO200",
     bookingCode: "CV-DEMO200",
     movieName: "Dune: Part Two",
-    saloonName: "CineSaga Orion Mall",
-    theatreName: "CineSaga Orion Mall",
+    theaterName: "CineSaga Orion Mall",
+    theaterDisplayName: "CineSaga Orion Mall",
     movieDay: "2026-05-11",
     movieStartTime: "17:00",
     showtimeStartTime: "17:00",

@@ -12,6 +12,8 @@ public interface CommentDao extends MongoRepository<Comment, Integer> {
     List<Comment> getCommentsByMovieMovieId(int movieId, Pageable pageable);
     int countCommentByMovieMovieId(int movieId);
     List<Comment> findByMovieMovieIdAndRatingGreaterThan(int movieId, int rating);
+    void deleteByCommentByUserId(String commentByUserId);
+    void deleteByMovieMovieId(int movieId);
 
     default double getAverageRatingByMovieId(int movieId) {
         List<Comment> ratings = findByMovieMovieIdAndRatingGreaterThan(movieId, 0);

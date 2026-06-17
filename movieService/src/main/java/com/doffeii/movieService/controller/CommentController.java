@@ -37,16 +37,18 @@ public class CommentController {
     @PostMapping("add")
     @CircuitBreaker(name = "comment", fallbackMethod = "fallback")
     @Retry(name="comment")
-    public Comment addComment(@RequestBody CommentRequestDto comment) {
-        return commentService.addComment(comment);
+    public Comment addComment(@RequestBody CommentRequestDto comment,
+                              @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return commentService.addComment(comment, authorizationHeader);
     }
 
     @PostMapping("delete")
-    public void deleteComment(@RequestBody DeleteCommentRequestDto deleteCommentRequestDto) {
-        commentService.deleteComment(deleteCommentRequestDto);
+    public void deleteComment(@RequestBody DeleteCommentRequestDto deleteCommentRequestDto,
+                              @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        commentService.deleteComment(deleteCommentRequestDto, authorizationHeader);
     }
     @SuppressWarnings("unused")
-    private Comment fallback(CommentRequestDto commentRequestDto, RuntimeException runtimeException) throws RuntimeException{
+    private Comment fallback(CommentRequestDto commentRequestDto, String authorizationHeader, RuntimeException runtimeException) throws RuntimeException{
         return null;
     }
 

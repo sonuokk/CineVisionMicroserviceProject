@@ -51,7 +51,7 @@ public class CityTheaterDataConfig {
                             .build()));
 
             theaterNames.forEach(theaterName -> {
-                Saloon saloon = saloonDao.findFirstByCityCityIdAndSaloonNameIgnoreCase(city.getCityId(), theaterName)
+                Saloon saloon = saloonDao.findFirstByCityCityIdAndTheaterNameIgnoreCase(city.getCityId(), theaterName)
                         .orElseGet(() -> {
                             Saloon newSaloon = new Saloon();
                             newSaloon.setCity(city);
@@ -65,7 +65,7 @@ public class CityTheaterDataConfig {
     }
 
     private void ensureShowTime(Movie movie, Saloon saloon, String showTime) {
-        if (movieSaloonTimeDao.existsBySaloonSaloonIdAndMovieMovieIdAndMovieBeginTime(
+        if (movieSaloonTimeDao.existsByTheaterTheaterIdAndMovieMovieIdAndMovieBeginTime(
                 saloon.getSaloonId(), movie.getMovieId(), showTime)) {
             return;
         }

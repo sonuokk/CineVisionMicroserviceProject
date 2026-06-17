@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -26,15 +27,27 @@ public class User {
     private String fullName;
     private String phone;
     private String preferredCity;
+    private String profileImageUrl;
     private List<SavedPaymentCard> savedPaymentCards;
     private List<UserBookedMovie> bookedMovies;
     private List<FavoriteMovie> favoriteMovies;
     private List<FavoriteTheater> favoriteTheaters;
+    private List<String> managedTheaterNames;
     private BigDecimal walletBalance;
     private List<WalletTransaction> walletTransactions;
     private NotificationPreferences notificationPreferences;
     private boolean emailVerified;
-    private Claim claim;
+    private Instant blacklistedUntil;
+    private Instant blacklistedAt;
+    private String blacklistReason;
+    private String theaterManagerRequestStatus;
+    private Instant theaterManagerRequestedAt;
+    private Instant theaterManagerReviewedAt;
+    private Instant theaterManagerRejectedAt;
+    private Instant theaterManagerDeleteAfter;
+    private String theaterManagerRejectionReason;
+    @Field("role")
+    private Role role;
     private String registrationOtpHash;
     private Instant registrationOtpCreatedAt;
     private Instant registrationOtpExpiresAt;

@@ -1,6 +1,6 @@
 package com.doffeii.userService.config;
 
-import com.doffeii.userService.business.abstracts.ClaimService;
+import com.doffeii.userService.business.abstracts.RoleService;
 import com.doffeii.userService.dao.UserDao;
 import com.doffeii.userService.entity.NotificationPreferences;
 import com.doffeii.userService.entity.User;
@@ -19,7 +19,7 @@ import java.util.Locale;
 public class DummyUserDataConfig {
 
     private final UserDao userDao;
-    private final ClaimService claimService;
+    private final RoleService RoleService;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
@@ -56,8 +56,9 @@ public class DummyUserDataConfig {
                         .whatsappEnabled(true)
                         .build())
                 .emailVerified(true)
-                .claim(claimService.getOrCreateClaim("CUSTOMER"))
+                .role(RoleService.getOrCreateRole("CUSTOMER"))
                 .registrationOtpAttempts(0)
                 .build();
     }
 }
+

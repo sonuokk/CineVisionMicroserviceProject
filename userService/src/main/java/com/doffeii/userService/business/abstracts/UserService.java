@@ -1,6 +1,8 @@
 package com.doffeii.userService.business.abstracts;
 
 import com.doffeii.userService.entity.User;
+import com.doffeii.userService.entity.dto.AdminNotificationRequestDto;
+import com.doffeii.userService.entity.dto.AdminNotificationResponseDto;
 import com.doffeii.userService.entity.dto.OtpRequestResponseDto;
 import com.doffeii.userService.entity.dto.FavoriteMovieRequestDto;
 import com.doffeii.userService.entity.dto.FavoriteTheaterRequestDto;
@@ -32,7 +34,29 @@ public interface UserService {
 
     UserProfileResponseDto promoteUserToAdmin(String email);
 
+    UserProfileResponseDto promoteUserToTheaterManager(String email, String theaterName);
+
+    UserProfileResponseDto updateUserRole(String email, String role, String theaterName);
+
+    UserProfileResponseDto approveTheaterManagerRequest(String email, String theaterName);
+
+    UserProfileResponseDto rejectTheaterManagerRequest(String email, String reason);
+
+    UserProfileResponseDto blacklistUser(String email, String duration, String reason);
+
+    UserProfileResponseDto removeUserBlacklist(String email);
+
+    AdminNotificationResponseDto sendAdminNotification(AdminNotificationRequestDto adminNotificationRequestDto);
+
+    void deleteUserByEmail(String email, String authorizationHeader);
+
+    OtpRequestResponseDto requestAccountDeletionOtp();
+
+    void confirmAccountDeletion(String otp, String authorizationHeader);
+
     List<UserProfileResponseDto> getAllUsers();
+
+    List<UserProfileResponseDto> getVisibleBookedTicketUsers();
 
     User getUserByEmail(String email);
 
@@ -59,4 +83,10 @@ public interface UserService {
     boolean isUserCustomer();
 
     boolean isUserAdmin();
+
+    boolean isUserTheaterManager();
+
+    boolean canManageTheaters();
+
+    boolean canManageTheater(String theaterName);
 }

@@ -1,0 +1,78 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.doffeii:movie-service >----------------------
+[INFO] Building movieService 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.2:run (default-cli) > test-compile @ movie-service >>>
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ movie-service ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ movie-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ movie-service ---
+[INFO] skip non existing resourceDirectory D:\MCA\Sem4\project\CineVisionMicroserviceProject\movieService\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ movie-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.2:run (default-cli) < test-compile @ movie-service <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.2:run (default-cli) @ movie-service ---
+[INFO] Attaching agents: []
+                              ,--.                                              ,--.
+,--,--,--.  ,---.  ,--.  ,--. `--'  ,---.     ,---.   ,---.  ,--.--. ,--.  ,--. `--'  ,---.  ,---.
+|        | | .-. |  \  `'  /  ,--. | .-. :   (  .-'  | .-. : |  .--'  \  `'  /  ,--. | .--' | .-. :
+|  |  |  | ' '-' '   \    /   |  | \   --.   .-'  `) \   --. |  |      \    /   |  | \ `--. \   --.
+`--`--`--'  `---'     `--'    `--'  `----'   `----'   `----' `--'       `--'    `--'  `---'  `----'
+2026-05-19T09:19:49.433+05:30  INFO 7564 --- [movieService] [           main] c.d.m.MovieServiceApplication            : Starting MovieServiceApplication using Java 21.0.10 with PID 7564 (D:\MCA\Sem4\project\CineVisionMicroserviceProject\movieService\target\classes started by Sonu in D:\MCA\Sem4\project\CineVisionMicroserviceProject\movieService)
+2026-05-19T09:19:49.437+05:30  INFO 7564 --- [movieService] [           main] c.d.m.MovieServiceApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-05-19T09:19:52.304+05:30  INFO 7564 --- [movieService] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-05-19T09:19:52.307+05:30  INFO 7564 --- [movieService] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-05-19T09:19:52.658+05:30  INFO 7564 --- [movieService] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 335 ms. Found 12 MongoDB repository interfaces.
+2026-05-19T09:19:53.843+05:30  INFO 7564 --- [movieService] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a9f1fe89-4362-328b-8e37-5b5907922d5c
+2026-05-19T09:19:54.824+05:30  INFO 7564 --- [movieService] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 0 (http)
+2026-05-19T09:19:54.850+05:30  INFO 7564 --- [movieService] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-19T09:19:54.851+05:30  INFO 7564 --- [movieService] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-19T09:19:55.081+05:30  INFO 7564 --- [movieService] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 5570 ms
+2026-05-19T09:19:55.937+05:30  INFO 7564 --- [movieService] [           main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|spring-boot|sync", "version": "5.6.2"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Eclipse Adoptium/21.0.10+7-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@5649f55], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@558127d2, com.mongodb.Jep395RecordCodecProvider@12270a01, com.mongodb.KotlinCodecProvider@4552f905, EnumCodecProvider{}]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@646d58cd], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=UNSPECIFIED, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+2026-05-19T09:19:55.973+05:30  INFO 7564 --- [movieService] [localhost:27017] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=32188600, minRoundTripTimeNanos=0}
+2026-05-19T09:19:58.709+05:30  INFO 7564 --- [movieService] [           main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-05-19T09:19:58.759+05:30  WARN 7564 --- [movieService] [           main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-19T09:19:58.768+05:30  INFO 7564 --- [movieService] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 26 endpoints beneath base path '/actuator'
+2026-05-19T09:19:58.895+05:30  INFO 7564 --- [movieService] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 64253 (http) with context path '/'
+2026-05-19T09:19:58.896+05:30  INFO 7564 --- [movieService] [           main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 64253
+2026-05-19T09:19:58.903+05:30  INFO 7564 --- [movieService] [           main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-19T09:19:58.930+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-19T09:19:58.934+05:30  INFO 7564 --- [movieService] [           main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-19T09:19:58.950+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-19T09:19:58.950+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-19T09:19:58.950+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-19T09:19:58.951+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-19T09:19:58.951+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-19T09:19:58.951+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-19T09:19:58.951+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-19T09:19:59.482+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-19T09:19:59.483+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-19T09:19:59.486+05:30  INFO 7564 --- [movieService] [           main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-19T09:19:59.488+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779162599488 with initial instances count: 0
+2026-05-19T09:19:59.494+05:30  INFO 7564 --- [movieService] [           main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application MOVIESERVICE with eureka with status UP
+2026-05-19T09:19:59.495+05:30  INFO 7564 --- [movieService] [           main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779162599495, current=UP, previous=STARTING]
+2026-05-19T09:19:59.497+05:30  INFO 7564 --- [movieService] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_MOVIESERVICE/SparkNotFunky:movieService:0: registering service...
+2026-05-19T09:19:59.520+05:30  INFO 7564 --- [movieService] [           main] c.d.m.MovieServiceApplication            : Started MovieServiceApplication in 10.869 seconds (process running for 12.462)
+2026-05-19T09:19:59.640+05:30  INFO 7564 --- [movieService] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_MOVIESERVICE/SparkNotFunky:movieService:0 - registration status: 204
+2026-05-19T09:20:29.491+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application version is -1: false
+2026-05-19T09:20:29.492+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-19T09:20:29.593+05:30  INFO 7564 --- [movieService] [reshExecutor-%d] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-19T09:20:59.431+05:30  INFO 7564 --- [movieService] [o-auto-1-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-19T09:20:59.431+05:30  INFO 7564 --- [movieService] [o-auto-1-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-19T09:20:59.434+05:30  INFO 7564 --- [movieService] [o-auto-1-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms

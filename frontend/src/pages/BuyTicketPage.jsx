@@ -17,6 +17,11 @@ const seatRows = [
     ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"]
 ]
 
+const merchantUpiId = process.env.REACT_APP_CINESAGA_UPI_ID || ""
+const merchantUpiName = process.env.REACT_APP_CINESAGA_UPI_NAME || "CineSaga"
+const ADULT_TICKET_PRICE = 250
+const STUDENT_TICKET_PRICE = 150
+
 export default function BuyTicketPage() {
 
     const navigate = useNavigate()
@@ -31,6 +36,9 @@ export default function BuyTicketPage() {
     const [profileContact, setProfileContact] = useState({ phone: "" })
     const [savedCards, setSavedCards] = useState([])
     const [selectedSavedCardId, setSelectedSavedCardId] = useState("")
+    const [paymentMethod, setPaymentMethod] = useState("card")
+    const [isBooking, setIsBooking] = useState(false)
+    const [bookingStatus, setBookingStatus] = useState("")
     const [paymentCard, setPaymentCard] = useState({
         cardHolderName: "",
         cardNumber: "",
@@ -42,15 +50,18 @@ export default function BuyTicketPage() {
 
     const totalTickets = adultTicketNumber + studentTicketNumber
     const remainingSeats = totalTickets - selectedSeats.length
-    const totalAmount = (studentTicketNumber * 15.00 + adultTicketNumber * 25.00).toFixed(2)
+    const totalAmount = (studentTicketNumber * STUDENT_TICKET_PRICE + adultTicketNumber * ADULT_TICKET_PRICE).toFixed(2)
+    const upiPaymentUri = buildUpiPaymentUri({
+        upiId: merchantUpiId,
+        name: merchantUpiName,
+        amount: totalAmount,
+        note: `${movieState?.movieName || "CineSaga"} tickets`
+    })
+    const upiQrUrl = buildQrCodeUrl(upiPaymentUri)
 
     useEffect(() => {
         if (!userFromRedux) {
             sessionStorage.setItem("cineSagaPendingPath", movieState?.id ? "/movie/" + movieState.id : "/")
-            toast.warning("Please sign in before booking tickets.", {
-                theme: "dark",
-                position: "top-center"
-            })
             setTimeout(() => {
                 document.querySelector('[data-bs-target="#loginModal"]')?.click()
             }, 100)
@@ -72,7 +83,9 @@ export default function BuyTicketPage() {
             movieDay: movieState?.movieDay,
             movieStartTime: movieState?.movieTime
         }).then(result => {
-            setBookedSeats(result.data || [])
+            const booked = (result.data || []).map(seat => String(seat).toUpperCase())
+            setBookedSeats(booked)
+            setSelectedSeats(currentSeats => currentSeats.filter(seat => !booked.includes(seat)))
         }).catch(() => setBookedSeats([]))
 
         userService.getProfile().then(result => {
@@ -94,7 +107,7 @@ export default function BuyTicketPage() {
     }
 
     function selectSeat(seatId) {
-        if (bookedSeats.includes(seatId)) {
+        if (bookedSeats.includes(seatId.toUpperCase())) {
             toast.warning("That seat is already booked. Please choose another one.", {
                 theme: "dark",
                 position: "top-center"
@@ -118,7 +131,7 @@ export default function BuyTicketPage() {
     }
 
     function seatClassName(seatId) {
-        if (bookedSeats.includes(seatId)) {
+        if (bookedSeats.includes(seatId.toUpperCase())) {
             return "seat-button is-booked"
         }
         if (selectedSeats.includes(seatId)) {
@@ -151,8 +164,14 @@ export default function BuyTicketPage() {
             cardHolderName: savedCard.cardHolderName || userFromRedux?.fullName || "",
             cardNumber: savedCard.cardNumber || "",
             cardExpiry: savedCard.cardExpiry || "",
-            cardSecurityCode: ""
+            cardSecurityCode: savedCard.cardSecurityCode || ""
         })
+    }
+
+    function savedCardLabel(card) {
+        const name = card.nickname || card.cardBrand || "Saved card"
+        const number = card.maskedCardNumber || (card.cardNumber ? "**** **** **** " + card.cardNumber.slice(-4) : "")
+        return `${name}${number ? " - " + number : ""}`
     }
 
     function requireTicketsBeforeSeats() {
@@ -245,7 +264,7 @@ export default function BuyTicketPage() {
                                 <div className='ticket-type-row'>
                                     <div>
                                         <strong>Adult</strong>
-                                        <span>Price $25</span>
+                                        <span>Price {formatCurrency(ADULT_TICKET_PRICE)}</span>
                                     </div>
                                     <div className='ticket-counter'>
                                         <button type='button' className='icon-button' onClick={() => changeTicketCount("adult", -1)} aria-label='Remove adult ticket'>
@@ -260,7 +279,7 @@ export default function BuyTicketPage() {
                                 <div className='ticket-type-row'>
                                     <div>
                                         <strong>Student</strong>
-                                        <span>Price $15</span>
+                                        <span>Price {formatCurrency(STUDENT_TICKET_PRICE)}</span>
                                     </div>
                                     <div className='ticket-counter'>
                                         <button type='button' className='icon-button' onClick={() => changeTicketCount("student", -1)} aria-label='Remove student ticket'>
@@ -272,7 +291,7 @@ export default function BuyTicketPage() {
                                         </button>
                                     </div>
                                 </div>
-                                <p className='booking-total'>Total: <strong>${totalAmount}</strong></p>
+                                <p className='booking-total'>Total: <strong>{formatCurrency(totalAmount)}</strong></p>
                             </div>
                         ) : null}
                     </section>
@@ -306,7 +325,7 @@ export default function BuyTicketPage() {
                                                     key={seatId}
                                                     type='button'
                                                     className={seatClassName(seatId)}
-                                                    disabled={bookedSeats.includes(seatId)}
+                                                    disabled={bookedSeats.includes(seatId.toUpperCase())}
                                                     onClick={() => selectSeat(seatId)}
                                                     aria-label={`Seat ${seatId}`}
                                                 >
@@ -332,7 +351,7 @@ export default function BuyTicketPage() {
                                 <p className='booking-kicker'>Step 3</p>
                                 <h3>Payment Details</h3>
                             </div>
-                            {ticketItem === "paySection" ? <h3 className='payment-total'>${totalAmount}</h3> : null}
+                            {ticketItem === "paySection" ? <h3 className='payment-total'>{formatCurrency(totalAmount)}</h3> : null}
                         </div>
 
                         {ticketItem === "paySection" ? (
@@ -340,8 +359,8 @@ export default function BuyTicketPage() {
                                 <div className='reservation-confirmation'>
                                     <div className='reservation-copy text-start'>
                                         <p className='booking-kicker'>Local checkout</p>
-                                        <h4>Use card details for this booking</h4>
-                                        <p>CineSaga will confirm the booking after this demo card step. The project stores only masked/hash payment records for booked tickets.</p>
+                                        <h4>Choose card or UPI QR</h4>
+                                        <p>CineSaga will confirm the booking after the selected payment step. Card stays local/demo, while UPI opens your configured receiver account.</p>
                                     </div>
                                     <div className='reservation-summary' aria-label='Booking summary'>
                                         <div>
@@ -354,7 +373,7 @@ export default function BuyTicketPage() {
                                         </div>
                                         <div>
                                             <span>Total</span>
-                                            <strong>${totalAmount}</strong>
+                                            <strong>{formatCurrency(totalAmount)}</strong>
                                         </div>
                                     </div>
                                 </div>
@@ -366,8 +385,18 @@ export default function BuyTicketPage() {
                                     }}
                                     enableReinitialize
                                     onSubmit={(values) => {
+                                        if (isBooking) {
+                                            return
+                                        }
                                         if (selectedSeats.length !== totalTickets) {
                                             toast.warning("Please choose seats for every ticket.", {
+                                                theme: "dark",
+                                                position: "top-center"
+                                            })
+                                            return
+                                        }
+                                        if (paymentMethod === "upi" && !merchantUpiId) {
+                                            toast.warning("UPI receiver is not configured yet.", {
                                                 theme: "dark",
                                                 position: "top-center"
                                             })
@@ -376,11 +405,13 @@ export default function BuyTicketPage() {
 
                                             const ticketDetail = {
                                                 ...values,
+                                                email: userFromRedux?.email || values.email,
+                                                fullName: values.fullName || userFromRedux?.fullName || "",
                                                 cardHolderName: paymentCard.cardHolderName || values.fullName,
                                                 cardNumber: paymentCard.cardNumber,
                                                 cardExpiry: paymentCard.cardExpiry,
                                                 cardSecurityCode: paymentCard.cardSecurityCode,
-                                                paymentMode: "CARD_DETAILS_LOCAL",
+                                                paymentMode: paymentMethod === "upi" ? "UPI_QR" : "CARD_DETAILS_LOCAL",
                                                 chairNumbers: selectedSeats.join(" "),
                                                 movieId: movieState?.movieId || movieState?.id,
                                             movieName: movieState?.movieName,
@@ -391,13 +422,21 @@ export default function BuyTicketPage() {
                                             studentTicketCount: studentTicketNumber
                                         }
 
+                                        setIsBooking(true)
+                                        setBookingStatus(paymentMethod === "upi"
+                                            ? "Confirming UPI payment and generating your ticket..."
+                                            : "Please wait a second, generating your ticket...")
                                         paymentService.sendTicketDetail(ticketDetail).then((result) => {
                                             sessionStorage.setItem("lastBooking", JSON.stringify(result.data))
+                                            sessionStorage.setItem("lastBookingUserEmail", (userFromRedux?.email || "").toLowerCase())
                                             navigate("/paymentSuccess")
                                         }).catch((e) => toast.error(e.response?.data?.message || "Could not complete booking. Please try again.", {
                                             theme: "dark",
                                             position: "top-center"
-                                        }))
+                                        })).finally(() => {
+                                            setIsBooking(false)
+                                            setBookingStatus("")
+                                        })
                                     }}>
                                     <Form className='payment-grid'>
                                         <div className='reservation-contact-fields'>
@@ -406,7 +445,7 @@ export default function BuyTicketPage() {
                                                 <label htmlFor="fullName">Full Name</label>
                                             </div>
                                             <div className="form-floating mb-3">
-                                                <KaanKaplanTextInput name="email" type="email" className="form-control" id="email" placeholder="Email" required />
+                                                <KaanKaplanTextInput name="email" type="email" className="form-control" id="email" placeholder="Email" readOnly required />
                                                 <label htmlFor="email">Email</label>
                                             </div>
                                             <div className="form-floating mb-3">
@@ -415,7 +454,19 @@ export default function BuyTicketPage() {
                                             </div>
                                         </div>
 
-                                        <div className='card-payment-panel'>
+                                        <div className='payment-method-column'>
+                                        <div className='payment-method-toggle' role='tablist' aria-label='Payment method'>
+                                            <button type='button' className={paymentMethod === "card" ? "active" : ""} onClick={() => setPaymentMethod("card")}>
+                                                <i className='fa-regular fa-credit-card'></i>
+                                                Card
+                                            </button>
+                                            <button type='button' className={paymentMethod === "upi" ? "active" : ""} onClick={() => setPaymentMethod("upi")}>
+                                                <i className='fa-solid fa-qrcode'></i>
+                                                UPI QR
+                                            </button>
+                                        </div>
+
+                                        {paymentMethod === "card" ? <div className='card-payment-panel'>
                                             <div className='reservation-assurance-icon'>
                                                 <i className="fa-regular fa-credit-card"></i>
                                             </div>
@@ -423,20 +474,35 @@ export default function BuyTicketPage() {
                                                 <h4>Card Details</h4>
                                                 <p>Use a saved demo card or enter card details for this local project checkout.</p>
                                             </div>
-                                            {savedCards.length > 0 ? (
-                                                <div className='form-floating'>
-                                                    <select className='form-select' id='savedCardSelect' value={selectedSavedCardId}
-                                                        onChange={event => applySavedCard(event.target.value)}>
-                                                        <option value="">Enter a new card</option>
-                                                        {savedCards.map(card => (
-                                                            <option key={card.cardId} value={card.cardId}>
-                                                                {(card.nickname || card.cardBrand || "Card") + " - " + (card.maskedCardNumber || "")}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                    <label htmlFor='savedCardSelect'>Saved Card</label>
+                                            <div className='saved-card-choice-section'>
+                                                <div className='saved-card-choice-header'>
+                                                    <strong>Saved cards</strong>
+                                                    <span>{savedCards.length > 0 ? "Choose one or enter a new card" : "No saved cards yet"}</span>
                                                 </div>
-                                            ) : null}
+                                                <div className='saved-card-choice-grid'>
+                                                    <button type='button'
+                                                        className={`saved-card-choice ${selectedSavedCardId === "" ? "active" : ""}`}
+                                                        onClick={() => applySavedCard("")}>
+                                                        <span className='saved-card-choice-icon'><i className="fa-solid fa-plus"></i></span>
+                                                        <span>
+                                                            <strong>New card</strong>
+                                                            <small>Type card details below</small>
+                                                        </span>
+                                                    </button>
+                                                    {savedCards.map(card => (
+                                                        <button type='button'
+                                                            key={card.cardId}
+                                                            className={`saved-card-choice ${selectedSavedCardId === card.cardId ? "active" : ""}`}
+                                                            onClick={() => applySavedCard(card.cardId)}>
+                                                            <span className='saved-card-choice-icon'><i className="fa-regular fa-credit-card"></i></span>
+                                                            <span>
+                                                                <strong>{card.nickname || card.cardBrand || "Card"}</strong>
+                                                                <small>{card.maskedCardNumber || savedCardLabel(card)}</small>
+                                                            </span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
                                             <div className="form-floating">
                                                 <input className="form-control" id="cardHolderName" placeholder='Card Holder Name'
                                                     value={paymentCard.cardHolderName}
@@ -444,7 +510,7 @@ export default function BuyTicketPage() {
                                                 <label htmlFor="cardHolderName">Card Holder Name</label>
                                             </div>
                                             <div className="form-floating">
-                                                <Cleave className="form-control" id="floatingCardNumber" placeholder='Credit Card Number' required
+                                                <Cleave className="form-control" id="floatingCardNumber" placeholder='Credit Card Number' required={paymentMethod === "card"}
                                                     value={paymentCard.cardNumber}
                                                     onChange={(event) => updatePaymentCard("cardNumber", event.target.value)}
                                                     options={{ creditCard: true }} />
@@ -453,7 +519,7 @@ export default function BuyTicketPage() {
                                             <div className='row'>
                                                 <div className='col-sm-6'>
                                                     <div className="form-floating">
-                                                        <Cleave type="text" className="form-control" id="floatingCardLastDate" placeholder='Expiry Date' required
+                                                        <Cleave type="text" className="form-control" id="floatingCardLastDate" placeholder='Expiry Date' required={paymentMethod === "card"}
                                                             value={paymentCard.cardExpiry}
                                                             onChange={(event) => updatePaymentCard("cardExpiry", event.target.value)}
                                                             options={{ date: true, datePattern: ['m', 'y'] }} />
@@ -462,7 +528,7 @@ export default function BuyTicketPage() {
                                                 </div>
                                                 <div className='col-sm-6'>
                                                     <div className="form-floating">
-                                                        <input type="password" className="form-control" maxLength="4" id="floatingSecurityNumber" placeholder="Security Code" required
+                                                        <input type="password" className="form-control" maxLength="4" id="floatingSecurityNumber" placeholder="Security Code" required={paymentMethod === "card"}
                                                             value={paymentCard.cardSecurityCode}
                                                             onChange={(event) => updatePaymentCard("cardSecurityCode", event.target.value.replace(/\D/g, ""))} />
                                                         <label htmlFor="floatingSecurityNumber">CVV</label>
@@ -473,12 +539,52 @@ export default function BuyTicketPage() {
                                                 <input className="form-check-input me-3" type="checkbox" required />
                                                 I understand this is a test checkout and no real payment gateway will be charged.
                                             </label>
+                                        </div> : <div className='card-payment-panel upi-payment-panel'>
+                                            <div className='reservation-assurance-icon'>
+                                                <i className="fa-solid fa-qrcode"></i>
+                                            </div>
+                                            <div className='text-start'>
+                                                <h4>UPI QR Payment</h4>
+                                                <p>Scan with any UPI app, complete the payment, then confirm the ticket here.</p>
+                                            </div>
+                                            {merchantUpiId ? (
+                                                <div className='upi-qr-layout'>
+                                                    <a className='upi-qr-box' href={upiPaymentUri}>
+                                                        <img src={upiQrUrl} alt='UPI payment QR code' />
+                                                    </a>
+                                                    <div className='upi-payment-meta text-start'>
+                                                        <span>Pay to</span>
+                                                        <strong>{merchantUpiId}</strong>
+                                                        <span>Amount</span>
+                                                        <strong>{formatCurrency(totalAmount)}</strong>
+                                                        <a className='btn btn-outline-dark' href={upiPaymentUri}>Open UPI App</a>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className='upi-config-warning text-start'>
+                                                    <strong>UPI receiver is not configured.</strong>
+                                                    <span>Set REACT_APP_CINESAGA_UPI_ID in frontend/.env to receive payment in your account.</span>
+                                                </div>
+                                            )}
+                                            <label className='payment-terms'>
+                                                <input className="form-check-input me-3" type="checkbox" required disabled={!merchantUpiId} />
+                                                I completed the UPI payment for this booking.
+                                            </label>
+                                        </div>}
                                         </div>
 
                                         <div className='payment-actions'>
                                             <button type='button' className='btn btn-outline-dark' onClick={() => setTicketItem("placeSection")}>Back</button>
-                                            <button type='submit' className='btn btn-dark'>Pay & Confirm Ticket</button>
+                                            <button type='submit' className='btn btn-dark' disabled={isBooking || (paymentMethod === "upi" && !merchantUpiId)}>
+                                                {isBooking ? "Generating Ticket..." : "Pay & Confirm Ticket"}
+                                            </button>
                                         </div>
+                                        {isBooking ? (
+                                            <div className='booking-status-overlay' role='status' aria-live='polite'>
+                                                <span className='booking-status-spinner'></span>
+                                                <strong>{bookingStatus || "Please wait a second..."}</strong>
+                                            </div>
+                                        ) : null}
                                     </Form>
                                 </Formik>
                             </div>
@@ -491,4 +597,29 @@ export default function BuyTicketPage() {
         </div>
         )
     )
+}
+
+function buildUpiPaymentUri({ upiId, name, amount, note }) {
+    if (!upiId) {
+        return ""
+    }
+    const params = new URLSearchParams({
+        pa: upiId,
+        pn: name,
+        am: amount,
+        cu: "INR",
+        tn: note
+    })
+    return `upi://pay?${params.toString()}`
+}
+
+function buildQrCodeUrl(payload) {
+    if (!payload) {
+        return ""
+    }
+    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`
+}
+
+function formatCurrency(value) {
+    return `INR ${Number(value || 0).toFixed(2)}`
 }

@@ -28,6 +28,16 @@ public class MovieController {
         return movieService.getAllComingSoonMovies();
     }
 
+    @GetMapping("all")
+    public List<MovieResponseDto> getAllMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @GetMapping("city/{cityName}")
+    public List<MovieResponseDto> getMoviesByCity(@PathVariable("cityName") String cityName) {
+        return movieService.getMoviesByCity(cityName);
+    }
+
     @GetMapping("{movieId}")
     public MovieResponseDto getMovieById(@PathVariable("movieId") int movieId) {
         return movieService.getMovieByMovieId(movieId);
@@ -38,6 +48,12 @@ public class MovieController {
     @Retry(name="movie")
     public Movie addMovie(@RequestBody MovieRequestDto movieRequestDto) {
         return movieService.addMovie(movieRequestDto);
+    }
+
+    @DeleteMapping("{movieId}")
+    public void deleteMovie(@PathVariable("movieId") int movieId,
+                            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        movieService.deleteMovie(movieId, authorizationHeader);
     }
 
     @SuppressWarnings("unused")

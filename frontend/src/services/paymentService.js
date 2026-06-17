@@ -9,4 +9,8 @@ export class PaymentService {
     getBookedSeats(params) {
         return apiClient.get("/tickets/booked-seats", { params });
     }
+
+    cancelTicket(bookingCode) {
+        return apiClient.post("/tickets/cancel", { bookingCode });
+    }
 }

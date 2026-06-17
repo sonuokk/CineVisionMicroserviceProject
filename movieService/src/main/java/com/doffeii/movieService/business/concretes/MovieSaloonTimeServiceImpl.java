@@ -16,6 +16,6 @@ public class MovieSaloonTimeServiceImpl implements MovieSaloonTimeService {
 
     @Override
     public List<MovieSaloonTime> getMovieSaloonTimeSaloonAndMovieId(int saloonId, int movieId) {
-        return movieSaloonTimeDao.getMovieSaloonTimeBySaloonSaloonIdAndMovieMovieId(saloonId, movieId);
+        return movieSaloonTimeDao.getMovieSaloonTimeByTheaterTheaterIdAndMovieMovieId(saloonId, movieId);
     }
 }

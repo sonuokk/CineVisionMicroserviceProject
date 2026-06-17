@@ -7,7 +7,6 @@ import com.doffeii.movieService.dao.MovieSaloonTimeDao;
 import com.doffeii.movieService.dao.PaymentCardDetailDao;
 import com.doffeii.movieService.dao.SaloonDao;
 import com.doffeii.movieService.dao.TicketBookingDao;
-import com.doffeii.movieService.dao.TicketBookingSeatDao;
 import com.doffeii.movieService.entity.Category;
 import com.doffeii.movieService.entity.Director;
 import com.doffeii.movieService.entity.Movie;
@@ -39,7 +38,6 @@ public class MongoDummyDataConfig {
     private final SaloonDao saloonDao;
     private final MovieSaloonTimeDao movieSaloonTimeDao;
     private final TicketBookingDao ticketBookingDao;
-    private final TicketBookingSeatDao ticketBookingSeatDao;
     private final PaymentCardDetailDao paymentCardDetailDao;
 
     @Bean
@@ -105,15 +103,13 @@ public class MongoDummyDataConfig {
 
     private void seedBookingsAndPayments() {
         TicketBooking bookingOne = booking("CV-DEMO100", "Interstellar", "CineSaga Bandra Luxe", "2026-05-10",
-                "20:15", "aarav.mehra@example.com", "Aarav Mehra", "A1 A2", BigDecimal.valueOf(50));
+                "20:15", "aarav.mehra@example.com", "Aarav Mehra", "A1 A2", BigDecimal.valueOf(500));
         TicketBooking bookingTwo = booking("CV-DEMO200", "Dune: Part Two", "CineSaga Orion Mall", "2026-05-11",
-                "17:00", "riya.sen@example.com", "Riya Sen", "C3 C4", BigDecimal.valueOf(50));
+                "17:00", "riya.sen@example.com", "Riya Sen", "C3 C4", BigDecimal.valueOf(500));
         ticketBookingDao.saveAll(List.of(bookingOne, bookingTwo));
-        ticketBookingSeatDao.saveAll(bookingOne.getSeats());
-        ticketBookingSeatDao.saveAll(bookingTwo.getSeats());
 
-        paymentCardDetailDao.save(payment("PAY-CV-DEMO100", bookingOne, BigDecimal.valueOf(50), "CARD"));
-        paymentCardDetailDao.save(payment("PAY-CV-DEMO200", bookingTwo, BigDecimal.valueOf(50), "WALLET"));
+        paymentCardDetailDao.save(payment("PAY-CV-DEMO100", bookingOne, BigDecimal.valueOf(500), "CARD"));
+        paymentCardDetailDao.save(payment("PAY-CV-DEMO200", bookingTwo, BigDecimal.valueOf(500), "WALLET"));
     }
 
     private Movie movie(int id, String name, String description, int duration, LocalDate releaseDate,

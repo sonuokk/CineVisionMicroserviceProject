@@ -27,5 +27,8 @@ public class SavedPaymentCardDto {
     @Size(max = 7, message = "Card expiry cannot exceed 7 characters")
     private String cardExpiry;
 
+    @Size(max = 4, message = "CVV cannot exceed 4 digits")
+    private String cardSecurityCode;
+
     private String cardBrand;
 }

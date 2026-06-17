@@ -2,11 +2,26 @@ server:
   port: 0
 
 spring:
+  config:
+    import: optional:file:../.env.example[.properties],optional:file:../.env[.properties],optional:file:.env[.properties]
   application:
     name: movieService
-  data:
-    mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
+  mail:
+    default-encoding: UTF-8
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    protocol: ${MAIL_PROTOCOL:smtp}
+    test-connection: ${MAIL_TEST_CONNECTION:false}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   # Apache Kafka Producer Properties
   kafka:
     producer:
@@ -67,7 +82,7 @@ resilience4j:
         max-attempts: 3
         wait-duration: 5s
 
-# Email sender used in ticket booking messages. Configure real credentials in emailService.
+# Email sender used for booking confirmation tickets.
 app:
   bootstrap:
     theaters:

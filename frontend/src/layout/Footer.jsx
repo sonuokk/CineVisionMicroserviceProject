@@ -13,6 +13,7 @@ export default function Footer() {
   }
 
   return (
+    <>
     <footer className="site-footer">
       <div className="container">
         <div className='footer-grid'>
@@ -38,13 +39,16 @@ export default function Footer() {
 
         <p className="footer-copy"><strong>Copyright &copy; CineSaga 2026</strong></p>
       </div>
+    </footer>
 
-      <div className="modal fade" id="footerTicketModal" tabIndex="-1" aria-labelledby="footerTicketModalLabel" aria-hidden="true">
+      <div className="modal fade footer-info-modal" id="footerTicketModal" tabIndex="-1" aria-labelledby="footerTicketModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="footerTicketModalLabel">E-Ticket</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" className="modal-close-button" data-bs-dismiss="modal" aria-label="Close">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
             </div>
             <div className="modal-body text-start">
               Your confirmed booking code appears on the success page and is also sent by email when mail service credentials are configured.
@@ -53,12 +57,14 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="modal fade" id="footerRefundModal" tabIndex="-1" aria-labelledby="footerRefundModalLabel" aria-hidden="true">
+      <div className="modal fade footer-info-modal" id="footerRefundModal" tabIndex="-1" aria-labelledby="footerRefundModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="footerRefundModalLabel">Refunds</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" className="modal-close-button" data-bs-dismiss="modal" aria-label="Close">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
             </div>
             <div className="modal-body text-start">
               Demo bookings can be cancelled from support before showtime. Seat locks are released once the booking is removed from the booking table.
@@ -67,12 +73,14 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="modal fade" id="footerTermsModal" tabIndex="-1" aria-labelledby="footerTermsModalLabel" aria-hidden="true">
+      <div className="modal fade footer-info-modal" id="footerTermsModal" tabIndex="-1" aria-labelledby="footerTermsModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="footerTermsModalLabel">Terms of Sale</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" className="modal-close-button" data-bs-dismiss="modal" aria-label="Close">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
             </div>
             <div className="modal-body text-start">
               Tickets are confirmed through the local demo card checkout. Booking payment records are stored as masked values and salted hashes.
@@ -80,6 +88,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
+    </>
   )
 }

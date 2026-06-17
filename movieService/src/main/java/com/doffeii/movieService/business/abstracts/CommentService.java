@@ -10,9 +10,9 @@ public interface CommentService {
 
     List<Comment> getCommentsByMovieId(int movieId, int pageNo, int pageSize);
 
-    void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto);
+    void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto, String authorizationHeader);
 
-    Comment addComment(CommentRequestDto commentRequestDto);
+    Comment addComment(CommentRequestDto commentRequestDto, String authorizationHeader);
 
     int getNumberOfCommentsByMovieId(int movieId);
 

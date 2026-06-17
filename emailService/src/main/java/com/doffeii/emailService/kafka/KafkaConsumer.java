@@ -25,7 +25,18 @@ public class KafkaConsumer {
         model.put("saloonName", emailMessageKafkaDto.getSaloonName());
         model.put("movieStartTime", emailMessageKafkaDto.getMovieStartTime());
         model.put("chairNumbers", emailMessageKafkaDto.getChairNumbers());
+        model.put("bookingCode", emailMessageKafkaDto.getBookingCode());
+        model.put("totalAmount", emailMessageKafkaDto.getTotalAmount());
+        model.put("qrCodePayload", emailMessageKafkaDto.getQrCodePayload());
+        model.put("qrCodeUrl", buildQrCodeUrl(emailMessageKafkaDto.getQrCodePayload()));
 
         emailService.sendEmail(emailMessageKafkaDto.getSender(), emailMessageKafkaDto.getRecipient(), emailMessageKafkaDto.getSubtitle(), model);
+    }
+
+    private String buildQrCodeUrl(String qrCodePayload) {
+        if (qrCodePayload == null || qrCodePayload.isBlank()) {
+            return "";
+        }
+        return "https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=" + java.net.URLEncoder.encode(qrCodePayload, java.nio.charset.StandardCharsets.UTF_8);
     }
 }

@@ -20,6 +20,9 @@ public class EmailMessageKafkaDto {
     private String movieStartTime;
     private String fullName;
     private String chairNumbers;
+    private String bookingCode;
+    private String totalAmount;
+    private String qrCodePayload;
 
 
 }

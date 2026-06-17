@@ -13,4 +13,6 @@ public interface PaymentService {
     TicketBookingResponseDto cancelTicket(CancelTicketRequestDto cancelTicketRequestDto, String authorizationHeader);
 
     List<String> getBookedSeats(String movieName, String saloonName, String movieDay, String movieStartTime);
+
+    void purgeUserRecords(String email, String userId, String authorizationHeader);
 }

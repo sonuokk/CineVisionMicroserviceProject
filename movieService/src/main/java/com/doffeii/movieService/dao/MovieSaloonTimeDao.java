@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface MovieSaloonTimeDao extends MongoRepository<MovieSaloonTime, Integer> {
-    List<MovieSaloonTime> getMovieSaloonTimeBySaloonSaloonIdAndMovieMovieId(int saloonId, int movieId);
-    boolean existsBySaloonSaloonIdAndMovieMovieIdAndMovieBeginTime(int saloonId, int movieId, String movieBeginTime);
+    List<MovieSaloonTime> getMovieSaloonTimeByTheaterTheaterIdAndMovieMovieId(int theaterId, int movieId);
+    List<MovieSaloonTime> findByMovieMovieId(int movieId);
+    void deleteByMovieMovieId(int movieId);
+    void deleteByTheaterTheaterIdAndMovieMovieId(int theaterId, int movieId);
+    void deleteByTheaterCityCityIdAndMovieMovieId(int cityId, int movieId);
+    boolean existsByTheaterTheaterIdAndMovieMovieIdAndMovieBeginTime(int theaterId, int movieId, String movieBeginTime);
 }

@@ -7,9 +7,14 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-    const storedUser = localStorage.getItem("cineSagaUser");
+    const storedUser = sessionStorage.getItem("cineSagaUser");
     if (storedUser) {
-        const user = JSON.parse(storedUser);
+        let user = null;
+        try {
+            user = JSON.parse(storedUser);
+        } catch {
+            sessionStorage.removeItem("cineSagaUser");
+        }
         if (user?.token) {
             config.headers.Authorization = `Bearer ${user.token}`;
         }

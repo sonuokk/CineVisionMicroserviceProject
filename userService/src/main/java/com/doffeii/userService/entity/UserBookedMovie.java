@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,7 +17,9 @@ import java.util.List;
 public class UserBookedMovie {
     private String bookingCode;
     private MovieSnapshot movie;
+    @Field("theaterName")
     private String saloonName;
+    @Field("theaterDisplayName")
     private String theatreName;
     private String movieDay;
     private String movieStartTime;

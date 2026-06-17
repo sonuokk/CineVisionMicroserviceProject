@@ -36,3 +36,197 @@
     transform: rotate(360deg);
   }
 }
+
+/* Home movie cards: title is visible, actions appear on hover/focus. */
+.modern-movie-slider .movie-card {
+  position: relative !important;
+  height: clamp(260px, 28vw, 330px) !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+}
+
+.modern-movie-slider .movie-card > img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  transition: transform 0.26s ease, filter 0.26s ease !important;
+}
+
+.modern-movie-slider .movie-card:hover > img,
+.modern-movie-slider .movie-card:focus-within > img {
+  transform: scale(1.04) !important;
+  filter: brightness(0.72) !important;
+}
+
+.modern-movie-slider .movie-card-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: stretch !important;
+  gap: 0.7rem !important;
+  padding: 1rem !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.74) 100%) !important;
+  transform: none !important;
+}
+
+.modern-movie-slider .movie-card-overlay h3 {
+  display: block !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: 1.08rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.62) !important;
+}
+
+.modern-movie-slider .movie-card-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.45rem !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease !important;
+}
+
+.modern-movie-slider .movie-card:hover .movie-card-actions,
+.modern-movie-slider .movie-card:focus-within .movie-card-actions {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(-0.1rem) !important;
+  pointer-events: auto !important;
+}
+
+.modern-movie-slider .movie-card-actions .btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 2.25rem !important;
+  padding: 0.45rem 0.72rem !important;
+  border-radius: 999px !important;
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22) !important;
+  font-size: 0.86rem !important;
+  font-weight: 800 !important;
+  pointer-events: auto !important;
+}
+
+.modern-movie-slider .movie-card-actions .btn:hover,
+.modern-movie-slider .movie-card-actions .btn:focus {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #0071e3 !important;
+  border-color: #0071e3 !important;
+}
+
+.modern-movie-slider {
+  position: relative !important;
+  padding-inline: 3.4rem !important;
+  padding-bottom: 2.4rem !important;
+}
+
+.modern-movie-slider .swiper-button-prev,
+.modern-movie-slider .swiper-button-next {
+  width: 2.85rem !important;
+  height: 2.85rem !important;
+  margin-top: -1.8rem !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(17, 24, 39, 0.12) !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18) !important;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease, opacity 0.18s ease !important;
+}
+
+.modern-movie-slider .swiper-button-prev {
+  left: 0.25rem !important;
+}
+
+.modern-movie-slider .swiper-button-next {
+  right: 0.25rem !important;
+}
+
+.modern-movie-slider .swiper-button-prev::after,
+.modern-movie-slider .swiper-button-next::after {
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+}
+
+.modern-movie-slider .swiper-button-prev:hover,
+.modern-movie-slider .swiper-button-next:hover,
+.modern-movie-slider .swiper-button-prev:focus-visible,
+.modern-movie-slider .swiper-button-next:focus-visible {
+  background: #0071e3 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) scale(1.04) !important;
+}
+
+.modern-movie-slider .swiper-button-disabled {
+  opacity: 0.36 !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}
+
+html[data-theme="dark"] .modern-movie-slider .swiper-button-prev,
+html[data-theme="dark"] .modern-movie-slider .swiper-button-next {
+  background: rgba(17, 26, 44, 0.94) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34) !important;
+}
+
+html[data-theme="dark"] .modern-movie-slider .swiper-button-prev:hover,
+html[data-theme="dark"] .modern-movie-slider .swiper-button-next:hover,
+html[data-theme="dark"] .modern-movie-slider .swiper-button-prev:focus-visible,
+html[data-theme="dark"] .modern-movie-slider .swiper-button-next:focus-visible {
+  background: #0a84ff !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 767px) {
+  .modern-movie-slider {
+    padding-inline: 2.75rem !important;
+  }
+
+  .modern-movie-slider .swiper-button-prev,
+  .modern-movie-slider .swiper-button-next {
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+  }
+
+  .modern-movie-slider .swiper-button-prev::after,
+  .modern-movie-slider .swiper-button-next::after {
+    font-size: 0.85rem !important;
+  }
+}
+
+html[data-theme="dark"] .home-hero .home-hero-stats span,
+html[data-theme="dark"] .home-page .home-hero-stats span {
+  color: #e8edf7 !important;
+  -webkit-text-fill-color: #e8edf7 !important;
+  background: linear-gradient(135deg, rgba(20, 42, 69, 0.92), rgba(12, 22, 36, 0.92)) !important;
+  border-color: rgba(107, 182, 255, 0.22) !important;
+}
+
+html[data-theme="dark"] .home-hero .home-hero-stats span strong,
+html[data-theme="dark"] .home-page .home-hero-stats span strong {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

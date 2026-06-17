@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
 import AddActorsAndCityToMovie from '../pages/admin/AddActorsAndCityToMovie'
 import AddMoviePage from '../pages/admin/AddMoviePage'
+import BookedTicketsPage from '../pages/admin/BookedTicketsPage'
+import ManageTheatersPage from '../pages/admin/ManageTheatersPage'
 import ManageUsersPage from '../pages/admin/ManageUsersPage'
 import BuyTicketPage from '../pages/BuyTicketPage'
 import DetailPage from '../pages/DetailPage'
@@ -15,7 +17,9 @@ import ProtectedRoute from '../utils/utilPages/ProtectedRoute'
 export default function Dashboard() {
 
   const userFromRedux = useSelector(state => state?.user?.payload)
-  const userRole = userFromRedux?.roles?.find(role => role === "ADMIN" || role === "ROLE_ADMIN")
+  const isAdmin = hasRole(userFromRedux, "ADMIN")
+  const canManageTheaters = isAdmin || hasRole(userFromRedux, "THEATER_MANAGER")
+  const canManageMovies = canManageTheaters
 
   return (
     <div> 
@@ -31,20 +35,32 @@ export default function Dashboard() {
         } />
 
         <Route path="/addMovie"  element={
-          <ProtectedRoute user={userRole}>
+          <ProtectedRoute user={canManageMovies}>
             <AddMoviePage/>
           </ProtectedRoute>   
         } />
 
         <Route path="/addMovie/:movieId"  element={
-          <ProtectedRoute user={userRole}>
+          <ProtectedRoute user={canManageMovies}>
             <AddActorsAndCityToMovie/>
           </ProtectedRoute>
         } />       
 
         <Route path="/admin/users"  element={
-          <ProtectedRoute user={userRole}>
+          <ProtectedRoute user={isAdmin}>
             <ManageUsersPage/>
+          </ProtectedRoute>
+        } />       
+
+        <Route path="/admin/theaters"  element={
+          <ProtectedRoute user={canManageTheaters}>
+            <ManageTheatersPage/>
+          </ProtectedRoute>
+        } />       
+
+        <Route path="/admin/bookings"  element={
+          <ProtectedRoute user={canManageTheaters}>
+            <BookedTicketsPage/>
           </ProtectedRoute>
         } />       
 
@@ -56,3 +72,6 @@ export default function Dashboard() {
   )
 }
 
+function hasRole(user, roleName) {
+  return user?.roles?.some(role => role === roleName || role === "ROLE_" + roleName)
+}

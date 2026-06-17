@@ -1,6 +1,6 @@
 package com.doffeii.userService.config;
 
-import com.doffeii.userService.business.abstracts.ClaimService;
+import com.doffeii.userService.business.abstracts.RoleService;
 import com.doffeii.userService.dao.UserDao;
 import com.doffeii.userService.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.Locale;
 public class DefaultAdminConfig {
 
     private final UserDao userDao;
-    private final ClaimService claimService;
+    private final RoleService RoleService;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.admin.email:admin@cinesaga.local}")
@@ -38,7 +38,8 @@ public class DefaultAdminConfig {
             User existingAdmin = userDao.findUserByEmail(email);
             if (existingAdmin != null) {
                 existingAdmin.setEmailVerified(true);
-                existingAdmin.setClaim(claimService.getOrCreateClaim("ADMIN"));
+                existingAdmin.setRole(RoleService.getOrCreateRole("ADMIN"));
+                existingAdmin.setPassword(passwordEncoder.encode(adminPassword));
                 userDao.save(existingAdmin);
                 return;
             }
@@ -48,7 +49,7 @@ public class DefaultAdminConfig {
                     .password(passwordEncoder.encode(adminPassword))
                     .fullName(adminFullName)
                     .emailVerified(true)
-                    .claim(claimService.getOrCreateClaim("ADMIN"))
+                    .role(RoleService.getOrCreateRole("ADMIN"))
                     .savedPaymentCards(List.of())
                     .bookedMovies(List.of())
                     .favoriteMovies(List.of())
@@ -59,3 +60,4 @@ public class DefaultAdminConfig {
         };
     }
 }
+

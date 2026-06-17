@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1100" viewBox="0 0 1700 1100">
+  <defs>
+    <style>
+      .title { font: 700 34px Georgia, "Times New Roman", serif; fill: #111827; }
+      .system-title { font: 700 25px Arial, sans-serif; fill: #111827; }
+      .section-title { font: 700 16px Arial, sans-serif; fill: #374151; text-anchor: middle; }
+      .actor-label { font: 600 17px Arial, sans-serif; fill: #111827; text-anchor: middle; }
+      .usecase { fill: #ffffff; stroke: #111827; stroke-width: 1.7; }
+      .primary { fill: #fefce8; stroke: #111827; stroke-width: 2; }
+      .usecase-text { font: 15px Arial, sans-serif; fill: #111827; text-anchor: middle; dominant-baseline: middle; }
+      .small { font: 12px Arial, sans-serif; fill: #4b5563; text-anchor: middle; }
+      .line { stroke: #111827; stroke-width: 1.45; fill: none; }
+      .rel { stroke: #6b7280; stroke-width: 1.25; fill: none; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+      .boundary { fill: #ffffff; stroke: #111827; stroke-width: 2; }
+      .section { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.2; }
+      .actor-stroke { stroke: #111827; stroke-width: 2; fill: none; }
+      .actor-head { fill: #ffffff; stroke: #111827; stroke-width: 2; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <rect width="1700" height="1100" fill="#ffffff"/>
+  <text x="850" y="48" class="title" text-anchor="middle">CineSaga Use Case Diagram</text>
+
+  <rect x="260" y="85" width="1180" height="950" class="boundary"/>
+  <text x="850" y="122" class="system-title" text-anchor="middle">CineSaga System</text>
+
+  <!-- Actors -->
+  <g id="guest" transform="translate(95 145)">
+    <circle cx="40" cy="22" r="18" class="actor-head"/>
+    <path d="M40 40 V92 M6 60 H74 M40 92 L12 136 M40 92 L68 136" class="actor-stroke"/>
+    <text x="40" y="170" class="actor-label">Unregistered</text>
+    <text x="40" y="192" class="actor-label">User</text>
+  </g>
+
+  <g id="user" transform="translate(95 560)">
+    <circle cx="40" cy="22" r="18" class="actor-head"/>
+    <path d="M40 40 V92 M6 60 H74 M40 92 L12 136 M40 92 L68 136" class="actor-stroke"/>
+    <text x="40" y="170" class="actor-label">Registered</text>
+    <text x="40" y="192" class="actor-label">User</text>
+  </g>
+
+  <g id="admin" transform="translate(1510 180)">
+    <circle cx="40" cy="22" r="18" class="actor-head"/>
+    <path d="M40 40 V92 M6 60 H74 M40 92 L12 136 M40 92 L68 136" class="actor-stroke"/>
+    <text x="40" y="170" class="actor-label">Admin</text>
+  </g>
+
+  <g id="manager" transform="translate(1510 570)">
+    <circle cx="40" cy="22" r="18" class="actor-head"/>
+    <path d="M40 40 V92 M6 60 H74 M40 92 L12 136 M40 92 L68 136" class="actor-stroke"/>
+    <text x="40" y="170" class="actor-label">Theater</text>
+    <text x="40" y="192" class="actor-label">Manager</text>
+  </g>
+
+  <g id="email" transform="translate(1510 830)">
+    <circle cx="40" cy="22" r="18" class="actor-head"/>
+    <path d="M40 40 V92 M6 60 H74 M40 92 L12 136 M40 92 L68 136" class="actor-stroke"/>
+    <text x="40" y="170" class="actor-label">Email</text>
+    <text x="40" y="192" class="actor-label">Service</text>
+  </g>
+
+  <!-- Sections -->
+  <rect x="300" y="150" width="250" height="225" rx="8" class="section"/>
+  <text x="425" y="178" class="section-title">Authentication</text>
+
+  <rect x="300" y="430" width="330" height="430" rx="8" class="section"/>
+  <text x="465" y="458" class="section-title">Movie Area</text>
+
+  <rect x="690" y="150" width="315" height="610" rx="8" class="section"/>
+  <text x="848" y="178" class="section-title">Booking Area</text>
+
+  <rect x="1060" y="150" width="330" height="640" rx="8" class="section"/>
+  <text x="1225" y="178" class="section-title">Admin and Theater Management</text>
+
+  <rect x="690" y="820" width="315" height="150" rx="8" class="section"/>
+  <text x="848" y="848" class="section-title">Notification Area</text>
+
+  <!-- Authentication use cases -->
+  <ellipse cx="425" cy="220" rx="92" ry="26" class="usecase"/>
+  <text x="425" y="220" class="usecase-text">Register</text>
+  <ellipse cx="425" cy="280" rx="98" ry="26" class="usecase"/>
+  <text x="425" y="280" class="usecase-text">Verify Account</text>
+  <ellipse cx="425" cy="340" rx="92" ry="26" class="usecase"/>
+  <text x="425" y="340" class="usecase-text">Login</text>
+
+  <!-- Movie use cases: clean hierarchy -->
+  <ellipse cx="465" cy="505" rx="118" ry="30" class="primary"/>
+  <text x="465" y="505" class="usecase-text">Browse Movies</text>
+  <ellipse cx="465" cy="585" rx="108" ry="26" class="usecase"/>
+  <text x="465" y="585" class="usecase-text">View Movies</text>
+  <ellipse cx="465" cy="645" rx="112" ry="26" class="usecase"/>
+  <text x="465" y="645" class="usecase-text">Search Movies</text>
+  <ellipse cx="465" cy="705" rx="126" ry="26" class="usecase"/>
+  <text x="465" y="705" class="usecase-text">View Movie Details</text>
+  <ellipse cx="465" cy="785" rx="126" ry="30" class="primary"/>
+  <text x="465" y="785" class="usecase-text">Interact with Movie</text>
+  <ellipse cx="345" cy="835" rx="112" ry="24" class="usecase"/>
+  <text x="345" y="835" class="usecase-text">Comment on Movie</text>
+  <ellipse cx="585" cy="835" rx="92" ry="24" class="usecase"/>
+  <text x="585" y="835" class="usecase-text">Rate Movie</text>
+
+  <!-- Booking use cases: actor connects to Book Ticket only, details are included -->
+  <ellipse cx="848" cy="220" rx="108" ry="30" class="primary"/>
+  <text x="848" y="220" class="usecase-text">Book Ticket</text>
+  <ellipse cx="848" cy="300" rx="92" ry="24" class="usecase"/>
+  <text x="848" y="300" class="usecase-text">Select City</text>
+  <ellipse cx="848" cy="355" rx="104" ry="24" class="usecase"/>
+  <text x="848" y="355" class="usecase-text">Select Theater</text>
+  <ellipse cx="848" cy="410" rx="110" ry="24" class="usecase"/>
+  <text x="848" y="410" class="usecase-text">Select Showtime</text>
+  <ellipse cx="848" cy="465" rx="128" ry="24" class="usecase"/>
+  <text x="848" y="465" class="usecase-text">Check Seat Availability</text>
+  <ellipse cx="848" cy="520" rx="98" ry="24" class="usecase"/>
+  <text x="848" y="520" class="usecase-text">Select Seats</text>
+  <ellipse cx="848" cy="575" rx="100" ry="24" class="usecase"/>
+  <text x="848" y="575" class="usecase-text">Make Payment</text>
+  <ellipse cx="848" cy="665" rx="108" ry="26" class="usecase"/>
+  <text x="848" y="665" class="usecase-text">View Bookings</text>
+  <ellipse cx="848" cy="720" rx="112" ry="26" class="usecase"/>
+  <text x="848" y="720" class="usecase-text">Cancel Booking</text>
+
+  <!-- Admin use cases -->
+  <ellipse cx="1225" cy="220" rx="122" ry="30" class="primary"/>
+  <text x="1225" y="220" class="usecase-text">Manage Content</text>
+  <ellipse cx="1125" cy="285" rx="106" ry="24" class="usecase"/>
+  <text x="1125" y="285" class="usecase-text">Manage Movies</text>
+  <ellipse cx="1320" cy="285" rx="118" ry="24" class="usecase"/>
+  <text x="1320" y="285" class="usecase-text">Manage Cast Details</text>
+  <ellipse cx="1125" cy="340" rx="104" ry="24" class="usecase"/>
+  <text x="1125" y="340" class="usecase-text">Manage Cities</text>
+  <ellipse cx="1320" cy="340" rx="112" ry="24" class="usecase"/>
+  <text x="1320" y="340" class="usecase-text">Manage Theaters</text>
+  <ellipse cx="1225" cy="395" rx="118" ry="24" class="usecase"/>
+  <text x="1225" y="395" class="usecase-text">Manage Showtimes</text>
+
+  <ellipse cx="1225" cy="500" rx="114" ry="30" class="primary"/>
+  <text x="1225" y="500" class="usecase-text">Manage Users</text>
+  <ellipse cx="1125" cy="570" rx="112" ry="24" class="usecase"/>
+  <text x="1125" y="570" class="usecase-text">Update User Role</text>
+  <ellipse cx="1320" cy="570" rx="102" ry="24" class="usecase"/>
+  <text x="1320" y="570" class="usecase-text">Blacklist User</text>
+  <ellipse cx="1125" cy="625" rx="94" ry="24" class="usecase"/>
+  <text x="1125" y="625" class="usecase-text">Delete User</text>
+  <ellipse cx="1320" cy="625" rx="132" ry="24" class="usecase"/>
+  <text x="1320" y="625" class="usecase-text">Approve Theater Manager</text>
+  <ellipse cx="1225" cy="715" rx="124" ry="26" class="usecase"/>
+  <text x="1225" y="715" class="usecase-text">Send Notifications</text>
+
+  <!-- Notification use cases -->
+  <ellipse cx="848" cy="895" rx="150" ry="28" class="primary"/>
+  <text x="848" y="895" class="usecase-text">Receive Booking Confirmation</text>
+  <ellipse cx="848" cy="950" rx="136" ry="24" class="usecase"/>
+  <text x="848" y="950" class="usecase-text">Send Confirmation Email</text>
+
+  <!-- Actor associations: very few direct lines, so the diagram stays readable -->
+  <path d="M175 230 L333 220" class="line"/>
+  <path d="M175 230 L327 340" class="line"/>
+  <path d="M175 230 L347 505" class="line"/>
+
+  <path d="M175 645 L347 505" class="line"/>
+  <path d="M175 645 L339 785" class="line"/>
+  <path d="M175 645 L740 220" class="line"/>
+  <path d="M175 645 L740 665" class="line"/>
+  <path d="M175 645 L736 720" class="line"/>
+  <path d="M175 645 L333 340" class="line"/>
+
+  <path d="M1510 265 L1347 220" class="line"/>
+  <path d="M1510 265 L1339 500" class="line"/>
+  <path d="M1510 265 L1349 715" class="line"/>
+
+  <path d="M1510 655 L1432 340" class="line"/>
+  <path d="M1510 655 L1343 395" class="line"/>
+
+  <path d="M1510 915 L984 950" class="line"/>
+
+  <!-- Internal include/extend relations -->
+  <path d="M425 246 L425 254" class="rel"/>
+  <text x="480" y="258" class="small">&lt;&lt;extend&gt;&gt;</text>
+
+  <path d="M465 535 L465 559" class="rel"/>
+  <text x="530" y="555" class="small">&lt;&lt;include&gt;&gt;</text>
+  <path d="M465 535 L465 619" class="rel"/>
+  <path d="M465 535 L465 679" class="rel"/>
+  <path d="M465 815 L378 820" class="rel"/>
+  <path d="M465 815 L552 820" class="rel"/>
+  <text x="465" y="872" class="small">Registered User only</text>
+
+  <path d="M848 250 L848 276" class="rel"/>
+  <path d="M848 250 L848 331" class="rel"/>
+  <path d="M848 250 L848 386" class="rel"/>
+  <path d="M848 250 L848 441" class="rel"/>
+  <path d="M848 250 L848 496" class="rel"/>
+  <path d="M848 250 L848 551" class="rel"/>
+  <text x="925" y="385" class="small">&lt;&lt;include&gt;&gt;</text>
+  <path d="M848 599 L848 867" class="rel"/>
+  <text x="928" y="755" class="small">&lt;&lt;extend&gt;&gt;</text>
+  <path d="M848 923 L848 926" class="rel"/>
+
+  <path d="M1225 250 L1150 264" class="rel"/>
+  <path d="M1225 250 L1292 264" class="rel"/>
+  <path d="M1225 250 L1150 319" class="rel"/>
+  <path d="M1225 250 L1292 319" class="rel"/>
+  <path d="M1225 250 L1225 371" class="rel"/>
+  <text x="1250" y="262" class="small">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M1225 530 L1145 548" class="rel"/>
+  <path d="M1225 530 L1290 548" class="rel"/>
+  <path d="M1225 530 L1145 602" class="rel"/>
+  <path d="M1225 530 L1290 602" class="rel"/>
+</svg>

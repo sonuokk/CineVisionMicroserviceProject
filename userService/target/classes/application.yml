@@ -5,10 +5,10 @@ spring:
     import: optional:file:../.env.example[.properties],optional:file:../.env[.properties],optional:file:.env[.properties]
   application:
     name: userService
-  ## MongoDB Properties
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
       auto-index-creation: false
   mail:
     default-encoding: UTF-8
@@ -59,3 +59,5 @@ app:
     email: ${DEFAULT_ADMIN_EMAIL:admin@cinesaga.local}
     password: ${DEFAULT_ADMIN_PASSWORD:Admin@12345}
     full-name: ${DEFAULT_ADMIN_FULL_NAME:CineSaga Admin}
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}

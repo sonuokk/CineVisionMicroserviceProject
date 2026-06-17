@@ -5,6 +5,7 @@ import com.doffeii.userService.business.abstracts.UserService;
 import com.doffeii.userService.entity.dto.OtpRequestResponseDto;
 import com.doffeii.userService.entity.dto.PasswordResetConfirmRequestDto;
 import com.doffeii.userService.entity.dto.PasswordResetRequestDto;
+import com.doffeii.userService.entity.dto.GoogleAuthRequestDto;
 import com.doffeii.userService.entity.dto.UserAuthenticationResponseDto;
 import com.doffeii.userService.entity.dto.UserLoginRequestDto;
 import com.doffeii.userService.entity.dto.UserProfileResponseDto;
@@ -53,5 +54,10 @@ public class AuthController {
     @PostMapping("/login")
     public UserAuthenticationResponseDto login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
         return authService.login(userLoginRequestDto);
+    }
+
+    @PostMapping("/google")
+    public UserAuthenticationResponseDto googleLogin(@Valid @RequestBody GoogleAuthRequestDto googleAuthRequestDto) {
+        return authService.loginWithGoogle(googleAuthRequestDto);
     }
 }
