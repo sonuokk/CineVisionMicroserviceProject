@@ -49,6 +49,7 @@ export default function AddMoviePage() {
         categoryService.getall().then(result => setCategories(result.data || [])).catch(() => setCategories([]))
         directorService.getall().then(result => setDirectors(result.data || [])).catch(() => setDirectors([]))
         loadMovies()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categoryService, directorService, movieService])
 
     function loadMovies() {

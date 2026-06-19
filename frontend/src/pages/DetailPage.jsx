@@ -57,6 +57,7 @@ export default function DetailPage() {
 
     useEffect(() => {
         getNewVisionMovie(movieId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
