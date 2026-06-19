@@ -1,0 +1,10 @@
+server:
+  port: ${PORT:10000}
+
+eureka:
+  instance:
+    hostname: ${RENDER_EXTERNAL_HOSTNAME:localhost}
+    prefer-ip-address: false
+  client:
+    fetch-registry: false
+    register-with-eureka: false

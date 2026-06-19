@@ -1,0 +1,110 @@
+services:
+  - type: web
+    name: cinesaga-eureka-server
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./eureka-server/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+
+  - type: web
+    name: cinesaga-user-service
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./userService/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE
+        value: https://eureka:password@cinesaga-eureka-server.onrender.com/eureka
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ADMIN_SETUP_KEY
+        generateValue: true
+      - key: DEFAULT_ADMIN_EMAIL
+        sync: false
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+      - key: DEFAULT_ADMIN_FULL_NAME
+        value: CineSaga Admin
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: APP_MAIL_SENDER
+        sync: false
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_PROTOCOL
+        value: smtp
+      - key: MAIL_TEST_CONNECTION
+        value: false
+      - key: OTP_EXPIRY_MINUTES
+        value: 10
+      - key: OTP_EXPOSE_IN_RESPONSE
+        value: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+
+  - type: web
+    name: cinesaga-movie-service
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./movieService/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE
+        value: https://eureka:password@cinesaga-eureka-server.onrender.com/eureka
+      - key: MONGODB_URI
+        sync: false
+      - key: PAYMENT_CARD_HASH_SECRET
+        generateValue: true
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: APP_MAIL_SENDER
+        sync: false
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_PROTOCOL
+        value: smtp
+      - key: MAIL_TEST_CONNECTION
+        value: false
+
+  - type: web
+    name: cinesaga-api-gateway
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./api-gateway/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE
+        value: https://eureka:password@cinesaga-eureka-server.onrender.com/eureka
+      - key: EUREKA_SERVER_URL
+        value: https://cinesaga-eureka-server.onrender.com

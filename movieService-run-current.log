@@ -1,0 +1,21 @@
+[INFO] Scanning for projects...
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/4.0.2/spring-boot-dependencies-4.0.2.pom
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-dependencies/2025.1.1/spring-cloud-dependencies-2025.1.1.pom
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: org.springframework.boot:spring-boot-dependencies:pom:4.0.2 (absent): Could not transfer artifact org.springframework.boot:spring-boot-dependencies:pom:4.0.2 from/to central (https://repo.maven.apache.org/maven2): Permission denied: getsockopt @ line 36, column 19
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: org.springframework.cloud:spring-cloud-dependencies:pom:2025.1.1 (absent): Could not transfer artifact org.springframework.cloud:spring-cloud-dependencies:pom:2025.1.1 from/to central (https://repo.maven.apache.org/maven2): Permission denied: getsockopt @ line 43, column 19
+[ERROR] 'dependencies.dependency.version' for org.springframework.boot:spring-boot-starter-test:jar is missing. @ line 60, column 17
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project com.doffeii:CineSagaMicroservice:1.0-SNAPSHOT (D:\MCA\Sem4\project\CineVisionMicroserviceProject\pom.xml) has 3 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: org.springframework.boot:spring-boot-dependencies:pom:4.0.2 (absent): Could not transfer artifact org.springframework.boot:spring-boot-dependencies:pom:4.0.2 from/to central (https://repo.maven.apache.org/maven2): Permission denied: getsockopt @ line 36, column 19 -> [Help 2]
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: org.springframework.cloud:spring-cloud-dependencies:pom:2025.1.1 (absent): Could not transfer artifact org.springframework.cloud:spring-cloud-dependencies:pom:2025.1.1 from/to central (https://repo.maven.apache.org/maven2): Permission denied: getsockopt @ line 43, column 19 -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for org.springframework.boot:spring-boot-starter-test:jar is missing. @ line 60, column 17
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException

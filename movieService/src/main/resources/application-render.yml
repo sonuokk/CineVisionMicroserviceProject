@@ -1,0 +1,18 @@
+server:
+  port: ${PORT:10000}
+
+eureka:
+  instance:
+    hostname: ${RENDER_EXTERNAL_HOSTNAME:localhost}
+    prefer-ip-address: false
+    secure-port-enabled: true
+    secure-port: 443
+    non-secure-port-enabled: false
+    home-page-url: https://${RENDER_EXTERNAL_HOSTNAME:localhost}/
+    status-page-url: https://${RENDER_EXTERNAL_HOSTNAME:localhost}/actuator/info
+    health-check-url: https://${RENDER_EXTERNAL_HOSTNAME:localhost}/actuator/health
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:http://eureka:password@localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
