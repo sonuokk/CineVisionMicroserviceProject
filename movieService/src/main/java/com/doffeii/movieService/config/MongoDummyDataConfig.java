@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,6 +42,7 @@ public class MongoDummyDataConfig {
     private final PaymentCardDetailDao paymentCardDetailDao;
 
     @Bean
+    @Order(1)
     CommandLineRunner mongoDummyDataRunner() {
         return args -> {
             if (movieDao.count() < 6) {

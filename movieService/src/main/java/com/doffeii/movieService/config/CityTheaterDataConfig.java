@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class CityTheaterDataConfig {
     private static final List<String> DEFAULT_SHOW_TIMES = List.of("10:30", "13:45", "17:00", "20:15", "22:40");
 
     @Bean
+    @Order(2)
     @ConditionalOnProperty(prefix = "app.bootstrap.theaters", name = "enabled", havingValue = "true")
     public CommandLineRunner bootstrapCitiesAndTheaters() {
         return args -> movieDao.findAll().forEach(this::ensureCitiesAndTheaters);

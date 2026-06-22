@@ -91,6 +91,8 @@ services:
         value: smtp
       - key: MAIL_TEST_CONNECTION
         value: false
+      - key: APP_BOOTSTRAP_THEATERS_ENABLED
+        value: true
 
   - type: web
     name: cinesaga-api-gateway

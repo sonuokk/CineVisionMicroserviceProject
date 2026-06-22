@@ -258,14 +258,18 @@ export default function MainPage() {
                         <p className='booking-kicker'>City Shows</p>
                         <h2>{selectedCity ? `Movies in ${selectedCity}` : "Movies by City"}</h2>
                     </div>
-                    <label className='city-select-control'>
-                        <select value={selectedCity} onChange={event => setSelectedCity(event.target.value)}>
-                            {cityOptions.map(cityName => (
-                                <option key={cityName} value={cityName}>{cityName}</option>
-                            ))}
-                        </select>
-                        <i className='fa-solid fa-chevron-down'></i>
-                    </label>
+                    {cityOptions.length > 0 ? (
+                        <label className='city-select-control'>
+                            <select value={selectedCity} onChange={event => setSelectedCity(event.target.value)}>
+                                {cityOptions.map(cityName => (
+                                    <option key={cityName} value={cityName}>{cityName}</option>
+                                ))}
+                            </select>
+                            <i className='fa-solid fa-chevron-down'></i>
+                        </label>
+                    ) : (
+                        <span className='city-select-empty'>Cities loading</span>
+                    )}
                 </div>
 
                 {cityMovies.length > 0 ? (
@@ -291,7 +295,9 @@ export default function MainPage() {
                     </Swiper>
                 ) : (
                     <div className='container city-movie-empty'>
-                        <span>No movies are showing in {selectedCity || "this city"} yet.</span>
+                        <p className='booking-kicker'>No Shows Yet</p>
+                        <h3>{selectedCity ? `No movies in ${selectedCity}` : "No city shows available"}</h3>
+                        <span>Add theatres and showtimes from the admin panel, or wait for the deployed movie service to finish seeding demo theatres.</span>
                     </div>
                 )}
             </section>
