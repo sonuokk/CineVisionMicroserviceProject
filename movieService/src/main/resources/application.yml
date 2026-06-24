@@ -6,8 +6,9 @@ spring:
     import: optional:file:../.env.example[.properties],optional:file:../.env[.properties],optional:file:.env[.properties]
   application:
     name: movieService
-  mongodb:
-    uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
   mail:
     default-encoding: UTF-8
     host: ${MAIL_HOST:smtp.gmail.com}
