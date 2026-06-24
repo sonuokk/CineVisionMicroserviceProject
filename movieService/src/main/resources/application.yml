@@ -6,9 +6,14 @@ spring:
     import: optional:file:../.env.example[.properties],optional:file:../.env[.properties],optional:file:.env[.properties]
   application:
     name: movieService
+  # data:
+  #   mongodb:
+  #     uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
+  #     spring:
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/cinesaga}
+      # Support both common Render variable names
+      uri: ${SPRING_DATA_MONGODB_URI:${MONGODB_URI:mongodb://localhost:27017/cinesaga}}
   mail:
     default-encoding: UTF-8
     host: ${MAIL_HOST:smtp.gmail.com}
@@ -92,3 +97,9 @@ app:
     sender: ${APP_MAIL_SENDER:no-reply@cinesaga.local}
   payment:
     card-hash-secret: ${PAYMENT_CARD_HASH_SECRET:cinesaga-local-card-secret}
+    
+logging:
+  level:
+    org.springframework.boot.autoconfigure.mongo: DEBUG
+    com.mongodb: INFO
+    org.mongodb.driver.cluster: INFO
